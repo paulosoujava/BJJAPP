@@ -1,0 +1,98 @@
+{
+  "name": "bjj-arena",
+  "productName": "BJJ Arena",
+  "version": "1.5.0",
+  "description": "BJJ Arena: cadastro de lutadores, chaveamento, placar e telão para campeonatos de jiu-jitsu",
+  "main": "main.js",
+  "author": {
+    "name": "BJJ Arena",
+    "email": "contato@bjjarena.com.br"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "app": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dist:mac": "electron-builder --mac",
+    "dist:win": "electron-builder --win",
+    "dist:linux": "electron-builder --linux"
+  },
+  "devDependencies": {
+    "electron": "^45.3.2",
+    "electron-builder": "^26.18.0"
+  },
+  "build": {
+    "appId": "br.com.bjjarena.app",
+    "productName": "BJJ Arena",
+    "copyright": "BJJ Arena",
+    "artifactName": "BJJ-Arena-${version}-${os}-${arch}.${ext}",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "app/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.sports",
+      "icon": "build/icon.png",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ]
+    },
+    "dmg": {
+      "title": "BJJ Arena ${version}"
+    },
+    "win": {
+      "icon": "build/icon.png",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "BJJ Arena",
+      "language": "1046"
+    },
+    "linux": {
+      "icon": "build/icon.png",
+      "category": "Sports",
+      "maintainer": "BJJ Arena <contato@bjjarena.com.br>",
+      "synopsis": "Gerenciador de campeonatos de jiu-jitsu",
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "publish": null
+  },
+  "homepage": "https://github.com/paulosoujava/BJJArena"
+}

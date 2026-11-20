@@ -1,0 +1,2100 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BJJ Arena</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+/* Layout: cadastro fixo à esquerda, tempo e chaves à direita; empilha no celular. Visual de placar de tatame, com as cores das faixas como único destaque. */
+:root{
+  --bg:#ECEFF1; --surface:#FFFFFF; --surface-2:#E2E7EA; --line:#CFD6DB; --line-strong:#AAB5BD;
+  --fg:#12181D; --muted:#55616B; --accent:#0E7C66; --accent-fg:#FFFFFF;
+  --win-bg:#DCF0EA; --danger:#B3261E; --danger-fg:#FFFFFF; --ring:rgba(0,0,0,.28);
+  --belt-branca:#F5F5F3; --belt-azul:#1B5FC1; --belt-roxa:#6A33A5; --belt-marrom:#6A4327; --belt-preta:#171A1D; --belt-outra:#8A8F98;
+  --ouro:#C99A14; --prata:#8E9AA3; --bronze:#B0652B;
+  --display:'Barlow Condensed','Arial Narrow',Arial,sans-serif;
+  --body:'Barlow',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1316; --surface:#161D21; --surface-2:#1F282D; --line:#2C373D; --line-strong:#47555D;
+    --fg:#E7ECEF; --muted:#93A1AB; --accent:#3CC3A6; --accent-fg:#06201A;
+    --win-bg:#15352E; --danger:#FF8A80; --danger-fg:#2A0A08; --ring:rgba(255,255,255,.4); --ouro:#E6B422; --prata:#B8C2CA; --bronze:#D98A4B;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1316; --surface:#161D21; --surface-2:#1F282D; --line:#2C373D; --line-strong:#47555D;
+  --fg:#E7ECEF; --muted:#93A1AB; --accent:#3CC3A6; --accent-fg:#06201A;
+  --win-bg:#15352E; --danger:#FF8A80; --danger-fg:#2A0A08; --ring:rgba(255,255,255,.4); --ouro:#E6B422; --prata:#B8C2CA; --bronze:#D98A4B;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--fg); font:15px/1.5 var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:28px 64px;
+}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:min(1800px,100%);margin:0 auto}
+
+/* Cabeçalho */
+.top h1{font:700 clamp(2.2rem,6vw,3.4rem)/.95 var(--display);text-transform:uppercase;letter-spacing:.01em;margin:0}
+.top p{margin:10px 0 0;color:var(--muted);max-width:56ch}
+.beltbar{display:flex;width:220px;max-width:100%;height:8px;margin-top:16px;box-shadow:0 0 0 1px var(--ring)}
+.beltbar span{flex:1}
+
+/* Estrutura */
+.layout{display:grid;grid-template-columns:minmax(0,clamp(380px,28vw,460px)) minmax(0,1fr);gap:24px;align-items:start;margin-top:28px}
+.stack{display:grid;gap:24px;min-width:0}
+@media (max-width:900px){.layout{grid-template-columns:minmax(0,1fr)}}
+@media (min-width:1500px){.stack{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.stack>#resultado{grid-column:1/-1}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:20px;min-width:0}
+.panel h2{display:flex;align-items:center;margin:0 0 16px;font:700 1.45rem/1 var(--display);text-transform:uppercase;letter-spacing:.03em}
+.step{display:inline-grid;place-items:center;width:26px;height:26px;margin-right:10px;border-radius:3px;background:var(--accent);color:var(--accent-fg);font:700 1rem/1 var(--display)}
+
+/* Formulário */
+.formgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.field{display:grid;gap:5px;min-width:0}
+.field.full{grid-column:1/-1}
+label{font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+input,select{height:44px;width:100%;padding:0 12px;border:1px solid var(--line-strong);border-radius:4px;background:var(--surface);font-size:16px}
+.btn{height:44px;padding:0 18px;border:1px solid var(--line-strong);border-radius:4px;background:var(--surface);font-weight:600;cursor:pointer}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.warn{background:var(--danger);border-color:var(--danger);color:var(--danger-fg)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.link{height:auto;padding:4px 0;border:0;background:none;color:var(--muted);font-size:.85rem;text-decoration:underline;text-underline-offset:3px}
+.btn.link:hover{background:none;color:var(--fg)}
+.err{grid-column:1/-1;margin:0;min-height:1.2em;color:var(--danger);font-size:.88rem}
+
+/* Lista de inscritos */
+.listhead{display:flex;justify-content:space-between;align-items:baseline;margin:22px 0 8px;padding-top:18px;border-top:1px solid var(--line)}
+.listhead h3{margin:0;font:700 1.15rem/1 var(--display);text-transform:uppercase;letter-spacing:.04em}
+.listhead h3 span{color:var(--accent);margin-left:4px}
+.list{list-style:none;margin:0;padding:0;max-height:460px;overflow:auto}
+.list li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.who{min-width:0}
+.who strong{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.who span{display:block;color:var(--muted);font-size:.84rem}
+.x{width:32px;height:32px;border:0;border-radius:4px;background:none;color:var(--muted);font-size:1.3rem;line-height:1;cursor:pointer}
+.x:hover{background:var(--surface-2);color:var(--danger)}
+.vazio{margin:6px 0 0;color:var(--muted)}
+.vazio .btn{margin-top:12px}
+.dot{display:inline-block;flex:none;width:18px;height:8px;border-radius:1px;box-shadow:0 0 0 1px var(--ring)}
+
+/* Configuração */
+.cfg{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end}
+.cfg .field{flex:1 1 200px}
+.stepper{display:flex}
+.stepper button{flex:none;width:44px;height:44px;border:1px solid var(--line-strong);background:var(--surface);font-size:1.3rem;cursor:pointer}
+.stepper button:first-child{border-radius:4px 0 0 4px}
+.stepper button:last-child{border-radius:0 4px 4px 0}
+.stepper button:hover{background:var(--surface-2)}
+.stepper input{border-radius:0;border-left:0;border-right:0;text-align:center;font:600 1.3rem var(--display);font-variant-numeric:tabular-nums;min-width:0}
+.cfg .grow{flex:2 1 260px}
+.cfg+.cfg{margin-top:16px}
+.go{display:block;width:100%;height:52px;margin-top:18px;font-size:1.05rem}
+.hint{margin:14px 0 0;color:var(--muted);font-size:.92rem}
+.hint.alert{color:var(--fg);padding:10px 12px;border-left:4px solid var(--danger);background:var(--surface-2)}
+
+/* Resultado */
+.results{display:grid;gap:20px;min-width:0}
+.summary{display:flex;flex-wrap:wrap;gap:10px 28px;align-items:center}
+.stale{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding:14px 18px;margin-bottom:16px;border:1px solid var(--danger);border-left-width:6px;border-radius:6px;background:var(--surface)}
+.stale div{flex:1 1 280px}
+.sum-act{display:flex;flex-wrap:wrap;gap:10px;margin-left:auto}
+.summary div{display:flex;align-items:baseline;gap:8px;color:var(--muted)}
+.summary b{font:700 2rem/1 var(--display);color:var(--fg);font-variant-numeric:tabular-nums}
+.summary .btn{margin-left:auto}
+.brkt{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:18px 20px 16px;min-width:0}
+.bhead{display:flex;flex-wrap:wrap;gap:10px 16px;justify-content:space-between;align-items:flex-start}
+.bt{display:flex;align-items:center;gap:10px;min-width:0}
+.bt h3{margin:0;font:700 1.6rem/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.bsub{margin:5px 0 0;color:var(--muted);font-size:.9rem}
+.bact{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.champ{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:3px;background:var(--accent);color:var(--accent-fg);font:700 1.05rem/1.1 var(--display);text-transform:uppercase;letter-spacing:.05em}
+.rounds{display:flex;gap:28px;margin-top:16px;padding-bottom:8px;overflow-x:auto}
+.col{flex:0 0 min(236px,78vw);display:flex;flex-direction:column}
+.col h4{margin:0 0 10px;font:600 .95rem/1 var(--display);text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.matches{flex:1;display:flex;flex-direction:column;justify-content:space-around;gap:14px}
+.match{position:relative;border:1px solid var(--line-strong);border-radius:4px;background:var(--bg)}
+.col:not(:last-child) .match::after,.col:not(:first-child) .match::before{content:"";position:absolute;top:50%;width:14px;border-top:2px solid var(--line-strong)}
+.col:not(:last-child) .match::after{left:100%}
+.col:not(:first-child) .match::before{right:100%}
+.match.open{cursor:pointer}
+.match.open:hover{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.match.live{border-color:var(--accent)}
+.match.live .mhead{background:var(--accent);color:var(--accent-fg)}
+.mhead{display:flex;justify-content:space-between;gap:8px;padding:5px 10px;background:var(--surface-2);border-radius:3px 3px 0 0;color:var(--muted);font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.mhead .mtime{font-variant-numeric:tabular-nums;text-align:right}
+.fighter{display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:42px;padding:8px 10px;border-top:1px solid var(--line)}
+.mhead + .fighter{border-top:0}
+.fighter.empty{color:var(--muted);font-style:italic}
+.fighter.win{background:var(--win-bg);font-weight:600;box-shadow:inset 4px 0 0 var(--accent)}
+.fighter.lose{color:var(--muted)}
+.fn{display:flex;align-items:center;gap:8px;min-width:0}
+.nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kg{flex:none;color:var(--muted);font-size:.8rem;font-variant-numeric:tabular-nums}
+.sc{display:flex;align-items:baseline;gap:6px;flex:none}
+.sc b{font:700 1.35rem/1 var(--display);font-variant-numeric:tabular-nums}
+.sc small{color:var(--muted);font-size:.7rem;letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.mfoot{padding:6px 10px;border-top:1px solid var(--line);color:var(--accent);font-size:.8rem;font-weight:600;text-align:center}
+.solo{margin:14px 0 0;color:var(--muted)}
+.empty-state{display:grid;gap:14px;justify-items:start}
+.empty-state p{margin:0;max-width:52ch;color:var(--muted)}
+.empty-state svg{max-width:100%;height:auto}
+.row{display:flex;flex-wrap:wrap;gap:10px}
+.row .btn{flex:1 1 120px}
+
+/* Configurações extras, pódio, todos contra todos */
+.cfg2{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.checks{display:grid;gap:10px;margin-top:16px}
+label.chk{display:flex;align-items:center;gap:10px;margin:0;text-transform:none;letter-spacing:0;font-size:.92rem;font-weight:500;color:var(--fg)}
+label.chk input{flex:none;width:20px;height:20px;padding:0}
+.tf{display:flex;flex-wrap:wrap;gap:10px;flex:1 1 100%}
+.tfl{display:flex;align-items:center;gap:8px;margin:0;text-transform:none;letter-spacing:0;font-size:.92rem;font-weight:600;color:var(--fg)}
+.tfl input{width:64px;height:38px;padding:0 6px;text-align:center}
+select.matsel{width:auto;height:40px}
+.podium{display:flex;flex-wrap:wrap;gap:14px;margin:22px 0 0;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.sec-t{margin:26px 0 6px;font:700 1rem/1 var(--display);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.pd{display:grid;gap:2px;min-width:210px;padding:10px 14px;border:1px solid var(--line);border-left:6px solid var(--m);border-radius:4px;background:var(--bg)}
+.pd.g{--m:var(--ouro)}
+.pd.s{--m:var(--prata)}
+.pd.b{--m:var(--bronze)}
+.pd .pl{color:var(--muted);font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+.pd strong{font:700 1.4rem/1.1 var(--display);text-transform:uppercase}
+.pd small{display:flex;align-items:center;gap:6px;color:var(--muted)}
+.pd .pw{display:block;margin-top:4px;padding-top:6px;border-top:1px solid var(--line);font-size:.9rem;color:var(--fg)}
+.pd .pw b{font:700 1.15rem/1 var(--display);margin-right:4px}
+.pd .pw em{font-style:normal;color:var(--muted)}
+.pod-card .pd .pw{font-size:clamp(.8rem,1vw,1rem)}
+#faixaOutraBox[hidden]{display:none}
+.rr{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start;margin-top:16px}
+.rr h4{margin:0 0 10px;font:600 .95rem/1 var(--display);text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.rr-list{display:grid;gap:14px;width:min(260px,78vw)}
+.rr-tab{border-collapse:collapse;min-width:340px}
+.rr-tab th,.rr-tab td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}
+.rr-tab th{color:var(--muted);font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.rr-tab th:nth-child(n+3),.rr-tab td:nth-child(n+3){text-align:right;font-variant-numeric:tabular-nums}
+.tvin .rr{flex-wrap:nowrap}
+.fighter.absent .nm{text-decoration:line-through}
+/* Chamada de lutas */
+.tv-ctl select{width:auto;height:40px}
+.call-wrap{position:absolute;inset:0;overflow:auto;padding:20px 24px}
+/* Chamada de lutas: estilo cartaz de evento */
+.call-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(560px,100%),1fr));gap:34px;align-items:start}
+.call-card{display:grid;gap:14px}
+.ufc-mh{display:flex;align-items:flex-end;gap:16px;padding-bottom:10px;border-bottom:3px solid var(--ouro)}
+.ufc-mh span{font:700 1rem/1.6 var(--display);letter-spacing:.34em;text-transform:uppercase;color:var(--muted)}
+.ufc-mh b{font:800 clamp(3.2rem,6vw,5.4rem)/.85 var(--display);color:var(--fg)}
+.call-row{position:relative;border-radius:10px;overflow:hidden;background:linear-gradient(180deg,#131C22,#0A0F12);border:1px solid var(--line-strong);animation:ufcin .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*90ms)}
+.call-row.live{border-color:#FF5A4F;box-shadow:0 0 0 1px #FF5A4F,0 12px 40px -12px rgba(255,90,79,.55)}
+.call-row.next{border-color:var(--ouro);box-shadow:0 12px 40px -16px rgba(230,180,34,.5)}
+.ufc-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:rgba(255,255,255,.045);font:600 clamp(.75rem,1vw,.95rem)/1.2 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.ufc-cat{display:flex;align-items:center;gap:8px;min-width:0}
+.ufc-tag{flex:none;display:inline-flex;align-items:center;gap:8px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.08);color:var(--fg);font-weight:700}
+.live .ufc-tag{background:#FF5A4F;color:#fff}
+.live .ufc-tag::before{content:"";width:8px;height:8px;border-radius:50%;background:#fff;animation:ufcblink 1.1s ease-in-out infinite}
+.next .ufc-tag{background:var(--ouro);color:#1a1203}
+.ufc-fight{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:stretch}
+.ufc-f{position:relative;display:grid;align-content:center;gap:3px;min-width:0;padding:clamp(14px,2vw,24px) 14px clamp(14px,2vw,24px) 26px;background:linear-gradient(90deg,color-mix(in srgb,var(--bc) 26%,transparent),transparent 70%)}
+.ufc-f.b{text-align:right;padding:clamp(14px,2vw,24px) 26px clamp(14px,2vw,24px) 14px;background:linear-gradient(270deg,color-mix(in srgb,var(--bc) 26%,transparent),transparent 70%)}
+.ufc-bar{position:absolute;top:0;bottom:0;left:0;width:7px;background:var(--bc);box-shadow:0 0 0 1px rgba(255,255,255,.18) inset}
+.ufc-f.b .ufc-bar{left:auto;right:0}
+.ufc-f em{font:600 clamp(.95rem,1.5vw,1.4rem)/1 var(--display);font-style:normal;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.ufc-f strong{font:800 clamp(1.7rem,3.2vw,3.2rem)/.95 var(--display);text-transform:uppercase;overflow-wrap:anywhere;color:var(--fg)}
+.ufc-f small{font-size:clamp(.78rem,1.05vw,1rem);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ufc-vs{display:grid;place-items:center;padding:0 4px}
+.ufc-vs i{display:grid;place-items:center;width:clamp(46px,5vw,70px);height:clamp(46px,5vw,70px);border-radius:50%;background:var(--ouro);color:#1a1203;font:800 clamp(1.1rem,1.8vw,1.7rem)/1 var(--display);font-style:normal;box-shadow:0 0 0 5px rgba(230,180,34,.18)}
+.live .ufc-vs i{background:#FF5A4F;color:#fff;box-shadow:0 0 0 5px rgba(255,90,79,.22)}
+.call-row.q .ufc-f strong{font-size:clamp(1.25rem,2.2vw,2.1rem)}
+.call-row.q .ufc-f{padding-block:clamp(10px,1.4vw,16px)}
+.call-row.q .ufc-vs i{width:clamp(36px,3.6vw,50px);height:clamp(36px,3.6vw,50px);font-size:clamp(.9rem,1.3vw,1.2rem)}
+.call-none,.call-more{margin:4px 0 0;padding:22px;border:1px dashed var(--line-strong);border-radius:10px;color:var(--muted);text-align:center;letter-spacing:.06em;text-transform:uppercase}
+.call-more{padding:10px;border-style:solid}
+@keyframes ufcin{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes ufcblink{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.call-row{animation:none}.live .ufc-tag::before{animation:none}}
+
+/* Pesagem e ajuste da chave */
+.li-act{display:flex;align-items:center;gap:8px}
+.list li.weigh{grid-template-columns:minmax(0,1fr)}
+.wf{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.wf input{flex:1 1 170px;width:auto}
+.wf .err{flex:1 1 100%}
+.strike{text-decoration:line-through;color:var(--muted)}
+.tag{display:inline-block;padding:2px 8px;border-radius:3px;background:var(--surface-2);font-size:.75rem;font-weight:600}
+.tag.miss{background:var(--danger);color:var(--danger-fg)}
+.tag.ok{background:var(--win-bg)}
+.adj{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:16px;background:rgba(8,12,14,.7)}
+.adj-box{width:min(720px,100%);max-height:100%;overflow:auto;padding:22px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg)}
+.adj-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.adj-top h3{margin:0;font:700 1.4rem/1.1 var(--display);text-transform:uppercase}
+.adj-list{list-style:none;margin:12px 0 0;padding:0}
+.adj-list li{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.adj-act{display:flex;gap:8px;flex-wrap:wrap}
+.adj-form{display:flex;flex-wrap:wrap;gap:8px;width:100%}
+.adj-form strong{flex:1 1 100%}
+.adj-form input{flex:1 1 180px;width:auto}
+.adj-form select{flex:1 1 140px;width:auto}
+.adj-form .err{flex:1 1 100%}
+/* Atalhos e pausa de lesão */
+.k{display:inline-block;min-width:1.5em;margin-left:6px;padding:0 5px;border:1px solid var(--line-strong);border-radius:3px;color:var(--muted);font:600 .7rem/1.6 var(--body);font-style:normal;text-align:center}
+.inj{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 12px;border:1px dashed var(--line-strong);border-radius:6px;color:var(--muted);font-size:.9rem}
+.inj b{color:var(--fg);font:700 1.2rem/1 var(--display);font-variant-numeric:tabular-nums}
+/* Telão em outra janela */
+body.telao{overflow:hidden;background:#0B1013}
+body.telao.idle{cursor:none}
+.tl-exit{position:fixed;top:16px;right:16px;z-index:60;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:rgba(10,15,18,.88);color:#fff;font:600 1rem var(--body,inherit);cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s}
+body.telao.awake .tl-exit{opacity:1;pointer-events:auto}
+.tl-exit:hover{background:#fff;color:#0B1013}
+body.telao .wrap{display:none}
+body.telao .tv-ctl{display:none}
+body.telao .tv-tabs{pointer-events:none}
+.tl{position:fixed;inset:0;z-index:45}
+.tl-wait{display:grid;place-items:center;height:100%;font:600 2rem var(--display);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.tl-board{display:grid;grid-template-rows:auto minmax(0,1fr) auto;height:100%}
+.tl .sb-title{font-size:clamp(1rem,1.8vw,1.8rem)}
+.tl .sb-top{padding:14px 28px}
+.tl .sd-name{font-size:clamp(2.2rem,5.6vw,6.5rem)}
+.tl .sd-meta{font-size:clamp(1rem,1.8vw,1.8rem)}
+.tl .sd-pts b{font-size:clamp(7rem,32vh,20rem)}
+.tl .sd-pts span{font-size:clamp(1.2rem,2vw,2.2rem)}
+.tl .cn b{font-size:clamp(3rem,12vh,8rem)}
+.tl .cn > span{font-size:clamp(.9rem,1.6vw,1.6rem)}
+.tl .clock{font-size:clamp(5rem,min(15vw,30vh),18rem)}
+.tl .mid{justify-content:center}
+.tl .banner strong{font-size:clamp(2.4rem,5vw,5.5rem)}
+.tl .banner em{font-size:clamp(1.2rem,2vw,2.2rem)}
+.tl .sb-end{padding:14px 28px}
+.tl-foot{color:var(--muted);font-size:clamp(.9rem,1.5vw,1.5rem);font-variant-numeric:tabular-nums;min-height:2.4em}
+.tl-foot span{display:inline-block;margin-right:22px}
+.tl-inj{margin:0;text-align:center;color:var(--muted);font-size:clamp(.9rem,1.4vw,1.4rem)}
+.tl-pod{display:flex;flex-direction:column;gap:16px;height:100%;padding:24px 32px;overflow:hidden}
+.tl-pod h2{margin:0;font:700 clamp(2rem,4vw,4rem)/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.pod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:18px;align-content:start}
+.pod-card{padding:16px 18px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+.pod-card h3{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin:0 0 6px;font:700 clamp(1.3rem,2vw,2rem)/1.1 var(--display);text-transform:uppercase}
+.pod-card h3 small{font:500 .6em var(--body);color:var(--muted);text-transform:none}
+.pod-card .pd{margin-top:8px;min-width:0}
+.pod-card .pd strong{font-size:clamp(1.2rem,1.8vw,1.9rem)}
+/* Empate na chave de 3 */
+.rr-tie{margin-top:12px}
+.rr-tie .endrow select{width:auto;min-width:150px;height:40px}
+body.telao .rr-tie .endrow{display:none}
+
+/* Histórico, cabeçalho e tela inicial vazia */
+.top{position:relative}
+.hist-btn{position:absolute;right:0;top:0}
+.cnt{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;margin-left:8px;border-radius:11px;background:var(--accent);color:var(--accent-fg);font-size:.78rem;font-weight:700}
+.note-ok{margin:10px 0 0;color:var(--accent);font-weight:600;font-size:.92rem}
+.evinfo{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:14px}
+.evinfo strong{font:700 1.25rem/1.1 var(--display);text-transform:uppercase}
+.gate{max-width:720px;margin:clamp(12px,6vh,64px) auto;padding:clamp(24px,5vw,48px)}
+.gate h2{margin:10px 0 0;font:800 clamp(2.2rem,5vw,3.4rem)/1 var(--display);text-transform:uppercase}
+.gate .lead{margin:12px 0 22px;color:var(--muted);max-width:52ch}
+.gfields{display:flex;flex-wrap:wrap;gap:14px}
+.gfields .grow{flex:2 1 280px}
+.gfields .field{flex:1 1 160px}
+.gate .err{min-height:1.2em}
+.stack>#resultado.is-empty{order:-1}
+.eyebrow{font:600 .78rem/1 var(--body,inherit);letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+.es{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px;align-items:center;padding:clamp(20px,3vw,34px)}
+.es h3{margin:10px 0 0;font:800 clamp(1.9rem,3.2vw,2.7rem)/1 var(--display);text-transform:uppercase}
+.es p.lead{margin:14px 0 0;color:var(--muted);max-width:46ch;font-size:1.05rem}
+.es-steps{display:grid;gap:8px;margin:18px 0 0;padding:0;list-style:none}
+.es-steps li{display:flex;align-items:center;gap:12px;color:var(--fg)}
+.es-steps b{display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:50%;border:2px solid var(--line-strong);font:700 .95rem/1 var(--display);color:var(--accent)}
+.es-act{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.es-art{width:100%;height:auto;max-width:360px;justify-self:center}
+.es-art .box{fill:var(--surface-2);stroke:var(--line-strong);stroke-width:1.5}
+.es-art .pth{fill:none;stroke:var(--line-strong);stroke-width:2;stroke-linejoin:round}
+.es-art .flow{fill:none;stroke:var(--ouro);stroke-width:2.5;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:esdraw 4.5s ease-in-out infinite}
+.es-art .flow.f2{animation-delay:.6s}.es-art .flow.f3{animation-delay:1.2s}
+.es-art .cup{fill:none;stroke:var(--ouro);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.es-art .champ{fill:var(--surface-2);stroke:var(--ouro);stroke-width:2;animation:espulse 4.5s ease-in-out infinite}
+.es-art .sk{fill:var(--line);animation:esshim 2.2s ease-in-out infinite}
+@keyframes esdraw{0%{stroke-dashoffset:1}45%,85%{stroke-dashoffset:0}100%{stroke-dashoffset:-1}}
+@keyframes espulse{0%,40%{fill:var(--surface-2)}60%,85%{fill:rgba(201,154,20,.22)}100%{fill:var(--surface-2)}}
+@keyframes esshim{0%,100%{opacity:.45}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.es-art .flow,.es-art .champ,.es-art .sk{animation:none}.es-art .flow{stroke-dashoffset:0}}
+@media (max-width:900px){.es{grid-template-columns:minmax(0,1fr)}.es-art{order:-1;max-width:320px;justify-self:start}.hist-btn{position:static;margin-bottom:12px}}
+
+.mut{color:var(--muted)}
+.md{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px;flex:none}
+.md.g{background:var(--ouro)}.md.s{background:var(--prata)}.md.b{background:var(--bronze)}
+.hist{--bg:#070B0E;--surface:#0F171C;--surface-2:#16212A;--line:#20303A;--line-strong:#33454F;--fg:#EEF3F5;--muted:#93A2AC;--accent:#5FD3B0;--accent-fg:#06201A;--ouro:#F2BF3C;--prata:#CBD5DC;--bronze:#D98C54;
+  position:fixed;inset:0;z-index:70;overflow:auto;background:var(--bg);color:var(--fg);isolation:isolate;color-scheme:dark}
+.hist .btn{background:rgba(255,255,255,.04);color:var(--fg);border-color:var(--line-strong)}
+.hist .btn:hover{background:rgba(255,255,255,.1)}
+.hist .btn.primary{background:var(--ouro);color:#1a1203;border-color:var(--ouro)}
+.h-bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.h-bg i{position:absolute;border-radius:50%;filter:blur(100px);opacity:.42;animation:hfloat 20s ease-in-out infinite alternate}
+.h-bg i:nth-child(1){width:46vw;height:46vw;left:-12vw;top:-14vw;background:#18705B}
+.h-bg i:nth-child(2){width:40vw;height:40vw;right:-10vw;top:8vh;background:#85620F;animation-delay:-7s}
+.h-bg i:nth-child(3){width:52vw;height:52vw;left:28vw;bottom:-28vw;background:#27408F;animation-delay:-12s}
+.h-bg::after{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:72px 72px;opacity:.22;mask-image:radial-gradient(ellipse at 50% 0,#000,transparent 80%);-webkit-mask-image:radial-gradient(ellipse at 50% 0,#000,transparent 80%)}
+@keyframes hfloat{to{transform:translate(7vw,5vh) scale(1.18)}}
+.hist-in{padding:clamp(18px,3vw,40px) clamp(16px,4vw,64px) 96px}
+.h-hero{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+.h-title{margin:12px 0 0;font:800 clamp(3.4rem,11vw,9.5rem)/.84 var(--display);text-transform:uppercase;letter-spacing:.005em}
+.h-title b{display:block;font-weight:800;background:linear-gradient(100deg,#fff,var(--ouro) 60%,#e8734a);-webkit-background-clip:text;background-clip:text;color:transparent;animation:hslide .9s cubic-bezier(.2,.8,.2,1) both}
+.h-title span{display:block;margin-top:.08em;font-size:.52em;color:transparent;-webkit-text-stroke:1.5px var(--fg);letter-spacing:.06em;animation:hslide .9s .15s cubic-bezier(.2,.8,.2,1) both}
+@keyframes hslide{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+.hstats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:clamp(22px,4vw,44px)}
+.hs{position:relative;overflow:hidden;padding:20px 22px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,var(--surface-2),var(--surface));animation:hin .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*80ms + .25s)}
+.hs b{display:block;font:800 clamp(2.6rem,5vw,4.4rem)/1 var(--display);font-variant-numeric:tabular-nums;background:linear-gradient(180deg,#fff,var(--ouro));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hs span{color:var(--muted);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase}
+@media (max-width:760px){.hstats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.h-tool{margin-top:clamp(24px,4vw,44px);display:flex}
+.hq{display:flex;align-items:center;gap:12px;width:min(100%,560px);padding:0 20px;height:54px;border:1px solid var(--line-strong);border-radius:999px;background:rgba(255,255,255,.04);transition:border-color .25s,box-shadow .25s}
+.hq:focus-within{border-color:var(--ouro);box-shadow:0 0 0 4px rgba(242,191,60,.15)}
+.hq svg{width:20px;height:20px;flex:none;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round}
+.hq input{flex:1;min-width:0;height:100%;border:0;outline:0;background:transparent;color:var(--fg);font:500 1rem var(--body,inherit)}
+.hq input::placeholder{color:var(--muted)}
+.hdsec{display:grid;grid-template-columns:170px minmax(0,1fr);gap:clamp(18px,3vw,40px);margin-top:clamp(30px,5vw,56px)}
+.hday-d{position:sticky;top:20px;align-self:start;display:grid;gap:2px;line-height:1}
+.hday-d b{font:800 clamp(4.5rem,9vw,7.5rem)/.85 var(--display);color:var(--fg)}
+.hday-d em{font:700 1.5rem var(--display);font-style:normal;letter-spacing:.3em;text-transform:uppercase;color:var(--ouro)}
+.hday-d small{margin-top:8px;color:var(--muted);font-size:.85rem;letter-spacing:.1em;text-transform:uppercase}
+@media (max-width:820px){.hdsec{grid-template-columns:minmax(0,1fr)}.hday-d{position:static;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}.hday-d b{font-size:3.6rem}}
+.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,400px),1fr));gap:20px;align-content:start}
+.hcard{position:relative;overflow:hidden;display:grid;gap:16px;padding:24px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(180deg,var(--surface-2),var(--surface));cursor:pointer;text-align:left;color:inherit;font:inherit;animation:hin .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*70ms);transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .3s,box-shadow .3s}
+.hcard::before{content:"";position:absolute;inset:0;background:radial-gradient(440px 240px at var(--x,50%) var(--y,0%),rgba(242,191,60,.18),transparent 70%);opacity:0;transition:opacity .3s;pointer-events:none}
+.hcard::after{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,var(--ouro),#e8734a,var(--accent));transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.hcard:hover,.hcard:focus-visible{transform:translateY(-6px);border-color:var(--ouro);box-shadow:0 26px 60px -26px rgba(242,191,60,.5)}
+.hcard:hover::before{opacity:1}.hcard:hover::after,.hcard:focus-visible::after{transform:scaleX(1)}
+.hc-top{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase}
+.hcard h3{margin:0;font:800 clamp(1.8rem,2.6vw,2.5rem)/1 var(--display);text-transform:uppercase;overflow-wrap:anywhere}
+.hc-stats{display:flex;flex-wrap:wrap;gap:8px 22px;color:var(--muted);font-size:.92rem}
+.hc-stats b{color:var(--fg);font:700 1.4rem/1 var(--display);margin-right:5px}
+.hc-champs{display:grid;gap:10px;padding-top:14px;border-top:1px solid var(--line)}
+.hc-c{display:flex;align-items:center;gap:12px;min-width:0}
+.av{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:50%;border:2px solid var(--ouro);background:rgba(242,191,60,.1);font:800 1.05rem/1 var(--display);font-style:normal;color:var(--ouro)}
+.hc-c div{display:grid;min-width:0}
+.hc-c b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hc-c small{color:var(--muted)}
+.hc-go{color:var(--ouro);font-weight:600;font-size:.92rem;display:inline-flex;gap:8px;align-items:center;transition:gap .3s}
+.hcard:hover .hc-go{gap:14px}
+@keyframes hin{from{opacity:0;transform:translateY(26px) scale(.98)}to{opacity:1;transform:none}}
+.hist-empty{margin-top:40px;padding:clamp(40px,8vw,90px) 24px;text-align:center;color:var(--muted);border:1px dashed var(--line-strong);border-radius:22px;background:rgba(255,255,255,.02)}
+.hist-empty h3{margin:0 0 10px;font:800 clamp(2rem,5vw,3.4rem)/1 var(--display);text-transform:uppercase;color:var(--fg)}
+.hist-empty svg{width:96px;height:96px;stroke:var(--ouro);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;margin-bottom:18px;animation:hbob 3.4s ease-in-out infinite}
+@keyframes hbob{50%{transform:translateY(-8px)}}
+
+/* detalhe do campeonato */
+.hd{position:fixed;inset:0;z-index:5;overflow:auto;background:#070B0E;animation:hdin .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes hdin{from{opacity:0;transform:translateX(5vw)}to{opacity:1;transform:none}}
+.hd-in{padding:clamp(18px,3vw,40px) clamp(16px,4vw,64px) 96px;max-width:1500px;margin:0 auto}
+.hd-head{margin-top:22px;display:grid;gap:10px}
+.hd-head h2{margin:0;font:800 clamp(2.8rem,8vw,6.5rem)/.9 var(--display);text-transform:uppercase;background:linear-gradient(100deg,#fff,var(--ouro));-webkit-background-clip:text;background-clip:text;color:transparent;overflow-wrap:anywhere}
+.hd-meta{color:var(--muted);letter-spacing:.12em;text-transform:uppercase;font-size:.85rem}
+.hd-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:30px 0 24px;padding:6px;width:max-content;max-width:100%;border:1px solid var(--line-strong);border-radius:999px;background:rgba(255,255,255,.03)}
+.hd-tabs button{height:44px;padding:0 24px;border:0;border-radius:999px;background:transparent;color:var(--muted);font:600 1rem var(--body,inherit);cursor:pointer;transition:background .25s,color .25s}
+.hd-tabs button:hover{color:var(--fg)}
+.hd-tabs button.on{background:var(--ouro);color:#1a1203}
+.hd-pane{animation:hin .5s cubic-bezier(.2,.8,.2,1) both}
+.hpods{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:22px}
+.hpod{padding:24px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,var(--surface-2),var(--surface))}
+.hpod header{display:flex;align-items:center;gap:10px;margin-bottom:22px;font:800 1.7rem/1 var(--display);text-transform:uppercase}
+.hpod header small{margin-left:auto;color:var(--muted);font:500 .85rem var(--body,inherit);letter-spacing:.06em}
+.hp-stage{display:flex;align-items:flex-end;justify-content:center;gap:clamp(8px,1.6vw,22px);min-height:330px}
+.hp{--m:var(--bronze);display:grid;justify-items:center;text-align:center;gap:6px;flex:1 1 0;max-width:220px;min-width:0}
+.hp.g{--m:var(--ouro)}.hp.s{--m:var(--prata)}
+.hp-av{display:grid;place-items:center;width:68px;height:68px;border-radius:50%;border:3px solid var(--m);background:var(--surface);font:800 1.6rem/1 var(--display);color:var(--m)}
+.hp.g .hp-av{animation:hglow 2.6s ease-in-out infinite}
+@keyframes hglow{50%{box-shadow:0 0 0 10px rgba(242,191,60,.14),0 0 40px rgba(242,191,60,.35)}}
+.hp b{font:700 1.25rem/1.1 var(--display);text-transform:uppercase;overflow-wrap:anywhere}
+.hp small{font:700 1rem var(--display);color:var(--m);letter-spacing:.06em}
+.hp-why{min-height:2.7em;color:var(--muted);font-size:.78rem;line-height:1.35}
+.hp-bar{width:100%;display:grid;place-items:start center;padding-top:10px;border-radius:12px 12px 0 0;background:linear-gradient(180deg,var(--m),color-mix(in srgb,var(--m) 40%,#000));font:800 2.2rem/1 var(--display);color:#1a1203;transform-origin:bottom;animation:hrise 1.1s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--d,0)*150ms + .15s)}
+.hp.g .hp-bar{height:170px}.hp.s .hp-bar{height:124px}.hp.b .hp-bar{height:92px}
+@keyframes hrise{from{transform:scaleY(.02);opacity:.3}to{transform:none;opacity:1}}
+.hp-solo{padding:16px 0;color:var(--muted)}
+.hp-solo b{color:var(--fg)}
+.hist .ht-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02)}
+.hist .ht{width:100%;border-collapse:collapse;font-size:.95rem}
+.hist .ht th,.hist .ht td{padding:11px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.hist .ht tbody tr{transition:background .2s}.hist .ht tbody tr:hover{background:rgba(242,191,60,.06)}
+.hist .ht thead th{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap;background:rgba(255,255,255,.03)}
+.hist .ht td.num{white-space:nowrap;font-variant-numeric:tabular-nums}
+.hist .ht td.win{font-weight:700;color:var(--ouro)}
+.hist .ht small{color:var(--muted)}
+.hist .ht .dot,.hist .hpod .dot{display:inline-block;margin-right:8px;vertical-align:middle}
+.hb{border:1px solid var(--line);border-radius:14px;margin-bottom:14px;background:var(--surface)}
+.hb>summary{cursor:pointer;padding:16px 20px;font:700 1.3rem/1 var(--display);text-transform:uppercase;list-style:none;display:flex;align-items:center;gap:10px}
+.hb>summary::-webkit-details-marker{display:none}
+.hb>summary::before{content:"▸";color:var(--ouro);transition:transform .25s}
+.hb[open]>summary::before{transform:rotate(90deg)}
+.hb>summary small{margin-left:auto;color:var(--muted);font:500 .85rem var(--body,inherit);letter-spacing:.06em}
+.hb .ht-wrap{margin:0 14px 14px}
+.hpq{margin-bottom:16px}
+.hd-foot{margin-top:40px;display:flex;justify-content:flex-end}
+@media (prefers-reduced-motion:reduce){.hist *,.hist *::before,.hist *::after{animation:none!important;transition:none!important}}
+@media print{.hist{position:static}}
+
+/* Telas de TV e placar: sempre escuras, para leitura à distância */
+.tv,.sb,.tl{
+  --bg:#0B1013; --surface:#141B1F; --surface-2:#1E282D; --line:#2C373D; --line-strong:#4A5962;
+  --fg:#EEF2F4; --muted:#9AA8B1; --accent:#3CC3A6; --accent-fg:#06201A;
+  --win-bg:#15352E; --danger:#FF8A80; --danger-fg:#2A0A08; --ring:rgba(255,255,255,.4); --ouro:#E6B422; --prata:#B8C2CA; --bronze:#D98A4B;
+  --side-a:#5B9BFF; --side-b:#FF7A6B;
+  color-scheme:dark; color:var(--fg); background:var(--bg);
+}
+.tv{position:fixed;inset:0;z-index:40;display:grid;grid-template-rows:auto auto minmax(0,1fr)}
+.tv-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding:14px 24px 10px}
+.tv-title{display:flex;align-items:center;gap:14px;flex-wrap:wrap;min-width:0}
+.tv-title .dot{width:34px;height:14px}
+.tv-title h2{margin:0;font:700 clamp(1.8rem,3.4vw,3rem)/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.tv-title p{margin:4px 0 0;color:var(--muted);font-size:clamp(.9rem,1.3vw,1.2rem)}
+.tv-ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tv-msg{color:var(--muted);font-size:.9rem}
+.tv-tabs{display:flex;gap:8px;overflow-x:auto;padding:0 24px 12px;border-bottom:1px solid var(--line)}
+.tv-tabs button{flex:none;display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;border:1px solid var(--line-strong);border-radius:4px;background:var(--surface);font-weight:600;cursor:pointer;white-space:nowrap}
+.tv-tabs button:hover{background:var(--surface-2)}
+.tv-tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.tv-body{position:relative;overflow:hidden;min-height:0}
+.tvin{position:absolute;left:50%;top:50%;width:max-content;transform:translate(-50%,-50%);transform-origin:center}
+.tvin .rounds{overflow:visible;margin-top:0;padding-bottom:0}
+.tvin .col{flex:0 0 280px}
+.solo-tv{width:480px;font:600 1.5rem/1.3 var(--display);color:var(--muted);text-align:center}
+
+.sb{position:fixed;inset:0;z-index:50;display:grid;grid-template-rows:auto minmax(0,1fr) auto}
+.sb-top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 20px;border-bottom:1px solid var(--line)}
+.sb-title{margin:0;color:var(--muted);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:clamp(.8rem,1.3vw,1.05rem)}
+.sb-main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr) minmax(0,1fr);min-height:0}
+.side{display:flex;flex-direction:column;gap:clamp(8px,1.5vh,16px);padding:clamp(12px,2vh,22px) clamp(14px,2vw,30px);border-top:10px solid var(--c);min-height:0;overflow:auto}
+.side.a{--c:var(--side-a)}
+.side.b{--c:var(--side-b)}
+.side.win{background:var(--win-bg)}
+.side.lose{opacity:.55}
+.sd-name{font:700 clamp(1.8rem,4.2vw,3.8rem)/1 var(--display);text-transform:uppercase;overflow-wrap:anywhere}
+.sd-meta{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:clamp(.9rem,1.3vw,1.25rem)}
+.sd-pts{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 14px}
+.sd-pts b{font:700 clamp(4.5rem,15vh,10rem)/.9 var(--display);font-variant-numeric:tabular-nums;color:var(--c)}
+.sd-pts span{color:var(--muted);font-size:clamp(1rem,1.6vw,1.5rem);text-transform:uppercase;letter-spacing:.08em}
+.sd-cnt{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cn{display:grid;gap:4px;padding:8px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+.cn > span{color:var(--muted);font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.ctr{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ctr b{font:700 clamp(2rem,6vh,3.4rem)/1 var(--display);font-variant-numeric:tabular-nums}
+.sm{flex:none;width:clamp(36px,5.5vh,48px);height:clamp(36px,5.5vh,48px);border:1px solid var(--line-strong);border-radius:4px;background:var(--surface-2);font-size:1.4rem;line-height:1;cursor:pointer}
+.sm:hover:not(:disabled){border-color:var(--accent)}
+.sm:disabled,.mv:disabled{opacity:.45;cursor:not-allowed}
+.moves{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.mv{display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:clamp(42px,6.6vh,62px);padding:0 14px;border:1px solid var(--line-strong);border-radius:6px;background:var(--surface);font-weight:600;cursor:pointer;text-align:left}
+.mv b{font:700 1.5rem/1 var(--display);color:var(--c)}
+.mv:hover:not(:disabled){background:var(--surface-2);border-color:var(--c)}
+.mid{display:flex;flex-direction:column;gap:12px;padding:16px;border-left:1px solid var(--line);border-right:1px solid var(--line);min-height:0}
+.clock{text-align:center;font:700 clamp(3.5rem,min(11vw,19vh),9rem)/1 var(--display);font-variant-numeric:tabular-nums}
+.clock.end{color:var(--danger)}
+.big{height:clamp(46px,8vh,70px);font-size:1.15rem}
+.log{flex:1;min-height:0;overflow:auto;margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.log li{padding:7px 2px;border-bottom:1px solid var(--line);font-size:.92rem;font-variant-numeric:tabular-nums}
+.log li.none{color:var(--muted)}
+.sb-end{display:grid;gap:10px;padding:12px 20px;border-top:1px solid var(--line)}
+.sug{margin:0;font-size:clamp(.95rem,1.5vw,1.3rem)}
+.sug.hot{color:var(--danger);font-weight:600}
+.endrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.endrow label{margin:0 2px 0 0}
+.endrow select{width:auto;min-width:190px}
+.endrow .btn{height:clamp(44px,7vh,60px)}
+.banner{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px}
+.banner span{color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:600}
+.banner strong{font:700 clamp(1.8rem,4vw,3.4rem)/1 var(--display);text-transform:uppercase;color:var(--accent)}
+.banner em{font-style:normal;color:var(--muted);font-size:clamp(1rem,1.6vw,1.4rem)}
+.note{margin:0;color:var(--muted);font-size:.85rem}
+@media (max-height:800px){
+  .sd-pts b{font-size:clamp(3.5rem,11vh,6rem)}
+  .sd-name{font-size:clamp(1.6rem,3.4vw,3rem)}
+  .side{gap:8px;padding:10px 20px}
+  .cn{padding:6px 10px}
+  .ctr b{font-size:2rem}
+  .sm{width:34px;height:34px}
+  .mv{min-height:38px;padding:0 10px;font-size:.88rem}
+  .mv b{font-size:1.25rem}
+  .inj{padding:4px 10px}
+  .clock{font-size:clamp(3.5rem,min(11vw,17vh),7rem)}
+  .sb-end{gap:6px;padding:8px 20px}
+  .endrow .btn{height:40px}
+}
+.endrow.small .btn{height:34px;font-size:.85rem}
+@media (max-width:860px){
+  .sb{grid-template-rows:auto auto auto;overflow:auto}
+  .sb-main{grid-template-columns:minmax(0,1fr)}
+  .mid{border:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .side{overflow:visible}
+  .log{max-height:160px}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+*{-webkit-tap-highlight-color:transparent}
+html{color-scheme:light}
+body{margin:0}
+[hidden]{display:none!important}
+@media print{
+  @page{margin:12mm}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{background:#fff;color:#000;padding:0}
+  .top p,.layout>.panel,.stack>.panel,.tv,.sb,.mfoot,.bact,.summary .btn{display:none!important}
+  .layout{display:block;margin-top:12px}
+  .brkt{break-inside:avoid;margin-bottom:14px}
+  .rounds{overflow:visible}
+  .summary{margin-bottom:12px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <button class="btn hist-btn" id="histBtn" type="button">Histórico</button>
+    <h1>BJJ Arena</h1>
+    <p>Cadastre os lutadores, defina o tempo de luta e gere as chaves por faixa e categoria de peso.</p>
+    <div class="beltbar" aria-hidden="true">
+      <span style="background:var(--belt-branca)"></span><span style="background:var(--belt-azul)"></span><span style="background:var(--belt-roxa)"></span><span style="background:var(--belt-marrom)"></span><span style="background:var(--belt-preta)"></span>
+    </div>
+  </header>
+
+  <section class="panel gate" id="gate" hidden aria-labelledby="gTitle">
+    <span class="eyebrow">BJJ Arena</span>
+    <h2 id="gTitle">Novo campeonato</h2>
+    <p class="lead">Dê um nome ao campeonato. Ele aparece no histórico, junto com a data, os campeões e todas as lutas.</p>
+    <form id="gForm" novalidate>
+      <div class="gfields">
+        <div class="field grow"><label for="gNome">Nome do campeonato</label><input id="gNome" type="text" maxlength="80" autocomplete="off" placeholder="Ex.: Copa Arena de Jiu-Jitsu 2026"></div>
+        <div class="field"><label for="gData">Data</label><input id="gData" type="date"></div>
+      </div>
+      <p class="err" id="gErr" role="alert"></p>
+      <div class="es-act"><button class="btn primary" type="submit" id="gStart">Começar campeonato</button><button class="btn" type="button" id="gCancel" hidden>Cancelar</button><button class="btn" type="button" id="gHist" data-hist hidden>Ver histórico</button></div>
+    </form>
+    <p class="note-ok" id="gmsg" role="status" hidden></p>
+  </section>
+
+  <main class="layout">
+    <section class="panel" aria-labelledby="h-cad">
+      <h2 id="h-cad"><span class="step">1</span>Cadastro</h2>
+      <form id="f" class="formgrid" novalidate>
+        <div class="field full">
+          <label for="nome">Nome do lutador</label>
+          <input id="nome" type="text" maxlength="60" autocomplete="off" placeholder="Ex.: Rafael Duarte">
+        </div>
+        <div class="field">
+          <label for="peso">Peso (kg)</label>
+          <input id="peso" type="text" inputmode="decimal" autocomplete="off" placeholder="Ex.: 76,5">
+        </div>
+        <div class="field">
+          <label for="faixa">Faixa</label>
+          <select id="faixa">
+            <option value="branca">Branca</option>
+            <option value="azul">Azul</option>
+            <option value="roxa">Roxa</option>
+            <option value="marrom">Marrom</option>
+            <option value="preta">Preta</option>
+            <option value="__outra">Outra…</option>
+          </select>
+        </div>
+        <div class="field full" id="faixaOutraBox" hidden>
+          <label for="faixaOutra">Nome da faixa</label>
+          <input id="faixaOutra" type="text" maxlength="24" autocomplete="off" placeholder="Ex.: Cinza, Amarela, Verde">
+        </div>
+        <button class="btn primary full" type="submit" style="grid-column:1/-1">Cadastrar lutador</button>
+        <p class="err" id="err" role="alert"></p>
+      </form>
+
+      <div class="listhead">
+        <h3>Inscritos<span id="count">0</span></h3>
+        <button class="btn link" id="clearBtn" type="button" hidden>Limpar lista</button>
+      </div>
+      <ul class="list" id="lista"></ul>
+      <p class="note-ok" id="msg" role="status" hidden></p>
+      <div class="vazio" id="vazio">
+        Nenhum lutador cadastrado ainda.
+      </div>
+    </section>
+
+    <div class="stack">
+      <section class="panel" aria-labelledby="h-cfg">
+        <h2 id="h-cfg"><span class="step">2</span>Tempo e chaves</h2>
+        <div class="cfg">
+          <div class="field grow">
+            <label for="evNome">Nome do campeonato</label>
+            <input id="evNome" type="text" maxlength="80" autocomplete="off" placeholder="Ex.: Copa Arena de Jiu-Jitsu" required>
+          </div>
+          <div class="field">
+            <label for="evData">Data</label>
+            <input id="evData" type="date" required>
+          </div>
+        </div>
+        <div class="cfg">
+          <div class="field">
+            <label for="tempo">Tempo de luta (minutos)</label>
+            <div class="stepper">
+              <button type="button" id="menos" aria-label="Diminuir um minuto">−</button>
+              <input id="tempo" type="number" inputmode="numeric" min="1" max="60" value="5">
+              <button type="button" id="mais" aria-label="Aumentar um minuto">+</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="modo">Separar chaves por</label>
+            <select id="modo">
+              <option value="faixa-peso">Faixa e categoria de peso</option>
+              <option value="faixa">Somente faixa</option>
+              <option value="todos">Todos juntos (absoluto)</option>
+            </select>
+          </div>
+        </div>
+        <div class="cfg cfg2">
+          <div class="field">
+            <label for="tatames">Tatames</label>
+            <select id="tatames">
+              <option value="1">1 tatame</option><option value="2">2 tatames</option><option value="3">3 tatames</option><option value="4">4 tatames</option>
+              <option value="5">5 tatames</option><option value="6">6 tatames</option><option value="7">7 tatames</option><option value="8">8 tatames</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="tempoModo">Tempo de luta</label>
+            <select id="tempoModo">
+              <option value="unico">Mesmo tempo para todos</option>
+              <option value="faixa">Por faixa (regra IBJJF adulto)</option>
+            </select>
+          </div>
+          <div class="tf" id="tfBox" hidden></div>
+        </div>
+        <div class="checks">
+          <label class="chk"><input type="checkbox" id="autoPen"> Punições automáticas: a 2ª dá vantagem ao adversário, a 3ª dá 2 pontos e a 4ª desclassifica</label>
+          <label class="chk"><input type="checkbox" id="rr3"> Categoria com 3 lutadores: todos contra todos</label>
+        </div>
+        <p class="hint" id="cfgHint"></p>
+        <button class="btn primary go" id="gerar" type="button">Gerar chaves</button>
+      </section>
+
+      <section class="panel" id="telaoPanel" aria-labelledby="h-tel">
+        <h2 id="h-tel"><span class="step">3</span>Telão</h2>
+        <div class="cfg">
+          <div class="field">
+            <label for="telMode">Mostrar no telão</label>
+            <select id="telMode">
+              <option value="revezar">Revezar chaves, chamada e pódio</option>
+              <option value="chaves">Só a chave que está na tela</option>
+              <option value="chamada">Só a chamada de lutas</option>
+              <option value="podio">Só o pódio</option>
+            </select>
+          </div>
+          <div class="field" id="telMatField" hidden>
+            <label for="telMat">Tatame da chamada</label>
+            <select id="telMat"></select>
+          </div>
+          <button class="btn primary go" id="telOpen" type="button">Abrir telão em outra tela</button>
+          <button class="btn go" id="telClose" type="button" hidden>Fechar telão</button>
+        </div>
+        <div class="checks">
+          <label class="chk"><input type="checkbox" id="telAuto" checked> Mostrar o placar no telão enquanto uma luta estiver aberta</label>
+        </div>
+        <p class="hint" id="telHint"></p>
+      </section>
+
+      <section id="resultado" class="results" aria-live="polite"></section>
+    </div>
+  </main>
+</div>
+
+<div class="tl" id="tl" hidden></div>
+<button class="tl-exit" id="tlExit" type="button" hidden>Sair do telão (Esc)</button>
+
+<div class="tv" id="tv" hidden role="dialog" aria-modal="true" aria-label="Chaves em tela cheia">
+  <div class="tv-bar">
+    <div class="tv-title" id="tvTitle"></div>
+    <div class="tv-ctl">
+      <span class="tv-msg" id="tvMsg" role="status"></span>
+      <select id="tvMat" aria-label="Meu tatame" hidden></select>
+      <button class="btn primary" type="button" data-tvact="next">Próxima luta</button>
+      <button class="btn" type="button" data-adj="cur">Ajustar chave</button>
+      <button class="btn" type="button" id="tvRot" data-tvact="rot" aria-pressed="false">Rotação: desligada</button>
+      <button class="btn" type="button" id="tvFs" data-tvact="fs">Tela cheia</button>
+      <button class="btn" type="button" data-tvact="close">Fechar</button>
+    </div>
+  </div>
+  <div class="tv-tabs" id="tvTabs" role="tablist" aria-label="Chaves"></div>
+  <div class="tv-body" id="tvBody"></div>
+</div>
+
+<div class="sb" id="sb" hidden role="dialog" aria-modal="true" aria-labelledby="sbTitle">
+  <div class="sb-top">
+    <p class="sb-title" id="sbTitle"></p>
+    <button class="btn" type="button" data-sb="close">Fechar placar</button>
+  </div>
+  <div class="sb-main">
+    <section class="side a" id="sideA" aria-label="Lutador da esquerda"></section>
+    <section class="mid" aria-label="Cronômetro e histórico">
+      <div class="clock" id="sbClock" role="timer">5:00</div>
+      <div class="row">
+        <button class="btn primary big" type="button" id="sbStart" data-sb="start">Iniciar</button>
+        <button class="btn big" type="button" id="sbReset" data-sb="reset">Zerar</button>
+      </div>
+      <button class="btn" type="button" id="sbUndo" data-sb="undo">Desfazer última pontuação</button>
+      <p class="note">Espaço: iniciar ou pausar. Backspace: desfazer. As letras ao lado dos botões marcam pontos, vantagens e punições.</p>
+      <ol class="log" id="sbLog" aria-label="Histórico da luta"></ol>
+    </section>
+    <section class="side b" id="sideB" aria-label="Lutador da direita"></section>
+  </div>
+  <div class="sb-end" id="sbEnd"></div>
+</div>
+
+<div class="hist" id="hist" hidden role="dialog" aria-modal="true" aria-labelledby="histTitle">
+  <div class="h-bg" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="hist-in">
+    <header class="h-hero">
+      <div>
+        <span class="eyebrow">BJJ Arena</span>
+        <h2 class="h-title" id="histTitle"><b>Histórico</b><span>de campeonatos</span></h2>
+      </div>
+      <button class="btn" type="button" data-hclose>Fechar</button>
+    </header>
+    <div class="hstats" id="hStats"></div>
+    <div class="h-tool"><label class="hq"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="hq" type="search" placeholder="Buscar campeonato, atleta ou categoria" autocomplete="off" aria-label="Buscar no histórico"></label></div>
+    <div id="hList"></div>
+  </div>
+  <section class="hd" id="histDetail" hidden aria-label="Detalhes do campeonato"></section>
+</div>
+
+<div class="adj" id="adj" hidden role="dialog" aria-modal="true" aria-labelledby="adjTitle">
+  <div class="adj-box">
+    <div class="adj-top"><h3 id="adjTitle"></h3><button class="btn" type="button" data-adjact="close">Fechar</button></div>
+    <p class="hint">Marque quem faltou ou troque um lutador que ainda não lutou. As lutas contra quem faltou são decididas por WO automaticamente. Se o lutador voltar, reabra a luta que foi decidida por WO.</p>
+    <ul class="adj-list" id="adjList"></ul>
+  </div>
+</div>
+
+<script>
+(function(){
+  var BASE_BELTS=[{id:'branca',nome:'Branca'},{id:'azul',nome:'Azul'},{id:'roxa',nome:'Roxa'},{id:'marrom',nome:'Marrom'},{id:'preta',nome:'Preta'}];
+  var BELTS=BASE_BELTS.slice();
+  function applyCustom(){BELTS=BASE_BELTS.concat((S&&S.customBelts)||[])}
+  // Categorias adulto masculino com kimono (limite superior em kg, já com o kimono).
+  var CATS=[{nome:'Galo',max:57.5},{nome:'Pluma',max:64},{nome:'Pena',max:70},{nome:'Leve',max:76},{nome:'Médio',max:82.3},{nome:'Meio-Pesado',max:88.3},{nome:'Pesado',max:94.3},{nome:'Super-Pesado',max:100.5},{nome:'Pesadíssimo',max:Infinity}];
+  // Pontuação das posições (regras IBJJF adulto).
+  var MOVES=[['Queda',2],['Raspagem',2],['Joelho na barriga',2],['Passagem de guarda',3],['Montada',4],['Pegada de costas',4]];
+  var METHODS=['Finalização','Pontos','Vantagens','Punições','Decisão do árbitro','Desqualificação','WO','Desistência'];
+  var KEYNAME={p:'Ponto',v:'Vantagem',u:'Punição'};
+  var KEY='chaveador-jiujitsu-v1';
+  var IS_TELAO=(location.hash==='#telao'); // janela do telão: só exibe, quem controla é a janela principal
+  var DESK=window.desktop||null;          // ponte com o aplicativo (Electron)
+  var VIEW={mode:'revezar',i:0,autoBoard:true,mat:0}; // o que o telão mostra
+  var BOARD=null,REV=0,bcT=null,TELAO_OPEN=false;
+  var S={fighters:[],tempo:5,modo:'faixa-peso',brackets:null,people:{},sig:'',tatames:1,tempoModo:'unico',temposFaixa:{branca:5,azul:6,roxa:7,marrom:8,preta:10},autoPen:true,rr3:true,myMat:0,customBelts:[],evento:{nome:'',data:''},history:[]};
+  var TV={open:false,i:0,rot:false,iv:null,msgT:null};
+  var T=null; // luta aberta no placar
+  var WEIGH=null; // lutador em pesagem
+  var ADJ={bi:-1,rep:null}; // chave em ajuste
+
+  var $=function(s){return document.querySelector(s)};
+  var esc=function(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+  var kg=function(n){return Number(n).toLocaleString('pt-BR',{maximumFractionDigits:1})};
+  var beltOf=function(id){return BELTS.filter(function(b){return b.id===id})[0]};
+  var dot=function(id){return '<span class="dot" style="background:var(--belt-'+id+',var(--belt-outra))" aria-hidden="true"></span>'};
+  var catIndex=function(w){for(var i=0;i<CATS.length;i++){if(w<=CATS[i].max)return i}return CATS.length-1};
+  var fmtTime=function(s){s=Math.max(0,s|0);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+  var fmtTotal=function(min){var h=Math.floor(min/60),m=min%60;return h?(h+'h '+(m?m+'min':'')).trim():m+' min'};
+  var newId=function(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)};
+
+  /* ---------- Persistência ---------- */
+  function save(){
+    if(IS_TELAO)return;
+    REV++;
+    try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+    broadcastSoon();
+  }
+  function sendState(){
+    if(!DESK||IS_TELAO)return;
+    try{DESK.sendState({S:S,view:VIEW,board:T?{b:T.b,r:T.r,m:T.m}:null,rev:REV})}catch(e){}
+  }
+  function broadcastSoon(){
+    if(!DESK||IS_TELAO||bcT)return;
+    bcT=setTimeout(function(){bcT=null;sendState()},120);
+  }
+  function load(){
+    try{
+      var d=JSON.parse(localStorage.getItem(KEY)||'null');
+      if(d&&Array.isArray(d.fighters)){
+        if(Array.isArray(d.customBelts))S.customBelts=d.customBelts.filter(function(b){return b&&/^x\d+$/.test(b.id)&&typeof b.nome==='string'&&b.nome.length&&b.nome.length<=24}).slice(0,12).map(function(b){return {id:b.id,nome:b.nome}});
+        applyCustom();
+        if(d.evento&&typeof d.evento==='object'){S.evento={nome:String(d.evento.nome||'').slice(0,80),data:/^\d{4}-\d{2}-\d{2}$/.test(d.evento.data||'')?d.evento.data:''}}
+        if(Array.isArray(d.history))S.history=d.history.filter(function(h){return h&&h.id&&Array.isArray(h.brackets)&&h.people&&Array.isArray(h.fighters)}).slice(0,200);
+        S.fighters=d.fighters.filter(function(f){return f&&f.id&&f.name&&isFinite(f.weight)&&beltOf(f.belt)});
+        if(d.tempo>=1&&d.tempo<=60)S.tempo=Math.round(d.tempo);
+        if(['faixa-peso','faixa','todos'].indexOf(d.modo)>=0)S.modo=d.modo;
+        if(d.tatames>=1&&d.tatames<=8)S.tatames=Math.round(d.tatames);
+        if(d.tempoModo==='faixa')S.tempoModo='faixa';
+        if(d.temposFaixa){BELTS.forEach(function(b){var v=Math.round(d.temposFaixa[b.id]);if(v>=1&&v<=60)S.temposFaixa[b.id]=v})}
+        S.autoPen=d.autoPen!==false;S.rr3=d.rr3!==false;
+        S.myMat=d.myMat>=0&&d.myMat<=8?Math.round(d.myMat):0;
+        if(Array.isArray(d.brackets)&&d.people){
+          S.brackets=d.brackets;S.people=d.people;S.sig=d.sig||'';
+          S.brackets.forEach(function(br){br.rounds.forEach(function(r){r.forEach(ensure)})});
+        }
+      }
+    }catch(e){}
+  }
+
+  /* ---------- Lutas e chaveamento ---------- */
+  function blankScore(){return {a:{p:0,v:0,u:0},b:{p:0,v:0,u:0}}}
+  function mkMatch(a,b,bye){return {a:a,b:b,winner:null,bye:!!bye,method:null,sc:blankScore(),log:[],left:null,started:false,inj:{a:0,b:0}}}
+  function ensure(mt){
+    if(!mt.sc)mt.sc=blankScore();
+    if(!mt.log)mt.log=[];
+    if(mt.left===undefined)mt.left=null;
+    if(mt.started===undefined)mt.started=false;
+    if(mt.method===undefined)mt.method=null;
+    if(!mt.inj)mt.inj={a:0,b:0};
+    return mt;
+  }
+  function resetMatch(mt){mt.sc=blankScore();mt.log=[];mt.left=null;mt.started=false;mt.method=null;mt.inj={a:0,b:0}}
+  function isStarted(mt){return !!mt.started||mt.log.length>0}
+
+  function tempoFor(br){return (S.tempoModo==='faixa'&&br&&br.belt&&S.temposFaixa[br.belt])||S.tempo}
+  function fightsOf(br){var c=0;br.rounds.forEach(function(r){r.forEach(function(m){if(!m.bye)c++})});return c}
+  function ew(f){return f.w2!=null?f.w2:f.weight}
+  function active(){return S.fighters.filter(function(f){return f.st!=='faltou'})}
+  function assignMats(brs){
+    var n=Math.max(1,S.tatames),load=[],i;
+    for(i=0;i<n;i++)load.push(0);
+    var cost=function(b){return fightsOf(b)*tempoFor(b)};
+    brs.map(function(b,k){return k}).sort(function(x,y){return cost(brs[y])-cost(brs[x])}).forEach(function(k){
+      var m=0;for(i=1;i<n;i++)if(load[i]<load[m])m=i;
+      brs[k].mat=m+1;load[m]+=cost(brs[k]);
+    });
+  }
+  function setWinner(br,r,m,id,method){
+    var mt=ensure(br.rounds[r][m]);
+    id=id||null;
+    mt.winner=id;
+    mt.method=id?(method||mt.method||'Manual'):null;
+    if(r+1<br.rounds.length){
+      var nm=ensure(br.rounds[r+1][m>>1]),side=m%2===0?'a':'b';
+      if(nm[side]!==id){
+        nm[side]=id;
+        if(nm.winner)setWinner(br,r+1,m>>1,null);
+        resetMatch(nm);
+      }
+    }
+  }
+  // Critério de desempate: pontos, depois vantagens, depois menos punições.
+  function autoWO(br){
+    var changed=true,guard=0;
+    while(changed&&guard++<60){
+      changed=false;
+      br.rounds.forEach(function(round,r){round.forEach(function(mt,m){
+        ensure(mt);
+        if(mt.bye||mt.winner||!mt.a||!mt.b)return;
+        var xa=!!S.people[mt.a].absent,xb=!!S.people[mt.b].absent;
+        if(xa&&!xb){setWinner(br,r,m,mt.b,'WO');changed=true}
+        else if(xb&&!xa){setWinner(br,r,m,mt.a,'WO');changed=true}
+      })});
+    }
+  }
+  function decide(br,r,m,id,method){setWinner(br,r,m,id,method);delete br.rrManual;autoWO(br)}
+  function playedReal(br,id){
+    var r=false;
+    br.rounds.forEach(function(round){round.forEach(function(mt){
+      ensure(mt);if(mt.bye)return;
+      if((mt.a===id||mt.b===id)&&(mt.winner||isStarted(mt)))r=true;
+    })});
+    return r;
+  }
+  function adjRender(){
+    var br=S.brackets[ADJ.bi];if(!br)return;
+    $('#adjTitle').textContent='Ajustar chave · '+br.title+' · '+br.sub;
+    $('#adjList').innerHTML=br.ids.map(function(id){
+      var p=S.people[id],played=playedReal(br,id);
+      if(ADJ.rep===id){
+        return '<li class="adj-rep"><form class="adj-form" data-repform="'+id+'"><strong>Substituir '+esc(p.name)+'</strong>'+
+          '<input id="adj-n" type="text" maxlength="60" autocomplete="off" placeholder="Nome do novo lutador" aria-label="Nome do novo lutador">'+
+          '<input id="adj-w" type="text" inputmode="decimal" autocomplete="off" placeholder="Peso (kg)" aria-label="Peso do novo lutador">'+
+          '<select id="adj-b" aria-label="Faixa do novo lutador">'+BELTS.map(function(b){return '<option value="'+b.id+'"'+(b.id===p.belt?' selected':'')+'>Faixa '+b.nome+'</option>'}).join('')+'</select>'+
+          '<button class="btn primary" type="submit">Substituir</button><button class="btn" type="button" data-adjact="repcancel">Cancelar</button><p class="err" id="adj-err" role="alert"></p></form></li>';
+      }
+      return '<li><div class="who"><strong'+(p.absent?' class="strike"':'')+'>'+esc(p.name)+'</strong><span>Faixa '+beltOf(p.belt).nome+' · '+kg(p.weight)+' kg'+(played?' · já lutou':'')+(p.absent?' · ausente':'')+'</span></div>'+
+        '<div class="adj-act"><button class="btn" type="button" data-adjact="abs" data-id="'+id+'">'+(p.absent?'Voltou':'Faltou')+'</button>'+
+        '<button class="btn" type="button" data-adjact="rep" data-id="'+id+'"'+(played?' disabled title="Já lutou: não dá para substituir"':'')+'>Substituir</button></div></li>';
+    }).join('');
+  }
+  function adjOpen(bi){ADJ.bi=bi;ADJ.rep=null;adjRender();$('#adj').hidden=false}
+  function adjClose(){$('#adj').hidden=true;ADJ.bi=-1;ADJ.rep=null}
+  function adjAct(t){
+    var a=t.getAttribute('data-adjact'),id=t.getAttribute('data-id');
+    if(a==='close'){adjClose();return}
+    var br=S.brackets[ADJ.bi];if(!br)return;
+    if(a==='abs'){S.people[id].absent=!S.people[id].absent;autoWO(br);save();refresh(ADJ.bi);adjRender()}
+    else if(a==='rep'){ADJ.rep=id;adjRender();var i=$('#adj-n');if(i)i.focus()}
+    else if(a==='repcancel'){ADJ.rep=null;adjRender()}
+  }
+  function adjReplace(oldId){
+    var n=($('#adj-n').value||'').trim().replace(/\s+/g,' '),w=parseFloat(($('#adj-w').value||'').replace(',','.')),belt=$('#adj-b').value,err=$('#adj-err');
+    if(!n){err.textContent='Informe o nome do novo lutador.';$('#adj-n').focus();return}
+    if(!isFinite(w)||w<20||w>200){err.textContent='Informe um peso entre 20 e 200 kg.';$('#adj-w').focus();return}
+    var br=S.brackets[ADJ.bi];
+    if(playedReal(br,oldId)){err.textContent='Este lutador já lutou e não pode ser substituído.';return}
+    var nid=newId();w=Math.round(w*10)/10;
+    S.fighters.push({id:nid,name:n,weight:w,belt:belt});
+    var old=S.fighters.filter(function(f){return f.id===oldId})[0];if(old)old.st='faltou';
+    S.people[nid]={name:n,weight:w,belt:belt};
+    br.ids=br.ids.map(function(x){return x===oldId?nid:x});
+    br.rounds.forEach(function(round){round.forEach(function(mt){
+      if(mt.a===oldId)mt.a=nid;if(mt.b===oldId)mt.b=nid;if(mt.winner===oldId)mt.winner=nid;
+    })});
+    S.sig=signature();
+    save();ADJ.rep=null;renderList();renderHint();refresh(ADJ.bi);adjRender();
+  }
+  function leader(mt){
+    var a=mt.sc.a,b=mt.sc.b;
+    if(S.autoPen&&(a.u>=4)!==(b.u>=4))return {side:a.u>=4?'b':'a',method:'Desqualificação'};
+    if(a.p!==b.p)return {side:a.p>b.p?'a':'b',method:'Pontos'};
+    if(a.v!==b.v)return {side:a.v>b.v?'a':'b',method:'Vantagens'};
+    if(a.u!==b.u)return {side:a.u<b.u?'a':'b',method:'Punições'};
+    return null;
+  }
+  function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+  function buildRounds(ids){
+    var n=ids.length;
+    if(n<2)return [];
+    var size=1;while(size<n)size*=2;
+    var order=[1];
+    while(order.length<size){var L=order.length;order=order.reduce(function(acc,x){acc.push(x,2*L+1-x);return acc},[])}
+    var r0=[];
+    for(var i=0;i<size;i+=2){
+      var a=ids[order[i]-1]||null,b=ids[order[i+1]-1]||null;
+      r0.push(mkMatch(a,b,(a===null)!==(b===null)));
+    }
+    var rounds=[r0],c=r0.length;
+    while(c>1){c=c/2;var r=[];for(var k=0;k<c;k++)r.push(mkMatch(null,null,false));rounds.push(r)}
+    var br={rounds:rounds};
+    r0.forEach(function(m,i){if(m.bye)setWinner(br,0,i,m.a||m.b,'Folga')});
+    return rounds;
+  }
+  function groupFighters(){
+    var map={},keys=[];
+    active().forEach(function(f){
+      var bi=BELTS.map(function(b){return b.id}).indexOf(f.belt),ci=catIndex(ew(f));
+      var key=S.modo==='faixa-peso'?bi*100+ci:(S.modo==='faixa'?bi*100:0);
+      if(!map[key]){map[key]={key:key,bi:bi,ci:ci,list:[]};keys.push(key)}
+      map[key].list.push(f);
+    });
+    return keys.sort(function(a,b){return a-b}).map(function(k){return map[k]});
+  }
+  function groupMeta(g){
+    if(S.modo==='faixa-peso'){
+      var c=CATS[g.ci];
+      var lim=c.max===Infinity?'acima de '+kg(CATS[g.ci-1].max)+' kg':'até '+kg(c.max)+' kg';
+      return {title:'Faixa '+BELTS[g.bi].nome,sub:c.nome+' · '+lim,belt:BELTS[g.bi].id,short:BELTS[g.bi].nome+' · '+c.nome};
+    }
+    if(S.modo==='faixa')return {title:'Faixa '+BELTS[g.bi].nome,sub:'Todos os pesos',belt:BELTS[g.bi].id,short:BELTS[g.bi].nome};
+    return {title:'Absoluto',sub:'Todas as faixas e pesos',belt:null,short:'Absoluto'};
+  }
+  function signature(){return S.fighters.map(function(f){return f.id+':'+ew(f)+':'+(f.st||'')}).join(',')+'|'+S.modo+(S.rr3?'|r':'')}
+  function generate(){
+    closeBoard();
+    S.people={};
+    active().forEach(function(f){S.people[f.id]={name:f.name,weight:ew(f),belt:f.belt}});
+    S.brackets=groupFighters().map(function(g){
+      var meta=groupMeta(g);
+      var ids=shuffle(g.list.map(function(f){return f.id}));
+      var rr=S.rr3&&ids.length===3;
+      var rounds=rr?[[mkMatch(ids[0],ids[1]),mkMatch(ids[2],ids[0]),mkMatch(ids[1],ids[2])]]:buildRounds(ids);
+      return {title:meta.title,sub:meta.sub+(rr?' · todos contra todos':''),belt:meta.belt,short:meta.short,type:rr?'rr':'elim',ids:ids,rounds:rounds,mat:1};
+    });
+    assignMats(S.brackets);
+    S.sig=signature();
+    save();renderResults();renderHint();paintTelao();
+    openTV(0);
+  }
+  function champOf(br){var p=podium(br);return p?p.gold:null}
+  function rrStandings(br){
+    var row={};br.ids.forEach(function(id){row[id]={id:id,w:0,l:0,pf:0,pa:0,adv:0,pen:0}});
+    var total=0,done=0;
+    br.rounds[0].forEach(function(mt){
+      total++;if(!mt.winner)return;done++;
+      var ra=row[mt.a],rb=row[mt.b];
+      if(mt.winner===mt.a){ra.w++;rb.l++}else{rb.w++;ra.l++}
+      ra.pf+=mt.sc.a.p;ra.pa+=mt.sc.b.p;rb.pf+=mt.sc.b.p;rb.pa+=mt.sc.a.p;
+      ra.adv+=mt.sc.a.v-mt.sc.b.v;rb.adv+=mt.sc.b.v-mt.sc.a.v;
+      ra.pen+=mt.sc.a.u;rb.pen+=mt.sc.b.u;
+    });
+    var rows=br.ids.map(function(id){var x=row[id];x.diff=x.pf-x.pa;return x});
+    rows.sort(function(x,y){return y.w-x.w||y.diff-x.diff||y.pf-x.pf||y.adv-x.adv||x.pen-y.pen});
+    var complete=done===total,tie=false;
+    for(var i=1;i<rows.length;i++){
+      var p=rows[i-1],q=rows[i];
+      if(p.w===q.w&&p.diff===q.diff&&p.pf===q.pf&&p.adv===q.adv&&p.pen===q.pen)tie=true;
+    }
+    if(complete&&br.rrManual&&br.rrManual.length===rows.length){
+      var order=br.rrManual;
+      rows.sort(function(x,y){return order.indexOf(x.id)-order.indexOf(y.id)});
+      tie=false;
+    }
+    return {rows:rows,complete:complete,tie:tie};
+  }
+  function podium(br){
+    if(br.ids.length===1)return {gold:br.ids[0],silver:null,bronze:[]};
+    if(br.type==='rr'){
+      var st=rrStandings(br);
+      return (st.complete&&!st.tie)?{gold:st.rows[0].id,silver:st.rows[1].id,bronze:[st.rows[2].id]}:null;
+    }
+    var t=br.rounds.length,fin=br.rounds[t-1][0];
+    if(!fin.winner)return null;
+    var gold=fin.winner,silver=fin.a===gold?fin.b:fin.a,bronze=[];
+    if(t>=2)br.rounds[t-2].forEach(function(mt){
+      if(mt.winner&&!mt.bye){var l=mt.a===mt.winner?mt.b:mt.a;if(l)bronze.push(l)}
+    });
+    return {gold:gold,silver:silver,bronze:bronze};
+  }
+  function podInfo(br,id){
+    var pts=0,last=null,lr=0;
+    if(br.type==='rr'){
+      var rw=rrStandings(br).rows.filter(function(x){return x.id===id})[0];
+      var man=br.rrManual&&br.rrManual.length;
+      return {pts:rw.pf,why:rw.w+(rw.w===1?' vitória':' vitórias')+' · saldo '+(rw.diff>0?'+':'')+rw.diff+(man?' · decidido pelo árbitro':'')};
+    }
+    br.rounds.forEach(function(rd,r){rd.forEach(function(mt){
+      if(mt.bye||!mt.winner||(mt.a!==id&&mt.b!==id))return;
+      pts+=mt.sc[mt.a===id?'a':'b'].p;last=mt;lr=r;
+    })});
+    if(!last)return {pts:0,why:''};
+    var won=last.winner===id,sd=last.a===id?'a':'b',od=sd==='a'?'b':'a';
+    var m=last.method||'';
+    var sc=(['Pontos','Vantagens','Punições','Decisão do árbitro'].indexOf(m)>=0)?' ('+last.sc[sd].p+' × '+last.sc[od].p+(m==='Vantagens'?', vant. '+last.sc[sd].v+' × '+last.sc[od].v:'')+')':'';
+    return {pts:pts,why:(won?'Venceu a ':'Perdeu a ')+stageName(br,lr).toLowerCase()+' por '+m.toLowerCase()+sc};
+  }
+  function pwHTML(br,id){
+    var i=podInfo(br,id);
+    return '<span class="pw"><b>'+i.pts+' pts</b>'+(i.why?'<em>'+esc(i.why)+'</em>':'')+'</span>';
+  }
+  function podiumHTML(br){
+    var p=podium(br);if(!p||br.ids.length===1)return '';
+    function slot(cls,label,id){
+      var x=S.people[id];
+      return '<div class="pd '+cls+'"><span class="pl">'+label+'</span><strong>'+esc(x.name)+'</strong><small>'+dot(x.belt)+'Faixa '+beltOf(x.belt).nome+' · '+kg(x.weight)+' kg</small>'+pwHTML(br,id)+'</div>';
+    }
+    return '<div class="podium">'+slot('g','1º lugar',p.gold)+(p.silver?slot('s','2º lugar',p.silver):'')+p.bronze.map(function(id){return slot('b','3º lugar',id)}).join('')+'</div>';
+  }
+  function rrHTML(br,bi){
+    var st=rrStandings(br);
+    var ms=br.rounds[0].map(function(mt,m){return matchHTML(br,bi,0,m,m+1)}).join('');
+    var rows=st.rows.map(function(x,i){
+      var p=S.people[x.id];
+      return '<tr><td>'+(i+1)+'º</td><td><span class="fn">'+dot(p.belt)+'<span class="nm">'+esc(p.name)+'</span></span></td><td>'+x.w+'</td><td>'+x.pf+'</td><td>'+(x.diff>0?'+':'')+x.diff+'</td></tr>';
+    }).join('');
+    var extra='';
+    if(st.complete&&st.tie){
+      var sel=function(n){return '<select aria-label="'+n+'º lugar">'+br.ids.map(function(id,k){return '<option value="'+id+'"'+(k===n-1?' selected':'')+'>'+esc(S.people[id].name)+'</option>'}).join('')+'</select>'};
+      extra='<div class="rr-tie"><p class="solo"><b>Empate em todos os critérios.</b> Defina a classificação por decisão do árbitro ou luta extra.</p><div class="endrow">'+sel(1)+sel(2)+sel(3)+'<button class="btn primary" type="button" data-rrset="'+bi+'">Confirmar classificação</button></div><p class="err" role="alert"></p></div>';
+    }else if(br.rrManual&&st.complete){
+      extra='<p class="solo">Classificação definida manualmente. <button class="btn link" type="button" data-rrclear="'+bi+'">Refazer</button></p>';
+    }
+    return '<div class="rr"><div><h4>Lutas</h4><div class="rr-list">'+ms+'</div></div><div><h4>Classificação</h4><table class="rr-tab"><thead><tr><th></th><th>Lutador</th><th>V</th><th>Pts</th><th>Saldo</th></tr></thead><tbody>'+rows+'</tbody></table><p class="solo">Desempate: vitórias, saldo de pontos, pontos, vantagens e punições.</p>'+extra+'</div></div>';
+  }
+  function findNext(from,mat){
+    var n=S.brackets?S.brackets.length:0;
+    for(var k=0;k<n;k++){
+      var bi=(from+k)%n,br=S.brackets[bi];
+      if(mat&&(br.mat||1)!==mat)continue;
+      for(var r=0;r<br.rounds.length;r++)for(var m=0;m<br.rounds[r].length;m++){
+        var mt=br.rounds[r][m];
+        if(mt.a&&mt.b&&!mt.bye&&!mt.winner)return {b:bi,r:r,m:m};
+      }
+    }
+    return null;
+  }
+  /* ---------- Renderização das chaves ---------- */
+  // Chaves cujos atletas não existem mais na lista (sobra de versões antigas ou de uma limpeza) são descartadas.
+  function dropOrphans(){
+    if(!S.brackets)return false;
+    var ids={};S.fighters.forEach(function(f){ids[f.id]=1});
+    var any=S.brackets.some(function(b){return b.ids.some(function(id){return ids[id]})});
+    if(any)return false;
+    S.brackets=null;S.people={};S.sig='';
+    return true;
+  }
+  function renderList(){
+    if(dropOrphans())save();
+    var total=S.fighters.length;
+    $('#count').textContent=total;
+    $('#vazio').hidden=total>0;
+    $('#clearBtn').hidden=total===0;
+    if(!S.brackets||!S.fighters.length)renderResults();
+    $('#lista').innerHTML=S.fighters.slice().reverse().map(function(f){
+      var w=ew(f);
+      var meta='Faixa '+beltOf(f.belt).nome+' · '+kg(f.weight)+' kg'+(f.w2!=null&&f.w2!==f.weight?' → pesagem '+kg(f.w2)+' kg':'')+' · '+CATS[catIndex(w)].nome;
+      var tag=f.st==='faltou'?'<span class="tag miss">Faltou</span>':(f.w2!=null?'<span class="tag ok">Pesado</span>':'');
+      if(WEIGH===f.id){
+        return '<li class="weigh"><div class="who"><strong>'+esc(f.name)+'</strong><span>Peso cadastrado: '+kg(f.weight)+' kg</span></div>'+
+          '<form class="wf" data-wform="'+f.id+'"><input id="wpeso" type="text" inputmode="decimal" autocomplete="off" placeholder="Peso na pesagem (kg)" value="'+(f.w2!=null?String(f.w2).replace('.',','):'')+'" aria-label="Peso na pesagem">'+
+          '<button class="btn primary" type="submit">Confirmar peso</button><button class="btn" type="button" data-wact="miss">Faltou</button>'+
+          ((f.w2!=null||f.st)?'<button class="btn" type="button" data-wact="clear">Limpar</button>':'')+
+          '<button class="btn" type="button" data-wact="cancel">Cancelar</button><p class="err" id="werr" role="alert"></p></form></li>';
+      }
+      return '<li>'+dot(f.belt)+'<div class="who"><strong'+(f.st==='faltou'?' class="strike"':'')+'>'+esc(f.name)+'</strong><span>'+meta+'</span></div>'+
+        '<div class="li-act">'+tag+'<button class="btn link" type="button" data-weigh="'+f.id+'">Pesagem</button><button class="x" type="button" data-del="'+f.id+'" aria-label="Remover '+esc(f.name)+'">×</button></div></li>';
+    }).join('');
+  }
+  function weighSubmit(id){
+    var f=S.fighters.filter(function(x){return x.id===id})[0];if(!f)return;
+    var v=parseFloat(($('#wpeso').value||'').replace(',','.'));
+    if(!isFinite(v)||v<20||v>200){$('#werr').textContent='Informe um peso entre 20 e 200 kg.';$('#wpeso').focus();return}
+    f.w2=Math.round(v*10)/10;delete f.st;WEIGH=null;save();renderList();renderHint();
+  }
+  function weighAct(a){
+    var f=S.fighters.filter(function(x){return x.id===WEIGH})[0];
+    if(f&&a==='miss')f.st='faltou';
+    else if(f&&a==='clear'){delete f.w2;delete f.st}
+    WEIGH=null;save();renderList();renderHint();
+  }
+  var STALE=false;
+  function renderHint(){
+    var h=$('#cfgHint'),btn=$('#gerar'),n=active().length;
+    var st0=!!S.brackets&&S.fighters.length>0&&S.sig!==signature();
+    if(st0!==STALE){STALE=st0;if(S.brackets)renderResults()}
+    var gs0=groupFighters(),pair=gs0.some(function(g){return g.list.length>=2});
+    btn.disabled=!pair;
+    h.className='hint';
+    if(n<2){h.textContent='Cadastre pelo menos 2 lutadores para gerar as chaves.';return}
+    if(!pair){h.textContent='Nenhuma categoria tem 2 lutadores ainda. Cadastre atletas da mesma faixa e de peso próximo, ou mude "Separar chaves por".';return}
+    var gs=gs0;
+    var solos=gs.filter(function(g){return g.list.length===1}).length;
+    if(S.brackets&&S.sig!==signature()){
+      h.className='hint alert';
+      h.textContent='Os lutadores ou a divisão mudaram desde a última geração. Gere as chaves novamente para atualizar.';
+      return;
+    }
+    var t=n+' lutadores em '+gs.length+(gs.length===1?' chave.':' chaves.');
+    if(solos)t+=' '+solos+(solos===1?' categoria tem':' categorias têm')+' só um inscrito e fica sem luta.';
+    h.textContent=t;
+  }
+  function scoreCell(mt,side){
+    var sc=mt.sc[side];
+    return '<span class="sc"><b>'+sc.p+'</b><small>V'+sc.v+' P'+sc.u+'</small></span>';
+  }
+  function slotHTML(mt,side){
+    var id=mt[side];
+    if(!id)return '<div class="fighter empty">'+(mt.bye?'Folga':'Aguardando')+'</div>';
+    var p=S.people[id],ab=!!p.absent;
+    var cls=(!mt.bye&&mt.winner)?(mt.winner===id?'win':'lose'):'';
+    var right=ab?'<span class="kg">Ausente</span>':((!mt.bye&&(isStarted(mt)||mt.winner))?scoreCell(mt,side):'<span class="kg">'+kg(p.weight)+' kg</span>');
+    return '<div class="fighter '+cls+(ab?' absent':'')+'"><span class="fn">'+dot(p.belt)+'<span class="nm">'+esc(p.name)+'</span></span>'+right+'</div>';
+  }
+  function roundName(r,total){
+    var left=total-1-r;
+    return ['Final','Semifinal','Quartas de final','Oitavas de final'][left]||('Rodada '+(r+1));
+  }
+  function stageName(br,r){return br.type==='rr'?'Todos contra todos':roundName(r,br.rounds.length)}
+  function matchHTML(br,bi,r,m,num){
+    var mt=ensure(br.rounds[r][m]);
+    var ready=!!(mt.a&&mt.b&&!mt.bye);
+    var st=mt.bye?'':(mt.winner?'done':(isStarted(mt)?'live':''));
+    var head,foot='';
+    if(mt.bye)head='<div class="mhead"><span>Folga</span><span></span></div>';
+    else{
+      var right=mt.winner?esc(mt.method||''):fmtTime(isStarted(mt)&&mt.left!=null?mt.left:tempoFor(br)*60);
+      head='<div class="mhead"><span>Luta '+num+'</span><span class="mtime">'+right+'</span></div>';
+    }
+    if(ready)foot='<div class="mfoot">'+(mt.winner?'Ver placar':(isStarted(mt)?'Continuar luta':'Abrir placar'))+'</div>';
+    var attrs=ready?' role="button" tabindex="0" data-act="open" data-b="'+bi+'" data-r="'+r+'" data-m="'+m+'" aria-label="Luta '+num+': abrir placar"':'';
+    return '<div class="match '+st+(ready?' open':'')+'"'+attrs+'>'+head+slotHTML(mt,'a')+slotHTML(mt,'b')+foot+'</div>';
+  }
+  function roundsHTML(br,bi){
+    var total=br.rounds.length,num=0;
+    var nums=br.rounds.map(function(r){return r.map(function(m){return m.bye?0:++num})});
+    return '<div class="rounds">'+br.rounds.map(function(round,r){
+      return '<div class="col"><h4>'+roundName(r,total)+'</h4><div class="matches">'+
+        round.map(function(mt,m){return matchHTML(br,bi,r,m,nums[r][m])}).join('')+'</div></div>';
+    }).join('')+'</div>';
+  }
+  function matchNums(br){var num=0;return br.rounds.map(function(r){return r.map(function(m){return m.bye?0:++num})})}
+  function maxMat(){var m=1;(S.brackets||[]).forEach(function(b){if((b.mat||1)>m)m=b.mat});return m}
+  function matQueue(mat){
+    var live=[],queue=[];
+    S.brackets.forEach(function(br,bi){
+      if((br.mat||1)!==mat)return;
+      var nums=matchNums(br);
+      br.rounds.forEach(function(round,r){round.forEach(function(mt,m){
+        ensure(mt);
+        if(mt.bye||mt.winner||!mt.a||!mt.b)return;
+        (isStarted(mt)?live:queue).push({br:br,bi:bi,r:r,m:m,mt:mt,num:nums[r][m]});
+      })});
+    });
+    return {live:live,queue:queue};
+  }
+  function nameParts(n){
+    var w=String(n).trim().split(/\s+/);
+    return w.length<2?['',w[0]||'']:[w.slice(0,-1).join(' '),w[w.length-1]];
+  }
+  function ufcSide(p,side){
+    var parts=nameParts(p.name);
+    return '<div class="ufc-f '+side+'" style="--bc:var(--belt-'+p.belt+',var(--belt-outra))"><span class="ufc-bar"></span>'+(parts[0]?'<em>'+esc(parts[0])+'</em>':'<em>&nbsp;</em>')+'<strong>'+esc(parts[1])+'</strong><small>Faixa '+esc(beltOf(p.belt).nome)+' · '+kg(p.weight)+' kg</small></div>';
+  }
+  function callRow(it,tag,i,label){
+    var A=S.people[it.mt.a],B=S.people[it.mt.b];
+    return '<article class="call-row '+tag+'" style="--i:'+i+'"><div class="ufc-top"><span class="ufc-cat">'+(it.br.belt?dot(it.br.belt):'')+esc(it.br.short||it.br.title)+' · '+esc(stageName(it.br,it.r))+' · Luta '+it.num+'</span><span class="ufc-tag">'+label+'</span></div>'+
+      '<div class="ufc-fight">'+ufcSide(A,'a')+'<div class="ufc-vs"><i>VS</i></div>'+ufcSide(B,'b')+'</div></article>';
+  }
+  function chamadaHTML(only){
+    var mats=[],k;
+    for(k=1;k<=Math.max(S.tatames,maxMat());k++)mats.push(k);
+    if(only)mats=[only];
+    return '<div class="call-grid">'+mats.map(function(k){
+      var q=matQueue(k),h='<section class="call-card"><header class="ufc-mh"><span>Tatame</span><b>'+k+'</b></header>',n=0;
+      if(!q.live.length&&!q.queue.length)return h+'<p class="call-none">Sem lutas pendentes neste tatame</p></section>';
+      q.live.slice(0,2).forEach(function(it){h+=callRow(it,'live',n++,'Em luta')});
+      q.queue.slice(0,4).forEach(function(it,i){
+        var main=i===0&&!q.live.length;
+        h+=callRow(it,main?'next':'q',n++,main?'Próxima luta':'Na fila #'+(i+1));
+      });
+      if(q.queue.length>4)h+='<p class="call-more">+ '+(q.queue.length-4)+' lutas na fila</p>';
+      return h+'</section>';
+    }).join('')+'</div>';
+  }
+  function bracketInner(br,bi){
+    var ch=champOf(br),matSel='';
+    if(S.tatames>1){
+      var mx=Math.max(S.tatames,br.mat||1),o='';
+      for(var k=1;k<=mx;k++)o+='<option value="'+k+'"'+(k===(br.mat||1)?' selected':'')+'>Tatame '+k+'</option>';
+      matSel='<select class="matsel" data-matsel="'+bi+'" aria-label="Tatame desta chave">'+o+'</select>';
+    }
+    var head='<div class="bhead"><div><div class="bt">'+(br.belt?dot(br.belt):'')+'<h3>'+esc(br.title)+'</h3></div><p class="bsub">'+esc(br.sub)+' · '+br.ids.length+(br.ids.length===1?' lutador':' lutadores')+'</p></div>'+
+      '<div class="bact">'+(ch?'<div class="champ">Campeão · '+esc(S.people[ch].name)+'</div>':'')+matSel+'<button class="btn" type="button" data-adj="'+bi+'">Ajustar</button><button class="btn" type="button" data-tv="'+bi+'">Tela cheia</button></div></div>';
+    if(br.ids.length===1)return head+'<p class="solo">Único inscrito nesta categoria. Não há luta, e ele avança como campeão.</p>';
+    var pod=podiumHTML(br);
+    return head+pod+(pod?'<h4 class="sec-t">Chave e lutas</h4>':'')+(br.type==='rr'?rrHTML(br,bi):roundsHTML(br,bi));
+  }
+  function updateCard(bi){
+    var el=document.getElementById('brkt-'+bi);if(!el)return;
+    var old=el.querySelector('.rounds'),sl=old?old.scrollLeft:0;
+    el.innerHTML=bracketInner(S.brackets[bi],bi);
+    var nu=el.querySelector('.rounds');if(nu)nu.scrollLeft=sl;
+  }
+  function refresh(bi){
+    updateCard(bi);
+    renderSummary();
+    if(TV.open)tvRender();
+  }
+  function emptyHTML(){
+    var n=S.fighters.length,h=S.history.length,ativos=active().length,par=groupFighters().some(function(g){return g.list.length>=2});
+    var title=n===0?'Seu campeonato começa aqui':(par?'Tudo pronto para sortear':'Falta pouco');
+    var lead=n===0?'Cadastre os lutadores com nome, peso e faixa. As chaves, o placar e o telão aparecem aqui assim que você gerar o campeonato.'
+      :(par?ativos+' lutadores cadastrados. Confira o tempo de luta e gere as chaves por faixa e categoria de peso.':'Cadastre pelo menos 2 lutadores na mesma categoria para gerar as chaves.');
+    var act='';
+    if(n===0)act+='<button class="btn primary" type="button" data-focusnome>Cadastrar primeiro lutador</button>';
+    else if(par)act+='<button class="btn primary" type="button" data-gen>Gerar chaves</button>';
+    else act+='<button class="btn primary" type="button" data-focusnome>Cadastrar outro lutador</button>';
+    if(h)act+='<button class="btn" type="button" data-hist>Ver histórico ('+h+')</button>';
+    var art='<svg class="es-art" viewBox="0 0 360 190" aria-hidden="true">'+
+      '<g class="box"><rect x="0" y="14" width="96" height="26" rx="5"/><rect x="0" y="58" width="96" height="26" rx="5"/><rect x="0" y="102" width="96" height="26" rx="5"/><rect x="0" y="146" width="96" height="26" rx="5"/><rect x="132" y="36" width="96" height="26" rx="5"/><rect x="132" y="124" width="96" height="26" rx="5"/></g>'+
+      '<rect class="champ" x="264" y="80" width="96" height="26" rx="5"/>'+
+      '<g class="sk"><rect x="10" y="24" width="52" height="6" rx="3"/><rect x="10" y="68" width="40" height="6" rx="3"/><rect x="10" y="112" width="58" height="6" rx="3"/><rect x="10" y="156" width="46" height="6" rx="3"/><rect x="142" y="46" width="48" height="6" rx="3"/><rect x="142" y="134" width="56" height="6" rx="3"/></g>'+
+      '<path class="pth" d="M96 27H114V49H132M96 71H114V49M96 115H114V137H132M96 159H114V137M228 49H246V93H264M228 137H246V93"/>'+
+      '<path class="flow" pathLength="1" d="M96 27H114V49H132"/><path class="flow f2" pathLength="1" d="M228 49H246V93H264"/><path class="flow f3" pathLength="1" d="M96 159H114V137H132"/>'+
+      '<g class="cup" transform="translate(296 84)"><path d="M4 0h10v6a5 5 0 0 1-10 0V0zM4 2H0v1a3 3 0 0 0 3 3M14 2h4v1a3 3 0 0 1-3 3M9 11v3M5 17h8"/></g></svg>';
+    return '<div class="panel es"><div><span class="eyebrow">BJJ Arena</span><h3>'+title+'</h3><p class="lead">'+lead+'</p>'+
+      '<ol class="es-steps"><li><b>1</b>Cadastre os lutadores</li><li><b>2</b>Gere as chaves por faixa e peso</li><li><b>3</b>Marque os pontos e mostre no telão</li></ol>'+
+      '<div class="es-act">'+act+'</div></div>'+art+'</div>';
+  }
+  var endArmed=false,endTimer;
+  function summaryHTML(){
+    var fights=0,done=0,mins=0;
+    S.brackets.forEach(function(b){b.rounds.forEach(function(r){r.forEach(function(m){if(!m.bye){fights++;mins+=tempoFor(b);if(m.winner)done++}})})});
+    return '<div class="summary"><div><b>'+S.brackets.length+'</b>'+(S.brackets.length===1?'chave':'chaves')+'</div><div><b>'+done+'/'+fights+'</b>lutas decididas</div><div><b>'+fmtTotal(mins)+'</b>de luta somados</div><div class="sum-act"><button class="btn" type="button" data-hist>Histórico</button><button class="btn" type="button" data-endchamp>'+(endArmed?'Confirmar: salvar no histórico e limpar':'Encerrar campeonato')+'</button><button class="btn primary" type="button" data-tv="0">Abrir em tela cheia</button></div></div>';
+  }
+  function renderSummary(){var s=document.getElementById('summary');if(s&&S.brackets)s.innerHTML=summaryHTML()}
+  function renderResults(){
+    var box=$('#resultado');
+    var scrolls=[].map.call(box.querySelectorAll('.rounds'),function(e){return e.scrollLeft});
+    var vazio=!S.brackets||!S.fighters.length;box.classList.toggle('is-empty',vazio);
+    if(vazio){box.innerHTML=emptyHTML();return}
+    var stale=S.sig!==signature();
+    var banner=stale?'<div class="stale" role="alert"><div><b>Estas chaves estão desatualizadas.</b> Os lutadores cadastrados mudaram desde que elas foram geradas, então podem mostrar atletas que não estão mais na lista.</div><button class="btn primary" type="button" data-gen>Gerar chaves de novo</button></div>':'';
+    box.innerHTML=banner+'<div id="summary">'+summaryHTML()+'</div>'+S.brackets.map(function(br,bi){return '<article class="brkt" id="brkt-'+bi+'">'+bracketInner(br,bi)+'</article>'}).join('');
+    [].forEach.call(box.querySelectorAll('.rounds'),function(e,i){if(scrolls[i])e.scrollLeft=scrolls[i]});
+  }
+
+  /* ---------- Tela cheia (modo TV) ---------- */
+  function enterFS(){
+    var el=document.documentElement;
+    if(!document.fullscreenElement&&el.requestFullscreen){try{var p=el.requestFullscreen();if(p&&p.catch)p.catch(function(){})}catch(e){}}
+  }
+  function exitFS(){
+    if(document.fullscreenElement&&document.exitFullscreen){try{var p=document.exitFullscreen();if(p&&p.catch)p.catch(function(){})}catch(e){}}
+  }
+  function paintFsBtn(){var b=$('#tvFs');if(b)b.textContent=document.fullscreenElement?'Sair da tela cheia':'Tela cheia'}
+  function tvMsg(t){
+    var el=$('#tvMsg');el.textContent=t;clearTimeout(TV.msgT);
+    if(t)TV.msgT=setTimeout(function(){el.textContent=''},3500);
+  }
+  function tvFit(){
+    var box=$('#tvBody'),inn=$('#tvin');if(!box||!inn)return;
+    inn.style.transform='translate(-50%,-50%)';
+    var cw=box.clientWidth-40,ch=box.clientHeight-32,nw=inn.offsetWidth,nh=inn.offsetHeight;
+    if(!nw||!nh||cw<=0||ch<=0)return;
+    var s=Math.min(cw/nw,ch/nh,2.2);
+    inn.style.transform='translate(-50%,-50%) scale('+s+')';
+  }
+  function paintTvMat(){
+    var el=$('#tvMat');if(!el)return;
+    if(S.tatames<2){el.hidden=true;return}
+    var o='<option value="0">Todos os tatames</option>';
+    for(var k=1;k<=S.tatames;k++)o+='<option value="'+k+'">Meu tatame: '+k+'</option>';
+    el.innerHTML=o;el.value=String(S.myMat>S.tatames?0:S.myMat);el.hidden=false;
+  }
+  function tvRender(){
+    if(!TV.open||!S.brackets)return;
+    var n=S.brackets.length;
+    if(TV.i<0||TV.i>n)TV.i=0;
+    if(!IS_TELAO&&VIEW.i!==TV.i){VIEW.i=TV.i;broadcastSoon()}
+    var call=TV.i===n,br=call?null:S.brackets[TV.i];
+    paintTvMat();
+    $('#tvTabs').innerHTML=S.brackets.map(function(b,k){
+      return '<button type="button" role="tab" aria-selected="'+(k===TV.i)+'" data-tvtab="'+k+'">'+(b.belt?dot(b.belt):'')+esc(b.short||b.title)+(champOf(b)?' ✓':'')+'</button>';
+    }).join('')+'<button type="button" role="tab" aria-selected="'+call+'" data-tvtab="'+n+'">Chamada</button>';
+    var sel=$('#tvTabs [aria-selected="true"]');if(sel&&sel.scrollIntoView)sel.scrollIntoView({block:'nearest',inline:'nearest'});
+    if(call){
+      $('#tvTitle').innerHTML='<div><h2>Chamada de lutas</h2><p>Quem está lutando e as próximas lutas de cada tatame</p></div>';
+      $('#tvBody').innerHTML='<div class="call-wrap">'+chamadaHTML(IS_TELAO?VIEW.mat:0)+'</div>';
+      return;
+    }
+    var ch=champOf(br);
+    $('#tvTitle').innerHTML=(br.belt?dot(br.belt):'')+'<div><h2>'+esc(br.title)+'</h2><p>'+esc(br.sub)+' · '+br.ids.length+(br.ids.length===1?' lutador':' lutadores')+(S.tatames>1?' · Tatame '+(br.mat||1):'')+'</p></div>'+(ch?'<span class="champ">Campeão · '+esc(S.people[ch].name)+'</span>':'');
+    var inner=br.ids.length===1?'<div class="solo-tv">Único inscrito nesta categoria.<br>'+esc(S.people[br.ids[0]].name)+' avança como campeão.</div>':(br.type==='rr'?rrHTML(br,TV.i):roundsHTML(br,TV.i));
+    $('#tvBody').innerHTML='<div class="tvin" id="tvin">'+podiumHTML(br)+inner+'</div>';
+    tvFit();
+  }
+  function tvRot(){
+    clearInterval(TV.iv);TV.iv=null;
+    var b=$('#tvRot');b.setAttribute('aria-pressed',String(TV.rot));b.textContent=TV.rot?'Rotação: ligada':'Rotação: desligada';
+    if(TV.open&&TV.rot&&S.brackets&&S.brackets.length>1)TV.iv=setInterval(function(){if(T)return;tvGo(1)},20000);
+  }
+  /* ---------- Telão (janela que só exibe) ---------- */
+  var TL={idx:0,key:''};
+  function tlScreens(){
+    var n=S.brackets.length,list=[],i;
+    var pods=S.brackets.filter(function(b){return b.ids.length>1&&podium(b)}).length,pages=Math.max(1,Math.ceil(pods/6));
+    function podAll(){for(var p=0;p<pages;p++)list.push({k:'pod',p:p})}
+    if(VIEW.mode==='chaves')list.push(VIEW.i>=n?{k:'call'}:{k:'b',i:VIEW.i});
+    else if(VIEW.mode==='chamada')list.push({k:'call'});
+    else if(VIEW.mode==='podio')podAll();
+    else{for(i=0;i<n;i++)list.push({k:'b',i:i});list.push({k:'call'});if(pods)podAll()}
+    return list;
+  }
+  function tlShowTv(i){TV.open=true;TV.i=i;$('#tl').hidden=true;$('#tv').hidden=false;tvRender()}
+  function tlShowHtml(html){TV.open=false;$('#tv').hidden=true;var t=$('#tl');t.hidden=false;t.innerHTML=html}
+  function boardViewHTML(b,r,m){
+    var br=S.brackets[b],mt=ensure(br.rounds[r][m]),done=!!mt.winner;
+    function side(sd){
+      var id=mt[sd],p=S.people[id],sc=mt.sc[sd];
+      return '<section class="side '+sd+(done?(mt.winner===id?' win':' lose'):'')+'"><div class="sd-name">'+esc(p.name)+'</div>'+
+        '<div class="sd-meta">'+dot(p.belt)+'Faixa '+beltOf(p.belt).nome+' · '+kg(p.weight)+' kg</div>'+
+        '<div class="sd-pts"><b>'+sc.p+'</b><span>pontos</span></div>'+
+        '<div class="sd-cnt"><div class="cn"><span>Vantagens</span><b>'+sc.v+'</b></div><div class="cn"><span>Punições</span><b>'+sc.u+'</b></div></div></section>';
+    }
+    var inj=(mt.inj.a||mt.inj.b)?'<p class="tl-inj">Pausa de lesão: '+esc(S.people[mt.a].name)+' '+fmtTime(mt.inj.a)+' · '+esc(S.people[mt.b].name)+' '+fmtTime(mt.inj.b)+'</p>':'';
+    var foot=done?'<div class="banner"><span>Vencedor</span><strong>'+esc(S.people[mt.winner].name)+'</strong><em>'+esc(mt.method||'')+'</em></div>'
+      :'<div class="tl-foot">'+mt.log.slice(-3).reverse().map(function(e){return '<span>'+esc(logText(mt,e))+'</span>'}).join('')+'</div>';
+    return '<div class="tl-board"><div class="sb-top"><p class="sb-title">'+esc(br.title)+' · '+esc(br.sub)+' · '+esc(stageName(br,r))+(S.tatames>1?' · Tatame '+(br.mat||1):'')+'</p></div>'+
+      '<div class="sb-main">'+side('a')+'<section class="mid"><div class="clock'+(mt.left!=null&&mt.left<=0?' end':'')+'">'+fmtTime(mt.left==null?tempoFor(br)*60:mt.left)+'</div>'+inj+'</section>'+side('b')+'</div>'+
+      '<div class="sb-end">'+foot+'</div></div>';
+  }
+  function podiosHTML(page){
+    var list=S.brackets.filter(function(b){return b.ids.length>1&&podium(b)});
+    function line(cls,lab,id,b){return '<div class="pd '+cls+'"><span class="pl">'+lab+'</span><strong>'+esc(S.people[id].name)+'</strong>'+pwHTML(b,id)+'</div>'}
+    var cards=list.slice(page*6,page*6+6).map(function(b){
+      var p=podium(b);
+      return '<section class="pod-card"><h3>'+(b.belt?dot(b.belt):'')+esc(b.title)+'<small>'+esc(b.sub)+'</small></h3>'+line('g','1º lugar',p.gold,b)+(p.silver?line('s','2º lugar',p.silver,b):'')+p.bronze.map(function(id){return line('b','3º lugar',id,b)}).join('')+'</section>';
+    }).join('');
+    return '<div class="tl-pod"><h2>Pódio</h2><div class="pod-grid">'+(cards||'<p class="call-none">Nenhuma chave terminou ainda.</p>')+'</div></div>';
+  }
+  function telaoRender(force){
+    if(!S.brackets||!S.brackets.length){tlShowHtml('<div class="tl-wait">Aguardando as chaves…</div>');TL.key='';return}
+    var scr=tlScreens();if(TL.idx>=scr.length)TL.idx=0;
+    var cur=scr[TL.idx];
+    var bd=BOARD&&S.brackets[BOARD.b]&&S.brackets[BOARD.b].rounds[BOARD.r]&&S.brackets[BOARD.b].rounds[BOARD.r][BOARD.m];
+    if(VIEW.autoBoard&&bd&&bd.a&&bd.b){tlShowHtml(boardViewHTML(BOARD.b,BOARD.r,BOARD.m));TL.key='board';return}
+    var key=JSON.stringify([cur,REV,VIEW.mat]);
+    if(!force&&key===TL.key)return;
+    TL.key=key;
+    if(cur.k==='b')tlShowTv(cur.i);
+    else if(cur.k==='call')tlShowTv(S.brackets.length);
+    else tlShowHtml(podiosHTML(cur.p));
+  }
+  function telaoUpdate(p){
+    if(!p||!p.S)return;
+    S=p.S;applyCustom();VIEW=p.view||VIEW;BOARD=p.board||null;REV=p.rev||0;
+    telaoRender(false);
+  }
+  function telaoCycle(){
+    if(!S.brackets||(VIEW.autoBoard&&BOARD))return;
+    var n=tlScreens().length;if(n<2)return;
+    TL.idx=(TL.idx+1)%n;telaoRender(true);
+  }
+  function tvGo(d){
+    var n=S.brackets.length+1;TV.i=(TV.i+d+n)%n;tvRender();
+  }
+  function openTV(i){
+    if(!S.brackets||!S.brackets.length)return;
+    TV.open=true;TV.i=Math.min(Math.max(i||0,0),S.brackets.length);
+    $('#tv').hidden=false;
+    enterFS();paintFsBtn();tvRot();tvRender();
+  }
+  function closeTV(){
+    TV.open=false;clearInterval(TV.iv);TV.iv=null;
+    $('#tv').hidden=true;exitFS();
+  }
+  function tvNext(){
+    var nx=findNext(TV.i,S.myMat);
+    if(!nx){tvMsg('Todas as lutas já foram decididas.');return}
+    openBoard(nx.b,nx.r,nx.m);
+  }
+
+  function paintTelao(){
+    var has=!!DESK,mats=Math.max(S.tatames,S.brackets?maxMat():1),o='<option value="0">Todos os tatames</option>';
+    $('#telOpen').disabled=!has;$('#telOpen').hidden=TELAO_OPEN;$('#telClose').hidden=!TELAO_OPEN;
+    $('#telHint').textContent=!has?'O telão em outra tela funciona no aplicativo para Mac.':(TELAO_OPEN?'Telão aberto. O placar aparece sozinho quando você abre uma luta.':'Com um segundo monitor ou TV ligado, o telão abre em tela cheia nele. Com uma tela só, abre em tela cheia em um espaço próprio: volte ao painel com Ctrl + setas (ou deslize com 3 dedos) e feche o telão com Cmd + W.');
+    for(var k=1;k<=mats;k++)o+='<option value="'+k+'">Tatame '+k+'</option>';
+    $('#telMat').innerHTML=o;$('#telMat').value=String(VIEW.mat>mats?0:VIEW.mat);
+    $('#telMatField').hidden=mats<2;
+    $('#telMode').value=VIEW.mode;$('#telAuto').checked=VIEW.autoBoard;
+  }
+  /* ---------- Placar ---------- */
+  var AC=null;
+  function primeAudio(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}}
+  function beep(){
+    if(!AC)return;
+    try{for(var i=0;i<3;i++){var o=AC.createOscillator(),g=AC.createGain();o.frequency.value=880;o.connect(g);g.connect(AC.destination);var t=AC.currentTime+i*.45;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.35,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.35);o.start(t);o.stop(t+.4)}}catch(e){}
+  }
+  function curM(){return ensure(S.brackets[T.b].rounds[T.r][T.m])}
+  function stopTick(){if(T&&T.iv){clearInterval(T.iv);T.iv=null}}
+  function paintClock(){
+    var mt=curM(),c=$('#sbClock');
+    c.textContent=fmtTime(mt.left);
+    c.className='clock'+(mt.left<=0?' end':'');
+    broadcastSoon();
+  }
+  function sideHTML(side){
+    var mt=curM(),id=mt[side],p=S.people[id],sc=mt.sc[side],dis=mt.winner?' disabled':'';
+    var moves=MOVES.map(function(x,ix){
+      return '<button class="mv" type="button" data-sb="pt" data-side="'+side+'" data-pts="'+x[1]+'" data-why="'+x[0]+'"'+dis+'><span>'+x[0]+' <i class="k">'+KEYS[side][ix].toUpperCase()+'</i></span><b>+'+x[1]+'</b></button>';
+    }).join('');
+    function ctr(key,label,why){
+      return '<div class="cn"><span>'+label+' <i class="k">'+HK[side][key].toUpperCase()+'</i></span><div class="ctr">'+
+        '<button class="sm" type="button" data-sb="adj" data-side="'+side+'" data-k="'+key+'" data-d="-1"'+dis+' aria-label="Remover '+why+' de '+esc(p.name)+'">−</button>'+
+        '<b>'+sc[key]+'</b>'+
+        '<button class="sm" type="button" data-sb="adj" data-side="'+side+'" data-k="'+key+'" data-d="1"'+dis+' aria-label="Adicionar '+why+' a '+esc(p.name)+'">+</button></div></div>';
+    }
+    return '<div class="sd-name">'+esc(p.name)+'</div>'+
+      '<div class="sd-meta">'+dot(p.belt)+'Faixa '+beltOf(p.belt).nome+' · '+kg(p.weight)+' kg</div>'+
+      '<div class="sd-pts"><b>'+sc.p+'</b><span>pontos</span><button class="btn link" type="button" data-sb="adj" data-side="'+side+'" data-k="p" data-d="-1"'+dis+'>corrigir −1</button></div>'+
+      '<div class="sd-cnt">'+ctr('v','Vantagens','vantagem')+ctr('u','Punições','punição')+'</div>'+
+      '<div class="moves">'+moves+'</div>'+injHTML(side,mt);
+  }
+  function logText(mt,e){
+    var nm=S.people[mt[e.s]].name;
+    return fmtTime(e.t)+' · '+nm+' · '+e.l+' '+(e.d>0?'+':'−')+Math.abs(e.d);
+  }
+  function suggestion(mt){
+    var A=S.people[mt.a].name,B=S.people[mt.b].name,a=mt.sc.a,b=mt.sc.b,L=leader(mt);
+    if(!L)return 'Placar empatado em pontos, vantagens e punições. Defina o vencedor por decisão do árbitro.';
+    var who=L.side==='a'?A:B,out=L.side==='a'?B:A;
+    if(L.method==='Desqualificação')return out+' chegou a 4 punições e está desclassificado. Vencedor: '+who+'.';
+    if(L.method==='Pontos')return 'Pelo placar, '+who+' lidera por pontos ('+a.p+' × '+b.p+').';
+    if(L.method==='Vantagens')return 'Pontos empatados em '+a.p+'. '+who+' tem mais vantagens ('+a.v+' × '+b.v+').';
+    return 'Pontos e vantagens empatados. '+who+' tem menos punições ('+a.u+' × '+b.u+').';
+  }
+  function endHTML(mt){
+    var A=S.people[mt.a],B=S.people[mt.b];
+    if(mt.winner){
+      var w=S.people[mt.winner];
+      return '<div class="banner"><span>Vencedor</span><strong>'+esc(w.name)+'</strong><em>'+esc(mt.method||'')+' · '+mt.sc.a.p+' × '+mt.sc.b.p+' em pontos</em></div>'+
+        '<div class="endrow"><button class="btn primary" type="button" data-sb="next">Próxima luta</button><button class="btn" type="button" data-sb="back">Voltar às chaves</button><button class="btn" type="button" data-sb="reopen">Reabrir luta</button></div>'+
+        '<p class="note">Reabrir a luta apaga o avanço do vencedor e as lutas seguintes que dependem dele.</p>';
+    }
+    var L=leader(mt);
+    var method=T.userMethod?T.method:(L?L.method:'Decisão do árbitro');
+    T.method=method;
+    var opts=METHODS.map(function(x){return '<option'+(x===method?' selected':'')+'>'+x+'</option>'}).join('');
+    return '<p class="sug'+(mt.left<=0?' hot':'')+'">'+(mt.left<=0?'Tempo esgotado. ':'')+esc(suggestion(mt))+'</p>'+
+      '<div class="endrow"><label for="sbMethod">Motivo</label><select id="sbMethod">'+opts+'</select>'+
+      '<button class="btn primary" type="button" data-sb="win" data-side="a">Vencedor: '+esc(A.name)+'</button>'+
+      '<button class="btn primary" type="button" data-sb="win" data-side="b">Vencedor: '+esc(B.name)+'</button></div>'+
+      '<div class="endrow small"><span class="note">Ausência:</span><button class="btn" type="button" data-sb="wo" data-side="a">'+esc(A.name)+' faltou</button><button class="btn" type="button" data-sb="wo" data-side="b">'+esc(B.name)+' faltou</button></div>';
+  }
+  function paintBoard(){
+    var mt=curM(),br=S.brackets[T.b],done=!!mt.winner;
+    $('#sbTitle').textContent=br.title+' · '+br.sub+' · '+stageName(br,T.r);
+    var sa=$('#sideA'),sbd=$('#sideB');
+    sa.className='side a'+(done?(mt.winner===mt.a?' win':' lose'):'');
+    sbd.className='side b'+(done?(mt.winner===mt.b?' win':' lose'):'');
+    sa.innerHTML=sideHTML('a');sbd.innerHTML=sideHTML('b');
+    paintClock();
+    var st=$('#sbStart');
+    st.textContent=done?'Luta encerrada':(T.running?'Pausar':(mt.left<=0?'Tempo esgotado':(mt.left<T.total?'Continuar':'Iniciar')));
+    st.disabled=done||mt.left<=0;
+    $('#sbReset').disabled=done;
+    $('#sbUndo').disabled=done||!mt.log.length;
+    $('#sbLog').innerHTML=mt.log.slice().reverse().slice(0,10).map(function(e){return '<li>'+esc(logText(mt,e))+'</li>'}).join('')||'<li class="none">Nenhuma pontuação ainda.</li>';
+    $('#sbEnd').innerHTML=endHTML(mt);
+  }
+  function openBoard(b,r,m){
+    var br=S.brackets&&S.brackets[b];if(!br)return;
+    var mt=ensure(br.rounds[r][m]);
+    if(!(mt.a&&mt.b)||mt.bye)return;
+    stopTick();
+    var total=tempoFor(br)*60;
+    if((!mt.started&&!mt.winner&&!mt.log.length)||mt.left==null)mt.left=total;
+    T={b:b,r:r,m:m,total:total,iv:null,running:false,end:0,userMethod:false,method:null};
+    if(TV.open&&TV.i!==b){TV.i=b;tvRender()}
+    paintBoard();
+    $('#sb').hidden=false;
+    broadcastSoon();
+  }
+  function closeBoard(){
+    if(!T)return;
+    var b=T.b;
+    stopInj();stopTick();T.running=false;
+    save();
+    T=null;$('#sb').hidden=true;
+    refresh(b);
+  }
+  function tick(){
+    var mt=curM(),left=Math.max(0,Math.ceil((T.end-Date.now())/1000));
+    if(left!==mt.left){mt.left=left;paintClock()}
+    if(left<=0){stopTick();T.running=false;beep();save();paintBoard()}
+  }
+  function toggleTimer(){
+    if(!T)return;
+    var mt=curM();
+    if(mt.winner||mt.left<=0)return;
+    if(T.running){stopTick();T.running=false;save()}
+    else{stopInj();primeAudio();mt.started=true;T.end=Date.now()+mt.left*1000;T.iv=setInterval(tick,200);T.running=true}
+    paintBoard();
+  }
+  function resetClock(){
+    if(!T)return;
+    var mt=curM();if(mt.winner)return;
+    stopTick();T.running=false;mt.left=T.total;save();paintBoard();
+  }
+  function pushLog(mt,side,key,d,label,g){mt.sc[side][key]+=d;mt.log.push({s:side,k:key,d:d,l:label,t:mt.left,g:g})}
+  function applyScore(side,key,delta,label){
+    var mt=curM();if(mt.winner)return;
+    if(mt.sc[side][key]+delta<0)return;
+    var g=Date.now()+'-'+mt.log.length,opp=side==='a'?'b':'a';
+    pushLog(mt,side,key,delta,label,g);
+    if(S.autoPen&&key==='u'&&delta>0){
+      var n=mt.sc[side].u;
+      if(n===2)pushLog(mt,opp,'v',1,'Vantagem (2ª punição)',g);
+      else if(n===3)pushLog(mt,opp,'p',2,'Pontos (3ª punição)',g);
+    }
+    mt.started=true;
+    save();paintBoard();
+  }
+  function undoScore(){
+    var mt=curM();if(mt.winner||!mt.log.length)return;
+    var g=mt.log[mt.log.length-1].g;
+    do{var e=mt.log.pop();mt.sc[e.s][e.k]-=e.d}while(mt.log.length&&g&&mt.log[mt.log.length-1].g===g);
+    save();paintBoard();
+  }
+  function stopInj(){
+    if(!T||!T.injSide)return;
+    clearInterval(T.injIv);T.injIv=null;T.injSide=null;save();
+  }
+  function paintInj(){
+    var mt=curM();
+    ['a','b'].forEach(function(sd){var el=document.getElementById('inj-'+sd);if(el)el.textContent=fmtTime(mt.inj[sd])});
+    broadcastSoon();
+  }
+  function toggleInj(side){
+    var mt=curM();if(mt.winner)return;
+    var was=T.injSide;stopInj();
+    if(was===side){paintBoard();return}
+    if(T.running){stopTick();T.running=false;save()}
+    mt.started=true;
+    T.injSide=side;T.injT0=Date.now();T.injBase=mt.inj[side];
+    T.injIv=setInterval(function(){mt.inj[side]=T.injBase+Math.floor((Date.now()-T.injT0)/1000);paintInj()},500);
+    paintBoard();
+  }
+  function injHTML(side,mt){
+    var on=T&&T.injSide===side;
+    return '<div class="inj"><span>Pausa de lesão <b id="inj-'+side+'">'+fmtTime(mt.inj[side])+'</b></span><button class="btn link" type="button" data-sb="inj" data-side="'+side+'"'+(mt.winner?' disabled':'')+'>'+(on?'Encerrar pausa':'Iniciar pausa')+'</button></div>';
+  }
+  var KEYS={a:['q','w','e','a','s','d'],b:['u','i','o','j','k','l']};
+  var HK={a:{v:'z',u:'x'},b:{v:'n',u:'m'}};
+  function boardKey(e){
+    var t=e.target,tag=t&&t.tagName;
+    if(e.ctrlKey||e.metaKey||e.altKey)return false;
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return false;
+    if(!$('#adj').hidden)return false;
+    var k=(e.key||'').toLowerCase(),sd,ix;
+    if(k===' '||k==='spacebar'){e.preventDefault();toggleTimer();return true}
+    if(k==='backspace'||k==='delete'){e.preventDefault();undoScore();return true}
+    for(sd in KEYS){
+      ix=KEYS[sd].indexOf(k);
+      if(ix>=0){e.preventDefault();applyScore(sd,'p',MOVES[ix][1],MOVES[ix][0]);return true}
+      if(HK[sd].v===k){e.preventDefault();applyScore(sd,'v',1,'Vantagem');return true}
+      if(HK[sd].u===k){e.preventDefault();applyScore(sd,'u',1,'Punição');return true}
+    }
+    return false;
+  }
+  function confirmWinner(side){
+    var mt=curM();if(mt.winner)return;
+    stopInj();stopTick();T.running=false;
+    decide(S.brackets[T.b],T.r,T.m,mt[side],T.method||'Decisão do árbitro');
+    save();paintBoard();refresh(T.b);
+  }
+  function markAbsent(side){
+    var mt=curM();if(mt.winner)return;
+    var oth=side==='a'?'b':'a';
+    S.people[mt[side]].absent=true;
+    stopInj();stopTick();T.running=false;
+    decide(S.brackets[T.b],T.r,T.m,mt[oth],'WO');
+    save();paintBoard();refresh(T.b);
+  }
+  function reopenFight(){
+    var mt=curM();if(!mt.winner)return;
+    decide(S.brackets[T.b],T.r,T.m,null);
+    save();paintBoard();refresh(T.b);
+  }
+  function nextFromBoard(){
+    var from=T.b,nx=findNext(from,S.myMat);
+    if(!nx){closeBoard();if(TV.open)tvMsg('Todas as lutas já foram decididas.');return}
+    save();refresh(T.b);
+    openBoard(nx.b,nx.r,nx.m);
+  }
+  function boardAction(t){
+    var act=t.getAttribute('data-sb');
+    if(!T)return;
+    if(act==='close'||act==='back')closeBoard();
+    else if(act==='start')toggleTimer();
+    else if(act==='reset')resetClock();
+    else if(act==='undo')undoScore();
+    else if(act==='inj')toggleInj(t.getAttribute('data-side'));
+    else if(act==='win')confirmWinner(t.getAttribute('data-side'));
+    else if(act==='wo')markAbsent(t.getAttribute('data-side'));
+    else if(act==='reopen')reopenFight();
+    else if(act==='next')nextFromBoard();
+    else if(act==='pt')applyScore(t.getAttribute('data-side'),'p',+t.getAttribute('data-pts'),t.getAttribute('data-why'));
+    else if(act==='adj'){
+      var k=t.getAttribute('data-k'),d=+t.getAttribute('data-d');
+      applyScore(t.getAttribute('data-side'),k,d,d>0?KEYNAME[k]:'Correção ('+KEYNAME[k].toLowerCase()+')');
+    }
+  }
+
+  /* ---------- Eventos da página ---------- */
+  function fillBelts(sel){
+    var el=$('#faixa');
+    el.innerHTML=BELTS.map(function(b){return '<option value="'+b.id+'">'+esc(b.nome)+'</option>'}).join('')+'<option value="__outra">Outra…</option>';
+    el.value=sel||el.value||'branca';
+    showOutra(el.value==='__outra');
+  }
+  function showOutra(o){
+    $('#faixaOutraBox').hidden=!o;$('#faixaOutra').hidden=!o;
+    if(!o)$('#faixaOutra').value='';
+  }
+  $('#faixa').addEventListener('change',function(){
+    var o=this.value==='__outra';showOutra(o);
+    if(o)$('#faixaOutra').focus();
+  });
+  function showErr(msg,sel){$('#err').textContent=msg;if(sel)$(sel).focus()}
+  $('#f').addEventListener('submit',function(e){
+    e.preventDefault();
+    var name=$('#nome').value.trim().replace(/\s+/g,' ');
+    var w=parseFloat($('#peso').value.replace(',','.'));
+    var belt=$('#faixa').value;
+    if(!name){showErr('Informe o nome do lutador.','#nome');return}
+    if(belt==='__outra'){
+      var bn=$('#faixaOutra').value.trim().replace(/\s+/g,' ');
+      if(!bn){showErr('Escreva o nome da faixa.','#faixaOutra');return}
+      var ex=BELTS.filter(function(b){return b.nome.toLowerCase()===bn.toLowerCase()})[0];
+      if(!ex){
+        if(S.customBelts.length>=12){showErr('Limite de 12 faixas extras.','#faixaOutra');return}
+        var n=1;S.customBelts.forEach(function(b){n=Math.max(n,+b.id.slice(1)+1)});
+        ex={id:'x'+n,nome:bn.charAt(0).toUpperCase()+bn.slice(1)};S.customBelts.push(ex);applyCustom();renderTf();
+      }
+      belt=ex.id;fillBelts(belt);
+    }
+    if(!isFinite(w)||w<20||w>200){showErr('Informe um peso entre 20 e 200 kg.','#peso');return}
+    w=Math.round(w*10)/10;
+    var dup=S.fighters.some(function(f){return f.name.toLowerCase()===name.toLowerCase()&&f.weight===w&&f.belt===belt});
+    if(dup){showErr('Este lutador já está cadastrado.','#nome');return}
+    S.fighters.push({id:newId(),name:name,weight:w,belt:belt});
+    $('#err').textContent='';$('#nome').value='';$('#peso').value='';
+    save();renderList();renderHint();$('#nome').focus();
+  });
+
+  /* ---------- Campeonato: encerrar, histórico ---------- */
+  function todayISO(){var d=new Date();function z(n){return (n<10?'0':'')+n}return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())}
+  function hasResults(){
+    if(!S.brackets)return false;
+    return S.brackets.some(function(b){return b.rounds.some(function(r){return r.some(function(m){return !m.bye&&m.winner})})});
+  }
+  function snapshot(){
+    var brs=S.brackets.map(function(b){return {title:b.title,sub:b.sub,belt:b.belt,short:b.short,type:b.type,ids:b.ids.slice(),mat:b.mat||1,tempo:tempoFor(b),rrManual:b.rrManual||null,
+      rounds:b.rounds.map(function(r){return r.map(function(m){return {a:m.a,b:m.b,winner:m.winner,bye:!!m.bye,method:m.method||null,sc:JSON.parse(JSON.stringify(m.sc))}})})}});
+    return {id:newId(),nome:(S.evento.nome||'').trim()||'Campeonato sem nome',data:S.evento.data||todayISO(),savedAt:Date.now(),tatames:S.tatames,
+      belts:BELTS.map(function(b){return {id:b.id,nome:b.nome}}),
+      fighters:S.fighters.map(function(f){return {name:f.name,weight:ew(f),belt:f.belt,st:f.st||null}}),
+      people:JSON.parse(JSON.stringify(S.people)),brackets:brs};
+  }
+  var msgT;
+  function flash(t){['#msg','#gmsg'].forEach(function(id){var m=$(id);m.textContent=t;m.hidden=false});clearTimeout(msgT);msgT=setTimeout(function(){$('#msg').hidden=true},7000)}
+  var GATE_EDIT=false,gateShown=false;
+  function gateOn(){return !S.evento.nome||GATE_EDIT}
+  function paintGate(){
+    var on=gateOn();
+    $('#gate').hidden=!on;$('main.layout').hidden=on;
+    if(!S.evento.data)S.evento.data=todayISO();
+    $('#evNome').value=S.evento.nome||'';$('#evData').value=S.evento.data;
+    if(on){
+      $('#gNome').value=S.evento.nome||'';$('#gData').value=S.evento.data;$('#gErr').textContent='';
+      $('#gTitle').textContent=GATE_EDIT?'Editar campeonato':'Novo campeonato';
+      $('#gStart').textContent=GATE_EDIT?'Salvar':'Começar campeonato';
+      $('#gCancel').hidden=!GATE_EDIT;
+      $('#gHist').hidden=!S.history.length;$('#gHist').textContent='Ver histórico ('+S.history.length+')';
+      if(!gateShown){gateShown=true;setTimeout(function(){try{$('#gNome').focus()}catch(e){}},0)}
+    }else{
+      gateShown=false;
+    }
+  }
+  function initEv(){paintGate()}
+  function renderHistBtn(){var n=S.history.length;$('#histBtn').innerHTML='Histórico'+(n?'<span class="cnt">'+n+'</span>':'')}
+  function resetChamp(){
+    var saved=false;
+    if(hasResults()){S.history.unshift(snapshot());if(S.history.length>200)S.history.length=200;saved=true}
+    S.fighters=[];S.brackets=null;S.people={};S.sig='';S.evento={nome:'',data:todayISO()};
+    endArmed=false;clearTimeout(endTimer);
+    save();initEv();renderList();renderHint();renderResults();renderHistBtn();
+    flash(saved?'Campeonato salvo no histórico. A lista está vazia para o próximo.':'Lista limpa.');
+    if(!$('#hist').hidden)histRender();
+  }
+  var hb=function(h,id){var b=h.belts.filter(function(x){return x.id===id})[0];return b?b.nome:id};
+  function dayLabel(iso){var p=String(iso).split('-'),d=new Date(+p[0],+p[1]-1,+p[2]);return isNaN(d)?iso:d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
+  function hStats(h){
+    return h.brackets.map(function(br){
+      var pod=podium(br);
+      var rows=br.ids.map(function(id){
+        var w=0,l=0,pts=0,fights=0,lastLoss=-1;
+        br.rounds.forEach(function(rd,r){rd.forEach(function(mt){
+          if(mt.bye||!mt.winner||(mt.a!==id&&mt.b!==id))return;
+          var sd=mt.a===id?'a':'b';fights++;pts+=mt.sc[sd].p;
+          if(mt.winner===id)w++;else{l++;lastLoss=r}
+        })});
+        var pl,rank=9;
+        if(h.people[id]&&h.people[id].absent){pl='Faltou';rank=8}
+        else if(pod&&pod.gold===id){pl=br.ids.length===1?'Único inscrito':'Ouro';rank=0}
+        else if(pod&&pod.silver===id){pl='Prata';rank=1}
+        else if(pod&&pod.bronze.indexOf(id)>=0){pl='Bronze';rank=2}
+        else if(lastLoss>=0){pl='Eliminado: '+stageName(br,lastLoss).toLowerCase();rank=5}
+        else{pl=fights?'Em disputa':'Não lutou';rank=6}
+        return {id:id,w:w,l:l,pts:pts,fights:fights,place:pl,rank:rank};
+      }).sort(function(x,y){return x.rank-y.rank||y.pts-x.pts});
+      return {br:br,pod:pod,rows:rows};
+    });
+  }
+  var RMO=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  function ini(n){var w=String(n).trim().split(/\s+/);return ((w[0]||'').charAt(0)+(w.length>1?w[w.length-1].charAt(0):'')).toUpperCase()}
+  function norm(t){var x=String(t).toLowerCase();try{x=x.normalize('NFD').replace(/[̀-ͯ]/g,'')}catch(e){}return x}
+  function hCount(h){var d=0;h.brackets.forEach(function(br){br.rounds.forEach(function(rd){rd.forEach(function(mt){if(!mt.bye&&mt.winner)d++})})});return d}
+  function hPresent(h){return h.fighters.filter(function(f){return f.st!=='faltou'}).length}
+  function hHay(h){return norm([h.nome,dayLabel(h.data)].concat(h.fighters.map(function(f){return f.name}),h.brackets.map(function(b){return b.short||b.title})).join(' '))}
+  function dayParts(iso){
+    var p=String(iso).split('-'),d=new Date(+p[0],+p[1]-1,+p[2]);
+    if(isNaN(d))return {d:'',m:'',y:iso,w:''};
+    return {d:('0'+d.getDate()).slice(-2),m:d.toLocaleDateString('pt-BR',{month:'short'}).replace('.',''),y:d.getFullYear(),w:d.toLocaleDateString('pt-BR',{weekday:'long'})};
+  }
+  function countUp(root){
+    [].forEach.call(root.querySelectorAll('[data-to]'),function(el){
+      var to=+el.getAttribute('data-to');el.textContent=to;
+      if(RMO||to<2||!window.requestAnimationFrame)return;
+      var t0=null;
+      (function step(t){if(!t0)t0=t;var k=Math.min(1,(t-t0)/1000);el.textContent=Math.round(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(step)})(0);
+    });
+  }
+  function histMatches(h,x,open){
+    var br=x.br,n=0,rows='';
+    br.rounds.forEach(function(rd,r){rd.forEach(function(mt){
+      if(mt.bye||!mt.a||!mt.b)return;n++;
+      var A=h.people[mt.a].name,B=h.people[mt.b].name,wn=mt.winner?h.people[mt.winner].name:'—';
+      rows+='<tr><td>'+n+'</td><td>'+esc(stageName(br,r))+'</td>'+
+        '<td'+(mt.winner===mt.a?' class="win"':'')+'>'+esc(A)+'</td><td class="num">'+mt.sc.a.p+' <small>V'+mt.sc.a.v+' P'+mt.sc.a.u+'</small></td>'+
+        '<td class="num">'+mt.sc.b.p+' <small>V'+mt.sc.b.v+' P'+mt.sc.b.u+'</small></td><td'+(mt.winner===mt.b?' class="win"':'')+'>'+esc(B)+'</td>'+
+        '<td class="win">'+esc(wn)+'</td><td>'+esc(mt.winner?(mt.method||''):'Não decidida')+'</td></tr>';
+    })});
+    if(!rows)return '';
+    return '<details class="hb"'+(open?' open':'')+'><summary>'+(br.belt?dot(br.belt):'')+esc(br.short||br.title)+'<small>'+n+(n===1?' luta':' lutas')+'</small></summary><div class="ht-wrap"><table class="ht"><thead><tr><th>Luta</th><th>Fase</th><th>Atleta A</th><th>Pts A</th><th>Pts B</th><th>Atleta B</th><th>Vencedor</th><th>Motivo</th></tr></thead><tbody>'+rows+'</tbody></table></div></details>';
+  }
+  function hpodHTML(h,x){
+    var br=x.br,p=x.pod,hd='<header>'+(br.belt?dot(br.belt):'')+esc(br.short||br.title)+'<small>'+br.ids.length+(br.ids.length===1?' atleta':' atletas')+'</small></header>';
+    if(br.ids.length===1)return '<article class="hpod">'+hd+'<p class="hp-solo"><b>'+esc(h.people[br.ids[0]].name)+'</b> foi o único inscrito e avançou sem lutar.</p></article>';
+    if(!p)return '<article class="hpod">'+hd+'<p class="hp-solo">Chave não concluída: sem pódio definido.</p></article>';
+    function col(cls,id,label,d){
+      var pe=h.people[id],i=podInfo(br,id);
+      return '<div class="hp '+cls+'" style="--d:'+d+'"><div class="hp-av">'+esc(ini(pe.name))+'</div><b>'+esc(pe.name)+'</b><small>'+i.pts+' pts</small><span class="hp-why">'+esc(i.why)+'</span><div class="hp-bar">'+label+'</div></div>';
+    }
+    return '<article class="hpod">'+hd+'<div class="hp-stage">'+col('s',p.silver,'2º',1)+col('g',p.gold,'1º',0)+p.bronze.map(function(id,k){return col('b',id,'3º',2+k)}).join('')+'</div></article>';
+  }
+  function histPeople(h,st){
+    var prow='';
+    st.forEach(function(x){x.rows.forEach(function(r){var p=h.people[r.id];
+      prow+='<tr data-n="'+esc(norm(p.name))+'"><td>'+dot(p.belt)+esc(p.name)+'</td><td>Faixa '+esc(hb(h,p.belt))+'</td><td class="num">'+kg(p.weight)+' kg</td><td>'+esc(x.br.short||x.br.title)+'</td><td class="num">'+r.w+' V · '+r.l+' D</td><td class="num">'+r.pts+'</td><td>'+esc(r.place)+'</td></tr>'})});
+    h.fighters.filter(function(f){return f.st==='faltou'}).forEach(function(f){
+      prow+='<tr data-n="'+esc(norm(f.name))+'"><td>'+dot(f.belt)+esc(f.name)+'</td><td>Faixa '+esc(hb(h,f.belt))+'</td><td class="num">'+kg(f.weight)+' kg</td><td>—</td><td class="num">—</td><td class="num">—</td><td>Faltou</td></tr>'});
+    return '<label class="hq hpq"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="hpq" type="search" placeholder="Buscar atleta" autocomplete="off" aria-label="Buscar atleta"></label>'+
+      '<div class="ht-wrap"><table class="ht"><thead><tr><th>Atleta</th><th>Faixa</th><th>Peso</th><th>Categoria</th><th>Campanha</th><th>Pontos</th><th>Resultado</th></tr></thead><tbody id="hpBody">'+prow+'</tbody></table></div>';
+  }
+  function histCard(h,i){
+    var st=hStats(h),dec=hCount(h),pr=hPresent(h);
+    var ch=st.filter(function(x){return x.pod&&x.br.ids.length>1}).slice(0,3).map(function(x){var n=h.people[x.pod.gold].name;
+      return '<div class="hc-c"><i class="av">'+esc(ini(n))+'</i><div><b>'+esc(n)+'</b><small>'+esc(x.br.short||x.br.title)+'</small></div></div>'}).join('');
+    var hora=new Date(h.savedAt).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    return '<article class="hcard" tabindex="0" role="button" data-hopen="'+h.id+'" style="--i:'+i+'" aria-label="Abrir '+esc(h.nome)+'"><div class="hc-top"><span>Encerrado às '+hora+'</span><span>'+(h.tatames>1?h.tatames+' tatames':'1 tatame')+'</span></div>'+
+      '<h3>'+esc(h.nome)+'</h3><div class="hc-stats"><span><b>'+pr+'</b>'+(pr===1?'atleta':'atletas')+'</span><span><b>'+h.brackets.length+'</b>'+(h.brackets.length===1?'chave':'chaves')+'</span><span><b>'+dec+'</b>'+(dec===1?'luta':'lutas')+'</span></div>'+
+      '<div class="hc-champs">'+(ch||'<span class="mut">Nenhuma chave concluída</span>')+'</div><span class="hc-go">Ver detalhes <span aria-hidden="true">→</span></span></article>';
+  }
+  function histRender(){
+    var L=S.history.slice(),list=$('#hList'),stats=$('#hStats');
+    if(!L.length){
+      stats.innerHTML='';$('.h-tool').hidden=true;
+      list.innerHTML='<div class="hist-empty"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4zM8 6H4v1a3 3 0 0 0 3 3M16 6h4v1a3 3 0 0 1-3 3M12 13v4M8 20h8"/></svg><h3>Nenhum campeonato ainda</h3><p>Quando você encerrar um campeonato, ele fica guardado aqui, separado por dia, com campeões, todas as lutas e todos os participantes.</p></div>';
+      return;
+    }
+    $('.h-tool').hidden=false;
+    var days={},fights=0,atl=0;
+    L.forEach(function(h){days[h.data]=1;atl+=hPresent(h);fights+=hCount(h)});
+    var nd=Object.keys(days).length;function pl(n,a,b){return n===1?a:b}var tiles=[[L.length,pl(L.length,'campeonato','campeonatos')],[nd,pl(nd,'dia de evento','dias de evento')],[atl,pl(atl,'atleta inscrito','atletas inscritos')],[fights,pl(fights,'luta decidida','lutas decididas')]];
+    stats.innerHTML=tiles.map(function(t,i){return '<div class="hs" style="--i:'+i+'"><b data-to="'+t[0]+'">'+t[0]+'</b><span>'+t[1]+'</span></div>'}).join('');
+    countUp(stats);
+    var q=norm(HQ.trim());
+    if(q)L=L.filter(function(h){return hHay(h).indexOf(q)>=0});
+    if(!L.length){list.innerHTML='<div class="hist-empty"><h3>Nada encontrado</h3><p>Nenhum campeonato combina com "'+esc(HQ)+'".</p></div>';return}
+    L.sort(function(a,b){return a.data<b.data?1:a.data>b.data?-1:b.savedAt-a.savedAt});
+    var out='',cur=null,i=0;
+    L.forEach(function(h){
+      if(h.data!==cur){
+        if(cur!==null)out+='</div></section>';
+        cur=h.data;var d=dayParts(cur);
+        out+='<section class="hdsec"><aside class="hday-d" aria-label="'+esc(dayLabel(cur))+'"><b>'+d.d+'</b><em>'+esc(d.m)+'</em><small>'+d.y+' · '+esc(d.w)+'</small></aside><div class="hgrid">';
+      }
+      out+=histCard(h,i++);
+    });
+    list.innerHTML=out+'</div></section>';
+  }
+  var HOPEN=null,HTAB='champ',HQ='',hdelArm=null,hdelT,histFrom=null;
+  function histDetailOpen(id){
+    var h=S.history.filter(function(x){return x.id===id})[0];if(!h)return;
+    HOPEN=id;HTAB='champ';
+    var d=dayParts(h.data),hora=new Date(h.savedAt).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    var el=$('#histDetail');
+    el.innerHTML='<div class="hd-in"><button class="btn" type="button" data-hback>← Voltar ao histórico</button>'+
+      '<header class="hd-head"><span class="hd-meta">'+esc(dayLabel(h.data))+' · encerrado às '+hora+'</span><h2>'+esc(h.nome)+'</h2>'+
+      '<div class="hc-stats"><span><b>'+hPresent(h)+'</b>atletas</span><span><b>'+h.brackets.length+'</b>'+(h.brackets.length===1?'chave':'chaves')+'</span><span><b>'+hCount(h)+'</b>'+(hCount(h)===1?'luta decidida':'lutas decididas')+'</span>'+(h.tatames>1?'<span><b>'+h.tatames+'</b>tatames</span>':'')+'</div></header>'+
+      '<nav class="hd-tabs" role="tablist"><button type="button" role="tab" data-htab="champ" class="on">Campeões</button><button type="button" role="tab" data-htab="lutas">Lutas</button><button type="button" role="tab" data-htab="atl">Participantes</button></nav>'+
+      '<div class="hd-pane" id="hdPane"></div><div class="hd-foot"><button class="btn" type="button" data-hdel="'+h.id+'">'+(hdelArm===h.id?'Confirmar exclusão':'Excluir do histórico')+'</button></div></div>';
+    el.hidden=false;el.scrollTop=0;histPane();
+    var b=el.querySelector('[data-hback]');if(b)b.focus();
+  }
+  function histPane(){
+    var h=S.history.filter(function(x){return x.id===HOPEN})[0],box=$('#hdPane');if(!h||!box)return;
+    var st=hStats(h);
+    [].forEach.call($('#histDetail').querySelectorAll('[data-htab]'),function(b){var on=b.getAttribute('data-htab')===HTAB;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
+    var inner;
+    if(HTAB==='champ')inner='<div class="hpods">'+st.map(function(x){return hpodHTML(h,x)}).join('')+'</div>';
+    else if(HTAB==='lutas'){inner=st.map(function(x,i){return histMatches(h,x,i===0)}).join('')||'<p class="mut">Nenhuma luta registrada.</p>'}
+    else inner=histPeople(h,st);
+    var n=box.cloneNode(false);n.innerHTML=inner;box.parentNode.replaceChild(n,box);
+  }
+  function histDetailClose(){HOPEN=null;hdelArm=null;var el=$('#histDetail');el.hidden=true;el.innerHTML='';var c=document.querySelector('.hcard');}
+  function histOpen(){histFrom=document.activeElement;HOPEN=null;$('#histDetail').hidden=true;histRender();$('#hist').hidden=false;$('#hist').scrollTop=0;var c=$('#hist [data-hclose]');if(c)c.focus()}
+  function histClose(){$('#hist').hidden=true;$('#histDetail').hidden=true;HOPEN=null;hdelArm=null;if(histFrom&&histFrom.focus)try{histFrom.focus()}catch(e){}}
+  $('#histBtn').addEventListener('click',histOpen);
+  if(DESK&&DESK.onHistory&&!IS_TELAO)DESK.onHistory(function(){if($('#hist').hidden)histOpen()});
+  $('#hq').addEventListener('input',function(){HQ=this.value;histRender()});
+  document.addEventListener('input',function(e){
+    if(e.target&&e.target.id==='hpq'){var q=norm(e.target.value.trim());[].forEach.call(document.querySelectorAll('#hpBody tr'),function(tr){tr.hidden=q&&tr.getAttribute('data-n').indexOf(q)<0})}
+  });
+  $('#hList').addEventListener('pointermove',function(e){var c=e.target.closest&&e.target.closest('.hcard');if(!c)return;var r=c.getBoundingClientRect();c.style.setProperty('--x',(e.clientX-r.left)+'px');c.style.setProperty('--y',(e.clientY-r.top)+'px')});
+  document.addEventListener('keydown',function(e){
+    if($('#hist').hidden)return;
+    if(e.key==='Escape'){if(HOPEN)histDetailClose();else histClose();e.stopImmediatePropagation();e.preventDefault();return}
+    if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('hcard')){e.preventDefault();histDetailOpen(e.target.getAttribute('data-hopen'))}
+  },true);
+  document.addEventListener('click',function(e){
+    var t=e.target.closest?e.target.closest('[data-hclose],[data-hist],[data-hdel],[data-endchamp],[data-focusnome],[data-gen],[data-hopen],[data-hback],[data-htab]'):null;if(!t)return;
+    if(t.hasAttribute('data-hclose')){histClose();return}
+    if(t.hasAttribute('data-hist')){histOpen();return}
+    if(t.hasAttribute('data-hopen')){histDetailOpen(t.getAttribute('data-hopen'));return}
+    if(t.hasAttribute('data-hback')){histDetailClose();return}
+    if(t.hasAttribute('data-htab')){HTAB=t.getAttribute('data-htab');histPane();return}
+    if(t.hasAttribute('data-focusnome')){$('#nome').scrollIntoView({block:'center'});$('#nome').focus();return}
+    if(t.hasAttribute('data-gen')){$('#gerar').click();return}
+    if(t.hasAttribute('data-hdel')){
+      var id=t.getAttribute('data-hdel');
+      if(hdelArm!==id){hdelArm=id;t.textContent='Confirmar exclusão';clearTimeout(hdelT);hdelT=setTimeout(function(){hdelArm=null;if(t.isConnected)t.textContent='Excluir do histórico'},4000);return}
+      hdelArm=null;S.history=S.history.filter(function(h){return h.id!==id});save();renderHistBtn();histDetailClose();histRender();return;
+    }
+    if(t.hasAttribute('data-endchamp')){
+      if(!endArmed){endArmed=true;clearTimeout(endTimer);endTimer=setTimeout(function(){endArmed=false;renderSummary()},4000);renderSummary();return}
+      resetChamp();
+    }
+  });
+  $('#gForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    var n=$('#gNome').value.trim().replace(/\s+/g,' ');
+    if(n.length<2){$('#gErr').textContent='Escreva o nome do campeonato para continuar.';$('#gNome').focus();return}
+    S.evento={nome:n,data:$('#gData').value||todayISO()};GATE_EDIT=false;save();paintGate();
+    var m=$('#gmsg');m.hidden=true;
+    try{$('#nome').focus()}catch(x){}
+  });
+  $('#gCancel').addEventListener('click',function(){GATE_EDIT=false;paintGate()});
+  $('#evNome').addEventListener('input',function(){var v=this.value.trim().replace(/\s+/g,' ');if(v.length>=2){S.evento.nome=v;save()}});
+  $('#evNome').addEventListener('blur',function(){if(this.value.trim().length<2)this.value=S.evento.nome;renderHint()});
+  $('#evData').addEventListener('change',function(){S.evento.data=this.value||todayISO();this.value=S.evento.data;save()});
+
+  var clearArmed=false,clearTimer;
+  function disarmClear(){clearArmed=false;clearTimeout(clearTimer);$('#clearBtn').textContent='Limpar lista'}
+  $('#clearBtn').addEventListener('click',function(){
+    if(!clearArmed){clearArmed=true;this.textContent=hasResults()?'Confirmar: salvar no histórico e limpar':'Confirmar: remover todos';clearTimer=setTimeout(disarmClear,4000);return}
+    disarmClear();resetChamp();
+  });
+  function setTempo(v){
+    v=Math.round(Number(v));
+    if(!isFinite(v))return;
+    v=Math.min(60,Math.max(1,v));
+    S.tempo=v;$('#tempo').value=v;save();
+    if(S.brackets)renderResults();
+  }
+  $('#tempo').addEventListener('input',function(){
+    var v=Math.round(Number(this.value));
+    if(isFinite(v)&&v>=1&&v<=60){S.tempo=v;save();if(S.brackets)renderResults()}
+  });
+  $('#tempo').addEventListener('change',function(){setTempo(this.value||S.tempo)});
+  $('#menos').addEventListener('click',function(){setTempo(S.tempo-1)});
+  $('#mais').addEventListener('click',function(){setTempo(S.tempo+1)});
+  $('#modo').addEventListener('change',function(){S.modo=this.value;save();renderHint()});
+
+  function renderTf(){
+    var box=$('#tfBox');box.hidden=S.tempoModo!=='faixa';
+    box.innerHTML=BELTS.map(function(b){return '<label class="tfl">'+dot(b.id)+b.nome+'<input type="number" min="1" max="60" value="'+(S.temposFaixa[b.id]||S.tempo)+'" data-tf="'+b.id+'" aria-label="Minutos da faixa '+b.nome+'"></label>'}).join('');
+  }
+  function initCfg(){
+    fillBelts($('#faixa').value&&$('#faixa').value!=='__outra'?$('#faixa').value:'branca');
+    $('#tatames').value=String(S.tatames);$('#tempoModo').value=S.tempoModo;
+    $('#autoPen').checked=S.autoPen;$('#rr3').checked=S.rr3;renderTf();initEv();renderHistBtn();
+  }
+  $('#tatames').addEventListener('change',function(){S.tatames=+this.value;save();paintTelao();if(S.brackets){renderResults();if(TV.open)tvRender()}});
+  $('#tempoModo').addEventListener('change',function(){S.tempoModo=this.value;renderTf();save();if(S.brackets)renderResults()});
+  $('#autoPen').addEventListener('change',function(){S.autoPen=this.checked;save()});
+  $('#rr3').addEventListener('change',function(){S.rr3=this.checked;save();renderHint()});
+  $('#tfBox').addEventListener('change',function(e){
+    var id=e.target.getAttribute('data-tf');if(!id)return;
+    var v=Math.round(Number(e.target.value));
+    if(!(v>=1&&v<=60)){e.target.value=S.temposFaixa[id]||S.tempo;return}
+    S.temposFaixa[id]=v;save();if(S.brackets)renderResults();
+  });
+  $('#telOpen').addEventListener('click',function(){if(DESK)DESK.openTelao()});
+  $('#telClose').addEventListener('click',function(){if(DESK)DESK.closeTelao()});
+  $('#telMode').addEventListener('change',function(){VIEW.mode=this.value;broadcastSoon()});
+  $('#telMat').addEventListener('change',function(){VIEW.mat=+this.value;broadcastSoon()});
+  $('#telAuto').addEventListener('change',function(){VIEW.autoBoard=this.checked;broadcastSoon()});
+  var genArmed=false,genTimer;
+  function disarmGen(){genArmed=false;clearTimeout(genTimer);var b=$('#gerar');b.textContent='Gerar chaves';b.classList.remove('warn')}
+  $('#gerar').addEventListener('click',function(){
+    if(this.disabled)return;
+    if(!S.evento.nome){GATE_EDIT=true;gateShown=false;paintGate();return}
+    var hasRes=S.brackets&&S.brackets.some(function(b){return b.rounds.some(function(r){return r.some(function(m){return !m.bye&&(m.winner||isStarted(ensure(m)))})})});
+    if(hasRes&&!genArmed){genArmed=true;this.textContent='Confirmar: apagar resultados';this.classList.add('warn');genTimer=setTimeout(disarmGen,4000);return}
+    disarmGen();generate();
+  });
+
+  document.addEventListener('click',function(e){
+    if(IS_TELAO)return;
+    var t=e.target.closest?e.target.closest('[data-del],[data-tv],[data-tvtab],[data-tvact],[data-act],[data-sb],[data-weigh],[data-wact],[data-adj],[data-adjact],[data-rrset],[data-rrclear]'):null;
+    if(!t)return;
+    if(t.hasAttribute('data-del')){S.fighters=S.fighters.filter(function(f){return f.id!==t.getAttribute('data-del')});if(!S.fighters.length&&S.brackets){resetChamp();return}save();renderList();renderHint();return}
+    if(t.hasAttribute('data-rrset')){
+      var rb=t.closest('.rr-tie'),rv=[].map.call(rb.querySelectorAll('select'),function(x){return x.value});
+      if(new Set(rv).size!==rv.length){rb.querySelector('.err').textContent='Escolha um lutador diferente para cada posição.';return}
+      var ri=+t.getAttribute('data-rrset');S.brackets[ri].rrManual=rv;save();refresh(ri);return;
+    }
+    if(t.hasAttribute('data-rrclear')){var rj=+t.getAttribute('data-rrclear');delete S.brackets[rj].rrManual;save();refresh(rj);return}
+    if(t.hasAttribute('data-weigh')){WEIGH=t.getAttribute('data-weigh');renderList();var wi=$('#wpeso');if(wi)wi.focus();return}
+    if(t.hasAttribute('data-wact')){weighAct(t.getAttribute('data-wact'));return}
+    if(t.hasAttribute('data-adj')){
+      var av=t.getAttribute('data-adj'),ai=av==='cur'?TV.i:+av;
+      if(S.brackets&&ai>=0&&ai<S.brackets.length)adjOpen(ai);
+      return;
+    }
+    if(t.hasAttribute('data-adjact')){adjAct(t);return}
+    if(t.hasAttribute('data-tv')){openTV(+t.getAttribute('data-tv'));return}
+    if(t.hasAttribute('data-tvtab')){TV.i=+t.getAttribute('data-tvtab');tvRender();return}
+    if(t.hasAttribute('data-tvact')){
+      var a=t.getAttribute('data-tvact');
+      if(a==='close')closeTV();
+      else if(a==='next')tvNext();
+      else if(a==='rot'){TV.rot=!TV.rot;tvRot()}
+      else if(a==='fs'){if(document.fullscreenElement)exitFS();else enterFS()}
+      return;
+    }
+    if(t.getAttribute('data-act')==='open'){openBoard(+t.getAttribute('data-b'),+t.getAttribute('data-r'),+t.getAttribute('data-m'));return}
+    if(t.hasAttribute('data-sb')){boardAction(t)}
+  });
+  document.addEventListener('submit',function(e){
+    var f=e.target;if(!f||!f.hasAttribute)return;
+    if(f.hasAttribute('data-wform')){e.preventDefault();weighSubmit(f.getAttribute('data-wform'))}
+    else if(f.hasAttribute('data-repform')){e.preventDefault();adjReplace(f.getAttribute('data-repform'))}
+  });
+  document.addEventListener('change',function(e){
+    if(!e.target)return;
+    if(e.target.id==='sbMethod'&&T){T.userMethod=true;T.method=e.target.value}
+    else if(e.target.id==='tvMat'){S.myMat=+e.target.value;save()}
+    else if(e.target.hasAttribute&&e.target.hasAttribute('data-matsel')){
+      var bi=+e.target.getAttribute('data-matsel');S.brackets[bi].mat=+e.target.value;save();renderResults();if(TV.open)tvRender();
+    }
+  });
+  document.addEventListener('keydown',function(e){
+    if(IS_TELAO)return;
+    var t=e.target;
+    if((e.key==='Enter'||e.key===' ')&&t&&t.matches&&t.matches('[data-act="open"]')){e.preventDefault();t.click();return}
+    if(T&&boardKey(e))return;
+    if(e.key==='Escape'){if(!$('#adj').hidden)adjClose();else if(T)closeBoard();else if(TV.open)closeTV();return}
+    if(TV.open&&!T&&S.brackets&&!(t&&t.tagName==='SELECT')){
+      if(e.key==='ArrowRight')tvGo(1);
+      else if(e.key==='ArrowLeft')tvGo(-1);
+    }
+  });
+  document.addEventListener('fullscreenchange',paintFsBtn);
+  window.addEventListener('resize',function(){if(TV.open)tvFit()});
+
+  if(IS_TELAO){
+    document.body.classList.add('telao');
+    (function(){
+      var tlT,btn=$('#tlExit');btn.hidden=false;
+      function wake(){document.body.classList.add('awake');document.body.classList.remove('idle');clearTimeout(tlT);tlT=setTimeout(function(){document.body.classList.remove('awake');document.body.classList.add('idle')},3000)}
+      function sair(){if(DESK&&DESK.closeTelao)DESK.closeTelao();else window.close()}
+      ['mousemove','mousedown','touchstart','keydown'].forEach(function(ev){document.addEventListener(ev,wake,{passive:true})});
+      document.addEventListener('keydown',function(e){if(e.key==='Escape')sair()});
+      btn.addEventListener('click',sair);wake();
+    })();
+    if(DESK){DESK.onState(telaoUpdate);DESK.requestState()}
+    telaoRender(true);
+    setInterval(telaoCycle,15000);
+  }else{
+    load();
+    $('#tempo').value=S.tempo;
+    $('#modo').value=S.modo;
+    initCfg();
+    renderList();renderHint();renderResults();
+    if(DESK){DESK.onStateRequest(sendState);DESK.onTelaoStatus(function(o){TELAO_OPEN=o;paintTelao()})}
+    paintTelao();broadcastSoon();
+  }
+})();
+</script>
+</body>
+</html>
