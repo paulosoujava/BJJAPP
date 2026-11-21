@@ -2,6 +2,7 @@ const { app, BrowserWindow, Menu, shell, nativeTheme, powerSaveBlocker, ipcMain,
 const path = require('path');
 
 // Mantém os dados salvos das versões anteriores (antes o app se chamava Chaveador Jiu-Jitsu).
+app.setName('BJJ Arena');
 app.setPath('userData', path.join(app.getPath('appData'), 'Chaveador Jiu-Jitsu'));
 
 let mainWin = null;
@@ -36,6 +37,7 @@ function createWindow() {
     minWidth: 900,
     minHeight: 600,
     title: 'BJJ Arena',
+    icon: path.join(__dirname, 'build', 'icon.png'),
     backgroundColor: nativeTheme.shouldUseDarkColors ? '#0E1316' : '#ECEFF1',
     webPreferences: webPrefs()
   });
@@ -68,6 +70,7 @@ function openTelao() {
   telaoWin = new BrowserWindow({
     ...placement,
     title: 'Telão',
+    icon: path.join(__dirname, 'build', 'icon.png'),
     backgroundColor: '#0B1013',
     autoHideMenuBar: true,
     webPreferences: webPrefs()
@@ -136,6 +139,9 @@ const template = [
 ];
 
 app.whenReady().then(() => {
+  if (process.platform === 'darwin' && app.dock) {
+    try { app.dock.setIcon(path.join(__dirname, 'build', 'icon.png')); } catch (e) {}
+  }
   // Evita que a tela da TV ou do notebook apague durante o campeonato.
   powerSaveBlocker.start('prevent-display-sleep');
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));

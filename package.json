@@ -1,7 +1,7 @@
 {
   "name": "bjj-arena",
   "productName": "BJJ Arena",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "BJJ Arena: cadastro de lutadores, chaveamento, placar e telão para campeonatos de jiu-jitsu",
   "main": "main.js",
   "author": {
@@ -11,12 +11,13 @@
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
-    "start": "electron .",
+    "start": "node scripts/brand-dev.js && electron .",
     "app": "electron-builder --dir",
     "dist": "electron-builder",
     "dist:mac": "electron-builder --mac",
     "dist:win": "electron-builder --win",
-    "dist:linux": "electron-builder --linux"
+    "dist:linux": "electron-builder --linux",
+    "postinstall": "node scripts/brand-dev.js"
   },
   "devDependencies": {
     "electron": "^45.3.2",
@@ -34,7 +35,8 @@
     "files": [
       "main.js",
       "preload.js",
-      "app/**/*"
+      "app/**/*",
+      "build/icon.png"
     ],
     "mac": {
       "category": "public.app-category.sports",
