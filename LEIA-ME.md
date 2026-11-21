@@ -1,4 +1,4 @@
-# BJJ Arena — versão 1.6.0
+# BJJ Arena — versão 1.6.1
 
 Programa para Mac que cadastra lutadores, monta as chaves do campeonato, controla o placar e mostra tudo em TV/telão.
 
@@ -26,6 +26,8 @@ Sem certificado de assinatura, Windows (SmartScreen: "Mais informações → Exe
 5. **Telão** (botão ou **Cmd+T**): abre uma janela separada para o público. Sempre abre em tela cheia: no segundo monitor/TV, se houver; com uma tela só, em um espaço próprio do Mac (volte ao painel com Ctrl + setas ou deslizando 3 dedos; feche o telão com Cmd + W).
 
 ## Telão
+
+A janela do telão mostra só a exibição: o único botão é **Sair do Telão (ESC)**.
 
 Modos: **revezar** (alterna chaves, chamada e pódio a cada 15 s), **chaves** (espelha a aba do operador), **chamada** (por tatame) e **pódio**. Quando o operador abre uma luta, o telão mostra o placar ao vivo.
 
