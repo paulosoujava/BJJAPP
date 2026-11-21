@@ -15,6 +15,12 @@ try {
     try { execSync(`/usr/libexec/PlistBuddy -c "Set :${k} 'BJJ Arena'" "${plist}"`); }
     catch (e) { execSync(`/usr/libexec/PlistBuddy -c "Add :${k} string 'BJJ Arena'" "${plist}"`); }
   }
+  // Novo identificador: o macOS guarda o nome do Dock em cache pelo identificador antigo (com.github.Electron).
+  const setKey = (k, t, v) => {
+    try { execSync(`/usr/libexec/PlistBuddy -c "Set :${k} ${v}" "${plist}"`); }
+    catch (e) { execSync(`/usr/libexec/PlistBuddy -c "Add :${k} ${t} ${v}" "${plist}"`); }
+  };
+  setKey('CFBundleIdentifier', 'string', 'br.com.bjjarena.dev');
   const png = path.join(root, 'build', 'icon.png');
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'bjj-'));
   const set = path.join(tmp, 'icon.iconset');
@@ -27,6 +33,10 @@ try {
   execSync(`iconutil -c icns "${set}" -o "${icns}"`);
   fs.copyFileSync(icns, path.join(app, 'Contents', 'Resources', 'electron.icns'));
   execSync(`touch "${app}"`);
+  try {
+    execSync(`/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f -R -trusted "${app}"`, { stdio: 'ignore' });
+  } catch (e) {}
+  try { execSync('killall Dock', { stdio: 'ignore' }); } catch (e) {}
   console.log('BJJ Arena: nome e ícone aplicados ao modo de desenvolvimento.');
 } catch (e) {
   console.log('brand-dev ignorado:', e.message);
