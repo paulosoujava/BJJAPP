@@ -1,4 +1,4 @@
-# BJJ Arena — versão 1.5.0
+# BJJ Arena — versão 1.6.0
 
 Programa para Mac que cadastra lutadores, monta as chaves do campeonato, controla o placar e mostra tudo em TV/telão.
 
@@ -55,6 +55,10 @@ Botão **Ajustar** na chave: marcar falta (WO), trocar um lutador por outro, e a
 ## Tatames
 
 Cada chave pode ser atribuída a um tatame. A aba **Chamada** mostra a fila de lutas por tatame e "Em luta". Atenção: só um placar/relógio roda por vez no programa.
+
+## Avisos e confirmações
+
+Campos obrigatórios (nome do campeonato, nome, peso e faixa do lutador) são validados com pop-up de erro. O programa pede confirmação antes de **iniciar** o campeonato, gerar chaves de novo (apaga resultados), remover lutador depois das chaves, limpar a lista, **encerrar** o campeonato, excluir do histórico e **fechar o programa** (X da janela).
 
 ## Histórico de campeonatos
 

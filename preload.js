@@ -9,6 +9,10 @@ contextBridge.exposeInMainWorld('desktop', {
   onStateRequest: (cb) => ipcRenderer.on('state:request', () => cb()),
   openTelao: () => ipcRenderer.send('telao:open'),
   closeTelao: () => ipcRenderer.send('telao:close'),
+  quit: () => ipcRenderer.send('app:quit'),
+  onCloseRequest: (cb) => ipcRenderer.on('app:close-request', () => cb()),
+  confirmClose: () => ipcRenderer.send('app:close-confirm'),
+  cancelClose: () => ipcRenderer.send('app:close-cancel'),
   onHistory: (cb) => ipcRenderer.on('menu:history', () => cb()),
   onTelaoStatus: (cb) => ipcRenderer.on('telao:status', (_e, open) => cb(!!open))
 });

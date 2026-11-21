@@ -7,6 +7,8 @@ app.setPath('userData', path.join(app.getPath('appData'), 'Chaveador Jiu-Jitsu')
 let mainWin = null;
 let telaoWin = null;
 let lastState = null;
+let forceClose = false;
+let wantQuit = false;
 
 const webPrefs = () => ({
   preload: path.join(__dirname, 'preload.js'),
@@ -27,6 +29,7 @@ function lockLinks(win) {
 }
 
 function createWindow() {
+  forceClose = false;
   mainWin = new BrowserWindow({
     width: 1320,
     height: 860,
@@ -38,6 +41,12 @@ function createWindow() {
   });
   mainWin.loadFile(path.join(__dirname, 'app', 'index.html'));
   lockLinks(mainWin);
+  // Ao fechar (X, Cmd+Q, Alt+F4) a tela do programa pergunta se quer mesmo sair.
+  mainWin.on('close', (e) => {
+    if (forceClose || !mainWin || mainWin.webContents.isCrashed()) return;
+    e.preventDefault();
+    sendToMain('app:close-request');
+  });
   mainWin.on('closed', () => {
     mainWin = null;
     if (telaoWin && !telaoWin.isDestroyed()) telaoWin.close();
@@ -89,6 +98,14 @@ ipcMain.on('state:request', (e) => {
   if (lastState) telaoWin.webContents.send('state:update', lastState);
   sendToMain('state:request');
 });
+ipcMain.on('app:quit', (e) => { if (fromMain(e) && mainWin) mainWin.close(); });
+ipcMain.on('app:close-confirm', (e) => {
+  if (!fromMain(e)) return;
+  forceClose = true;
+  if (wantQuit) app.quit(); else if (mainWin) mainWin.close();
+});
+ipcMain.on('app:close-cancel', (e) => { if (fromMain(e)) wantQuit = false; });
+app.on('before-quit', () => { wantQuit = true; });
 ipcMain.on('telao:open', (e) => { if (fromMain(e)) openTelao(); });
 ipcMain.on('telao:close', (e) => { if (fromMain(e) || fromTelao(e)) closeTelao(); });
 
