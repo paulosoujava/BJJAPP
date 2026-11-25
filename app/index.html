@@ -719,6 +719,15 @@ body.remote [data-adj]{display:none!important}
   .cert-sign{display:flex;justify-content:space-around;margin-top:12mm;font:11pt Arial,sans-serif;color:#555}.cert-sign span{border-top:.3mm solid #555;padding-top:2mm;min-width:60mm}
 }
 /* ---------- acesso: login, root, bloqueio ---------- */
+.hours{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-top:8px;width:100%}.hday{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:color-mix(in srgb,var(--surface-2) 40%,transparent)}
+.hday h4{margin:0 0 6px;font:700 1rem var(--display,inherit);text-transform:uppercase;letter-spacing:.06em}
+.hper{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;width:100%}.hpd{display:grid;grid-template-columns:74px minmax(0,1fr);gap:4px 10px;align-items:start;border-top:1px dashed var(--line);padding-top:8px}.hpd:first-child{border-top:0;padding-top:0}.hpd .hrows,.hpd .btn.link{grid-column:2}.hpl{padding-top:12px}
+.hpl{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.hrows{display:grid;gap:6px}.hrow{display:grid;grid-template-columns:128px minmax(0,1fr) 34px;gap:6px}.hrow input{height:40px!important;padding:0 8px!important;font-size:.9rem!important}
+.hx{border:0;background:var(--surface-2);color:var(--muted);border-radius:8px;cursor:pointer;font-size:1.2rem}.hx:hover{color:var(--danger)}
+.hpd .btn.link{justify-self:start;height:auto;padding:2px 0;font-size:.82rem}
+@media (max-width:520px){.hpd{grid-template-columns:1fr}.hpd .hrows,.hpd .btn.link{grid-column:1}.hpl{padding-top:0}.hrow{grid-template-columns:112px minmax(0,1fr) 34px}}
+
 .au{--bg:#070B0E;--surface:#0F171C;--surface-2:#16212A;--line:#20303A;--line-strong:#33454F;--fg:#EEF3F5;--muted:#93A2AC;--accent:#F2BF3C;--accent-fg:#1a1203;--danger:#FF7A6E;--danger-fg:#1a0705;
   position:fixed;inset:0;z-index:8000;overflow:auto;background:var(--bg);color:var(--fg);display:grid;place-items:center;padding:max(16px,env(safe-area-inset-top)) 16px 24px}
 .au[hidden]{display:none}
@@ -2478,6 +2487,7 @@ body.au-on .wrap{display:none}
   function paintNetState(){var i=NET.info;$('#netState').textContent=i&&i.running?'Rede ligada · porta '+i.port:''}
   function netOpen(){$('#net').hidden=false;$('#net').scrollTop=0;netRender();netRefresh()}
   function netClose(){$('#net').hidden=true;try{$('#netOpen').focus()}catch(e){}}
+  if(!DESK){var np=$('#netPanel');np.hidden=true;np.style.display='none'}
   $('#netOpen').addEventListener('click',netOpen);
   $('#netClose').addEventListener('click',netClose);
   $('#netBody').addEventListener('change',function(e){if(e.target.id==='netIp'){NET.ip=e.target.value;netRender()}});
@@ -3126,7 +3136,24 @@ body.au-on .wrap{display:none}
   });
   $('#bkOut').addEventListener('click',function(){logout()});
 
-  function hoursHtml(h){h=h||{};return '<div class="au-hours">'+WD.map(function(d){return '<div class="field"><label for="ph_'+d[0]+'">'+d[1]+'</label><input id="ph_'+d[0]+'" data-hd="'+d[0]+'" type="text" maxlength="40" placeholder="Fechado" value="'+esc(h[d[0]]||'')+'"></div>'}).join('')+'</div>'}
+  var PER=[['manha','Manhã'],['tarde','Tarde'],['noite','Noite']];
+  var WDL={seg:'Segunda-feira',ter:'Terça-feira',qua:'Quarta-feira',qui:'Quinta-feira',sex:'Sexta-feira',sab:'Sábado',dom:'Domingo'};
+  function hrow(e){e=e||{};return '<div class="hrow"><input type="time" data-ht aria-label="Horário" value="'+esc(e.t||'')+'"><input type="text" data-hn maxlength="30" aria-label="Título da aula" placeholder="Ex.: Misto, Kids, Competição" value="'+esc(e.n||'')+'"><button type="button" class="hx" data-hprm aria-label="Remover horário" title="Remover">&times;</button></div>'}
+  function hoursHtml(h){
+    h=h&&typeof h==='object'?h:{};
+    return '<div class="hours">'+WD.map(function(d){
+      var day=h[d[0]]&&typeof h[d[0]]==='object'?h[d[0]]:{};
+      return '<section class="hday" data-day="'+d[0]+'"><h4>'+WDL[d[0]]+'</h4><div class="hper">'+PER.map(function(p){
+        var L=Array.isArray(day[p[0]])?day[p[0]]:[];
+        return '<div class="hpd" data-per="'+p[0]+'"><span class="hpl">'+p[1]+'</span><div class="hrows">'+L.map(hrow).join('')+'</div><button type="button" class="btn link" data-hpadd>+ horário</button></div>';
+      }).join('')+'</div></section>';
+    }).join('')+'</div>';
+  }
+  document.addEventListener('click',function(e){
+    var t=e.target&&e.target.closest?e.target.closest('[data-hpadd],[data-hprm]'):null;if(!t)return;
+    if(t.hasAttribute('data-hpadd')){var rows=t.parentNode.querySelector('.hrows');rows.insertAdjacentHTML('beforeend',hrow());var inp=rows.lastChild.querySelector('input');try{inp.focus()}catch(x){}}
+    else{var r=t.closest('.hrow');if(r)r.parentNode.removeChild(r)}
+  });
   function profHtml(p){
     p=p||{};
     function f(id,l,v,ph,full,t){return '<div class="field'+(full?' full':'')+'"><label for="'+id+'">'+l+'</label><input id="'+id+'" type="'+(t||'text')+'" maxlength="120" placeholder="'+esc(ph||'')+'" value="'+esc(v||'')+'"></div>'}
@@ -3134,7 +3161,7 @@ body.au-on .wrap{display:none}
       f('pfPh','WhatsApp / telefone *',phoneMask(p.phone||''),'(48) 99999-0000',false,'tel')+f('pfEm','E-mail de contato',p.email,'contato@academia.com',false,'email')+
       f('pfSite','Site',p.site,'https://')+f('pfCity','Cidade / UF',p.city,'Florianópolis / SC')+
       f('pfAd','Endereço *',p.address,'Rua, número, bairro',true)+'</div>'+
-      '<div class="au-sec" style="margin-top:14px">Horários de funcionamento *</div><p class="au-hint">Preencha ao menos um dia (ex.: 18:00 às 21:00). Deixe em branco os dias fechados.</p>'+hoursHtml(p.hours);
+      '<div class="au-sec" style="margin-top:14px">Horários de funcionamento *</div><p class="au-hint">Para cada dia, adicione os horários de cada período (manhã, tarde, noite) com um título, como “07:00 Misto”, “17:00 Misto”, “20:30 Kids”. Dias sem aula ficam vazios.</p>'+hoursHtml(p.hours);
   }
   function profRead(){
     var g=function(id){return ($('#'+id).value||'').trim()},ph=digits(g('pfPh')),hours={},n=0;
@@ -3142,8 +3169,25 @@ body.au-on .wrap{display:none}
     if(ph.length<10||ph.length>13){needF('#pfPh','Informe o WhatsApp/telefone com DDD.');return null}
     if(g('pfEm')&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(g('pfEm'))){needF('#pfEm','E-mail de contato inválido.');return null}
     if(g('pfAd').length<5){needF('#pfAd','Informe o endereço da academia.');return null}
-    [].forEach.call(document.querySelectorAll('[data-hd]'),function(i){var v=i.value.trim();if(v){hours[i.getAttribute('data-hd')]=v;n++}});
-    if(!n){needF('#ph_seg','Informe o horário de funcionamento de pelo menos um dia.');return null}
+    var bad=null;
+    [].forEach.call(document.querySelectorAll('.hday'),function(dy){
+      var d=dy.getAttribute('data-day'),o={};
+      [].forEach.call(dy.querySelectorAll('.hpd'),function(pp){
+        var L=[];
+        [].forEach.call(pp.querySelectorAll('.hrow'),function(r){
+          var ti=r.querySelector('[data-ht]'),tn=r.querySelector('[data-hn]'),tv=ti.value.trim(),nv=tn.value.trim().replace(/\s+/g,' ');
+          if(!tv&&!nv)return;
+          if(!tv){bad=bad||[ti,'Informe o horário de '+WDL[d]+'.'];return}
+          if(!nv){bad=bad||[tn,'Dê um título ao horário das '+tv+' de '+WDL[d]+' (ex.: Misto, Kids).'];return}
+          L.push({t:tv,n:nv});
+        });
+        L.sort(function(a,b){return a.t<b.t?-1:a.t>b.t?1:0});
+        if(L.length){o[pp.getAttribute('data-per')]=L;n+=L.length}
+      });
+      if(Object.keys(o).length)hours[d]=o;
+    });
+    if(bad){toast('err',bad[1]);bad[0].focus();return null}
+    if(!n){var fb=document.querySelector('[data-hpadd]');toast('err','Informe pelo menos um horário de funcionamento.');if(fb)fb.focus();return null}
     return {instagram:g('pfIg'),youtube:g('pfYt'),phone:ph,email:g('pfEm'),site:g('pfSite'),city:g('pfCity'),address:g('pfAd'),hours:hours};
   }
   document.addEventListener('input',function(e){var t=e.target;if(t&&t.id==='pfPh'){var p=t.selectionStart===t.value.length;t.value=phoneMask(t.value)}});
