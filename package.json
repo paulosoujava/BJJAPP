@@ -1,7 +1,7 @@
 {
   "name": "bjj-arena",
   "productName": "BJJ Arena",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "BJJ Arena: cadastro de lutadores, chaveamento, placar e telão para campeonatos de jiu-jitsu",
   "main": "main.js",
   "author": {

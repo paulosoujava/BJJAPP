@@ -1325,6 +1325,7 @@ body:has(#gate:not([hidden])) .gate-bg{opacity:1}
   var BOARD=null,REV=0,bcT=null,TELAO_OPEN=false;
   var S={gen:'',fighters:[],tempo:5,modo:'faixa-peso',brackets:null,people:{},sig:'',tatames:1,tempoModo:'unico',temposFaixa:{branca:5,azul:6,roxa:7,marrom:8,preta:10},online:{url:'https://iaofttelgwvzuaxzsqqq.supabase.co',key:'sb_publishable_2gYH_CexE4Ku3c_13o779w_e7tunTEa',site:'https://bjjapp-app.vercel.app/inscricao.html',short:true,eventId:'',admin:'',open:true,link:''},autoPen:true,rr3:true,divIdade:true,divSexo:true,sepEquipe:true,som:true,myMat:0,customBelts:[],evento:{nome:'',data:''},history:[]};
   var TV={open:false,i:0,rot:false,iv:null,msgT:null};
+  var S_DEF=JSON.stringify(S),SY={on:false,rev:0,busy:false,t:null,gen:0,iv:null,pendingApply:null,pushAfter:false};
   var T=null; // luta aberta no placar
   var WEIGH=null; // lutador em pesagem
   var ADJ={bi:-1,rep:null}; // chave em ajuste
@@ -1345,6 +1346,7 @@ body:has(#gate:not([hidden])) .gate-bg{opacity:1}
     REV++;
     if(REMOTE){remoteSendSoon();return}
     try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+    syDirty();
     broadcastSoon();
   }
   var WCH=null;try{if(!DESK&&window.BroadcastChannel)WCH=new BroadcastChannel('bjj-telao')}catch(e){}
@@ -3369,13 +3371,77 @@ body:has(#gate:not([hidden])) .gate-bg{opacity:1}
       AU.booted=true;
       KEY=LEGACY_KEY+':'+a.id;
       if(!lsGet(KEY)&&lsGet(LEGACY_KEY)&&!lsGet('bjj-legacy-claimed')){lsSet(KEY,lsGet(LEGACY_KEY));lsSet('bjj-legacy-claimed',a.id)}
-      bootApp();
-      var ab=$('#acctBtn');ab.hidden=false;ab.textContent=a.name;ab.title='Minha conta';
-      clearInterval(AU.tm);AU.tm=setInterval(recheck,5*60*1000);
-      window.addEventListener('focus',recheck);
-      var d=daysTo(a.due);
-      if(d>=0&&d<=7)setTimeout(function(){toast('warn',d===0?'Sua assinatura vence hoje. Fale com a gente para renovar.':'Sua assinatura vence em '+d+(d===1?' dia':' dias')+' ('+brDate(a.due)+').',9000)},1200);
+      $('#auL').textContent='Sincronizando seus campeonatos…';scr('auth');
+      syBoot().then(function(){
+        scr(null);
+        bootApp();
+        var ab=$('#acctBtn');ab.hidden=false;ab.textContent=a.name;ab.title='Minha conta';
+        clearInterval(AU.tm);AU.tm=setInterval(recheck,5*60*1000);
+        window.addEventListener('focus',recheck);
+        if(SY.pushAfter){SY.pushAfter=false;syMeta('dirty','1');if(!syMeta('at'))syMeta('at',Date.now());syPush()}
+        clearInterval(SY.iv);SY.iv=setInterval(syTick,15000);
+        window.addEventListener('focus',syPull);window.addEventListener('online',syPush);
+        var d=daysTo(a.due);
+        if(d>=0&&d<=7)setTimeout(function(){toast('warn',d===0?'Sua assinatura vence hoje. Fale com a gente para renovar.':'Sua assinatura vence em '+d+(d===1?' dia':' dias')+' ('+brDate(a.due)+').',9000)},1200);
+      });
     }
+  }
+
+  /* ---------- sincronização do campeonato na nuvem (web e desktop iguais) ---------- */
+  function syMeta(k,v){var kk=KEY+':sync:'+k;if(v===undefined)return lsGet(kk);if(v===null)lsDel(kk);else lsSet(kk,String(v))}
+  function syLocal(){try{return localStorage.getItem(KEY)}catch(e){return null}}
+  function syTimeout(p,ms){return Promise.race([p,new Promise(function(_,rj){setTimeout(function(){rj(new Error('rede'))},ms)})])}
+  function syBoot(){
+    SY.rev=+(syMeta('rev')||0);
+    return syTimeout(rpc('state_get',{p_token:AU.token}),8000).then(function(r){
+      SY.on=true;
+      var dirty=syMeta('dirty')==='1',lat=+(syMeta('at')||0),local=syLocal();
+      if(r&&r.rev>0&&r.data){
+        var sAt=Date.parse(r.updated_at)||0;
+        if(dirty&&local&&lat>sAt){SY.rev=r.rev;syMeta('rev',r.rev);SY.pushAfter=true;return}
+        try{localStorage.setItem(KEY,JSON.stringify(r.data))}catch(e){}
+        SY.rev=r.rev;syMeta('rev',r.rev);syMeta('dirty',null);
+      }else{SY.rev=0;syMeta('rev',0);if(local)SY.pushAfter=true}
+    }).catch(function(){SY.on=true;if(syMeta('dirty')==='1')SY.pushAfter=true});
+  }
+  function syDirty(){
+    if(!SY.on||IS_TELAO||REMOTE||AU.role!=='academy')return;
+    SY.gen++;syMeta('dirty','1');syMeta('at',Date.now());
+    clearTimeout(SY.t);SY.t=setTimeout(syPush,2500);
+  }
+  function syPush(){
+    if(!SY.on||SY.busy||syMeta('dirty')!=='1')return;
+    var raw=syLocal(),data;if(!raw)return;try{data=JSON.parse(raw)}catch(e){return}
+    SY.busy=true;var g=SY.gen;
+    rpc('state_put',{p_token:AU.token,p_data:data,p_rev:SY.rev}).then(function(r){
+      SY.busy=false;
+      if(r&&r.ok){SY.rev=r.rev;syMeta('rev',r.rev);if(g===SY.gen)syMeta('dirty',null);else{clearTimeout(SY.t);SY.t=setTimeout(syPush,1500)}return}
+      if(r&&r.conflict){
+        var sAt=Date.parse(r.updated_at)||0,lat=+(syMeta('at')||0);
+        if(lat>=sAt){SY.rev=r.rev;syMeta('rev',r.rev);clearTimeout(SY.t);SY.t=setTimeout(syPush,300)}
+        else syApply(r.rev,r.data);
+      }
+    }).catch(function(){SY.busy=false;clearTimeout(SY.t);SY.t=setTimeout(syPush,15000)});
+  }
+  function syPull(){
+    if(!SY.on||SY.busy||syMeta('dirty')==='1'||document.hidden)return;
+    rpc('state_get',{p_token:AU.token}).then(function(r){if(r&&r.rev>SY.rev&&r.data&&syMeta('dirty')!=='1')syApply(r.rev,r.data)}).catch(function(){});
+  }
+  function syTick(){
+    if(SY.pendingApply&&!syBusyUI()){var p=SY.pendingApply;SY.pendingApply=null;syApply(p[0],p[1]);return}
+    syPull();
+  }
+  function syBusyUI(){return !!(T||!$('#sb').hidden||!$('#dlg').hidden)}
+  function syApply(rev,data){
+    if(syBusyUI()){SY.pendingApply=[rev,data];return}
+    try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}
+    SY.rev=rev;syMeta('rev',rev);syMeta('dirty',null);
+    S=JSON.parse(S_DEF);load();applyCustom();
+    $('#tempo').value=S.tempo;$('#modo').value=S.modo;
+    initCfg();renderList();renderHint();renderResults();renderHistBtn();paintTelao();broadcastSoon();
+    if(TV.open)tvRender();
+    if(S.online.eventId){clearInterval(REG.bg);REG.bg=setInterval(function(){if(S.online.eventId&&S.online.open!==false)regFetch(true)},30000);setTimeout(function(){regFetch(true)},800)}
+    toast('ok','Atualizado com o que foi feito em outro aparelho.',3500);
   }
   var rcBusy=false;
   function recheck(){

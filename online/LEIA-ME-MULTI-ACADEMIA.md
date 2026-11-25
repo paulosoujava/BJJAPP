@@ -22,3 +22,12 @@ Rode `online/root-seed.sql.modelo` no SQL Editor do Supabase com e-mail e senha 
 - Os campeonatos ficam no computador/navegador de cada academia (sem sincronizar na nuvem).
 - CPF fica guardado em texto no banco (para o painel root). Trate como dado pessoal (LGPD).
 - O plano gratuito do Supabase pausa o projeto após 7 dias sem uso; para vender, considere o plano Pro.
+
+## Sincronização web ↔ desktop (versão 1.8.1)
+
+Rode `supabase-sync.sql` no SQL Editor do Supabase (depois do `supabase-multi.sql`).
+Ele cria a tabela `academy_state` e as funções `state_get` / `state_put`.
+
+Com isso, o campeonato de cada academia (atletas, chaves, placar, histórico e o link de inscrição)
+fica guardado na nuvem: o que é feito na versão online aparece no aplicativo do computador e vice-versa.
+Sem internet, o app segue funcionando com a cópia local e envia as mudanças quando a conexão volta.
