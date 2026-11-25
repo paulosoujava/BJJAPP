@@ -5,7 +5,7 @@
 O link público usa o **Supabase** (gratuito) para guardar as inscrições. O app só lê as inscrições do seu campeonato, com uma chave secreta que fica no seu computador.
 
 1. Crie uma conta em supabase.com e um projeto novo (guarde a senha do banco).
-2. No projeto: **SQL Editor > New query**, cole todo o conteúdo de `supabase.sql` e clique **Run**.
+2. No projeto: **SQL Editor > New query**, cole todo o conteúdo de `migrations/000_inscricoes_online.sql` e clique **Run**.
 3. Em **Project Settings > API**, copie o **Project URL** e a chave **anon / publishable**.
 4. Publique `inscricao.html` junto do seu site (por exemplo na pasta do site no Vercel, ficando `https://SEU-SITE/inscricao.html`).
 5. No BJJ Arena: dê um nome ao campeonato, vá em **Inscritos > Link de inscrição**, preencha URL, chave e o endereço da página e clique **Criar link de inscrição**.

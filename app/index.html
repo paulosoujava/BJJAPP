@@ -871,6 +871,7 @@ body.remote [data-adj]{display:none!important}
 @media (max-width:900px){.acct-btn,.top .acct-btn{position:static;margin-bottom:12px}.au-grid,.au-hours{grid-template-columns:1fr}}
 body.au-on .wrap,body.au-on .toasts{visibility:visible}
 body.au-on .wrap{display:none}
+.vr-list{display:grid;gap:8px;max-height:min(56vh,520px);overflow:auto;margin-top:12px;width:100%}.vr{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:var(--surface-2,#16212A);border:1px solid var(--line,#20303A)}.vr>div{min-width:0}.vr b{display:block;overflow-wrap:anywhere}.vr small{color:var(--muted,#93A2AC)}.vr.er b{font-weight:600;font-size:.95rem}.vr pre{white-space:pre-wrap;font-size:.75rem;color:var(--muted,#93A2AC);max-height:200px;overflow:auto}.vr details{margin-top:6px}
 /* ===== Painel "Público ao vivo" ===== */
 #net .reg-in{max-width:none;min-height:100vh;display:flex;flex-direction:column;padding-bottom:clamp(18px,3vw,40px)}
 #net #netBody{flex:1;display:flex}
@@ -1295,7 +1296,7 @@ body:has(#gate:not([hidden])) .gate-bg{opacity:1}
   <div class="rt-in">
     <header class="reg-h">
       <div><span class="eyebrow">Área root · <span id="rpMail"></span></span><h2 id="rpT">Academias</h2></div>
-      <div class="rt-hact"><button class="btn" type="button" id="rpPw">Alterar minha senha</button><button class="btn" type="button" id="rpOut">Sair</button></div>
+      <div class="rt-hact"><button class="btn" type="button" id="rpErr">Erros do app</button><button class="btn" type="button" id="rpPw">Alterar minha senha</button><button class="btn" type="button" id="rpOut">Sair</button></div>
     </header>
     <div class="rt-stats" id="rpStats"></div>
     <div class="rt-bar"><input id="rpQ" type="search" placeholder="Buscar por academia, responsável, e-mail ou CPF" aria-label="Buscar academia"><button class="btn primary" type="button" id="rpNew">+ Nova academia</button></div>
@@ -3266,6 +3267,33 @@ body:has(#gate:not([hidden])) .gate-bg{opacity:1}
 
   /* ---------- Acesso: root, academias, bloqueio ---------- */
   var SUP_WA='5548996297813',SITE_URL='https://bjjapp-app.vercel.app/',AUTHK='bjj-auth-v1',LEGACY_KEY='chaveador-jiujitsu-v1',OFFLINE_DAYS=7;
+  var APP_VER='1.9.0',DEVN=DESK?'desktop':'web';
+  /* registro de erros (vai para o painel root) */
+  var ERRS={n:0,seen:{}};
+  function reportErr(msg,stack){
+    try{
+      if(window.__NOAUTH)return;
+      msg=String(msg||'').slice(0,500);if(!msg||ERRS.n>=10||ERRS.seen[msg])return;ERRS.seen[msg]=1;ERRS.n++;
+      rpc('log_error',{p_token:AU.token||'',p_device:DEVN,p_version:APP_VER,p_msg:msg,p_stack:String(stack||'').slice(0,3000),p_url:(location.pathname+location.hash).slice(0,300)}).catch(function(){});
+    }catch(e){}
+  }
+  window.addEventListener('error',function(e){reportErr(e.message,e.error&&e.error.stack)});
+  window.addEventListener('unhandledrejection',function(e){var r=e.reason;reportErr('Promise: '+((r&&r.message)||r),r&&r.stack)});
+  /* sessão única: só um aparelho por academia */
+  function devName(d){return d==='desktop'?'no aplicativo do computador':d==='web'?'no navegador (versão online)':'em outro aparelho'}
+  function sessClaim(){
+    return rpc('session_claim',{p_token:AU.token,p_device:DEVN}).then(function(j){
+      if(j&&j.ok===false&&j.error==='sessao_em_uso')return 'Sua academia já está aberta '+devName(j.device)+'. Saia por lá para entrar aqui. Se aquele aparelho estiver desligado ou sem internet, aguarde 2 minutos e tente de novo.';
+      if(j&&j.ok===false)return AERR.sessao_invalida;
+      return '';
+    },function(){return ''});
+  }
+  function sessPing(){
+    if(AU.role!=='academy'||!AU.token)return;
+    rpc('session_ping',{p_token:AU.token}).then(function(j){
+      if(j&&j.ok===false&&j.error==='sessao_encerrada'){clearInterval(AU.hb);logoutLocal('Sua conta foi aberta em outro aparelho e esta sessão foi encerrada.')}
+    }).catch(function(){});
+  }
   var AU={role:'',token:'',acad:null,email:'',tmp:'',list:[],booted:false,tm:null,seenAt:0};
   var WD=[['seg','Segunda'],['ter','Terça'],['qua','Quarta'],['qui','Quinta'],['sex','Sexta'],['sab','Sábado'],['dom','Domingo']];
   var AERR={credenciais_invalidas:'E-mail ou senha incorretos.',muitas_tentativas:'Muitas tentativas erradas. Aguarde 15 minutos.',sem_permissao:'Sem permissão.',sessao_invalida:'Sua sessão expirou. Entre novamente.',
@@ -3323,7 +3351,13 @@ body:has(#gate:not([hidden])) .gate-bg{opacity:1}
       if(!j||!j.ok){toast('err',AERR[j&&j.error]||'Não foi possível entrar.');$('#auP').value='';$('#auP').focus();return}
       AU.token=j.token;AU.role=j.role;AU.tmp=pw;$('#auP').value='';
       if(j.role==='root'){AU.email=j.email;AU.tmp='';authSave();openRoot()}
-      else{AU.email=em;AU.seenAt=Date.now();handleAcademy(j.academy)}
+      else{
+        AU.email=em;AU.seenAt=Date.now();busy(b,true,'Entrando…');
+        sessClaim().then(function(m){busy(b,false);
+          if(m){AU.token='';AU.role='';lsDel(AUTHK);toast('err',m,9000);$('#auL').textContent=m;return}
+          handleAcademy(j.academy);
+        });
+      }
     }).catch(function(er){busy(b,false);toast('err',aerr(er))});
   });
   $('#auWa').addEventListener('click',function(e){e.preventDefault();openUrl(waUrl(SUP_WA,'Olá! Quero saber mais sobre o BJJ Arena.'))});
@@ -3448,6 +3482,8 @@ body:has(#gate:not([hidden])) .gate-bg{opacity:1}
         window.addEventListener('focus',recheck);
         if(SY.pushAfter){SY.pushAfter=false;syMeta('dirty','1');if(!syMeta('at'))syMeta('at',Date.now());syPush()}
         clearInterval(SY.iv);SY.iv=setInterval(syTick,15000);
+        clearInterval(AU.hb);AU.hb=setInterval(sessPing,60000);sessPing();
+        window.addEventListener('focus',sessPing);document.addEventListener('visibilitychange',function(){if(!document.hidden)sessPing()});
         window.addEventListener('focus',syPull);window.addEventListener('online',syPush);
         var d=daysTo(a.due);
         if(d>=0&&d<=7)setTimeout(function(){toast('warn',d===0?'Sua assinatura vence hoje. Fale com a gente para renovar.':'Sua assinatura vence em '+d+(d===1?' dia':' dias')+' ('+brDate(a.due)+').',9000)},1200);
@@ -3582,15 +3618,32 @@ body:has(#gate:not([hidden])) .gate-bg{opacity:1}
   }
   function acctModal(){
     var a=AU.acad||{},d=daysTo(a.due);
-    amOpen({eyebrow:'Minha conta',title:a.name||'Academia',ok:false,cancel:'Fechar',
+    amOpen({eyebrow:'Minha conta · versão '+APP_VER,title:a.name||'Academia',ok:false,cancel:'Fechar',
       html:'<div class="cred"><div><span class="mut">Login</span><br><b>'+esc(AU.email||a.email||'')+'</b></div><div><span class="mut">Assinatura válida até</span><br><b>'+esc(brDate(a.due))+'</b>'+(d>=0&&d<=7?' <span class="rt-tag warn">vence em '+d+' d</span>':'')+'</div></div>'+
-        '<div class="au-acts" style="width:100%"><button class="btn" type="button" data-ac="prof">Editar dados da academia</button><button class="btn" type="button" data-ac="pw">Alterar senha</button><button class="btn" type="button" data-ac="wa">Falar com o suporte</button><button class="btn warn" type="button" data-ac="out">Sair da conta</button></div>'});
+        '<div class="au-acts" style="width:100%"><button class="btn" type="button" data-ac="prof">Editar dados da academia</button><button class="btn" type="button" data-ac="pw">Alterar senha</button><button class="btn" type="button" data-ac="ver">Versões salvas (backup)</button><button class="btn" type="button" data-ac="wa">Falar com o suporte</button><button class="btn warn" type="button" data-ac="out">Sair da conta</button></div>'});
   }
   $('#amB').addEventListener('click',function(e){
     var t=e.target.closest('[data-ac]');if(!t)return;var a=t.getAttribute('data-ac');
+    if(a==='ver'){amClose();versionsModal();return}
     if(a==='prof'){amClose();profModal()}else if(a==='pw'){amClose();pwModal()}else if(a==='wa')openUrl(waUrl(SUP_WA,'Olá! Sou da academia '+((AU.acad||{}).name||'')+' e preciso de ajuda com o BJJ Arena.'));
     else if(a==='out'){amClose();dialog({tone:'danger',title:'Sair da conta?',text:'Seus dados ficam guardados neste computador. Para voltar, será preciso entrar de novo.',ok:'Sair',cancel:'Ficar',onOk:logout})}
   });
+  function fmtDT(iso){var d=new Date(iso);return isNaN(d)?'':d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'})+' às '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
+  function versionsModal(){
+    amOpen({eyebrow:'Backup automático',title:'Versões salvas',ok:false,cancel:'Fechar',html:'<p class="mut">Carregando versões…</p>'});
+    rpc('state_versions',{p_token:AU.token}).then(function(L){
+      L=L||[];
+      $('#amB').innerHTML='<p class="au-hint">O BJJ Arena guarda sozinho uma cópia do seu campeonato a cada 10 minutos de uso e sempre que um campeonato começa ou é encerrado (as 40 mais recentes). Restaurar substitui o campeonato atual, que também fica guardado aqui.</p>'+
+        (L.length?'<div class="vr-list">'+L.map(function(v){return '<div class="vr"><div><b>'+esc(v.nome||'Sem nome')+'</b><small>'+esc(fmtDT(v.saved_at))+' · '+v.atletas+' atletas · '+v.chaves+' chaves · '+v.historico+' no histórico</small></div><button class="btn" type="button" data-vr="'+v.id+'">Restaurar</button></div>'}).join('')+'</div>'
+        :'<div class="rt-empty">Ainda não há versões salvas. Elas aparecem conforme você usa o sistema.</div>');
+      $('#amB').onclick=function(e){
+        var t=e.target.closest('[data-vr]');if(!t)return;var id=+t.getAttribute('data-vr'),v=L.filter(function(x){return x.id===id})[0];
+        dialog({tone:'warn',title:'Restaurar esta versão?',text:'O campeonato atual será substituído pela versão de '+fmtDT(v.saved_at)+' ('+(v.nome||'sem nome')+'). O atual fica guardado nas versões salvas.',ok:'Restaurar',cancel:'Cancelar',onOk:function(){
+          rpc('state_restore',{p_token:AU.token,p_id:id}).then(function(r){amClose();syApply(r.rev,r.data);toast('ok','Versão restaurada.')}).catch(function(er){toast('err',aerr(er))});
+        }});
+      };
+    }).catch(function(er){$('#amB').innerHTML='<p class="err">'+esc(aerr(er))+'</p>'});
+  }
   $('#acctBtn').addEventListener('click',acctModal);
 
   /* ---------- painel ROOT ---------- */
@@ -3626,6 +3679,15 @@ body:has(#gate:not([hidden])) .gate-bg{opacity:1}
   $('#rpQ').addEventListener('input',rootRender);
   $('#rpOut').addEventListener('click',function(){logout()});
   $('#rpPw').addEventListener('click',pwModal);
+  $('#rpErr').addEventListener('click',function(){
+    amOpen({eyebrow:'Monitoramento',title:'Erros do aplicativo',ok:false,cancel:'Fechar',html:'<p class="mut">Carregando…</p>'});
+    rpc('root_errors',{p_token:AU.token}).then(function(L){
+      L=L||[];
+      $('#amB').innerHTML=L.length?'<p class="au-hint">Últimos '+L.length+' erros registrados nos aparelhos das academias (guardados por 90 dias).</p><div class="vr-list">'+L.map(function(x){
+        return '<div class="vr er"><div><b>'+esc(x.msg||'')+'</b><small>'+esc(fmtDT(x.at))+' · '+esc(x.academia||'sem login')+' · '+esc(x.device||'?')+' · v'+esc(x.version||'?')+(x.url?' · '+esc(x.url):'')+'</small>'+(x.stack?'<details><summary>Detalhes</summary><pre>'+esc(x.stack)+'</pre></details>':'')+'</div></div>'}).join('')+'</div>'
+        :'<div class="rt-empty">Nenhum erro registrado. Tudo certo por aqui.</div>';
+    }).catch(function(er){$('#amB').innerHTML='<p class="err">'+esc(aerr(er))+'</p>'});
+  });
   $('#rpNew').addEventListener('click',function(){acadModal(null)});
   $('#rpList').addEventListener('click',function(e){
     var t=e.target.closest('[data-ra]');if(!t)return;var id=t.closest('[data-id]').getAttribute('data-id'),a=AU.list.filter(function(x){return x.id===id})[0];if(!a)return;
@@ -3702,7 +3764,7 @@ body:has(#gate:not([hidden])) .gate-bg{opacity:1}
       AU.role='academy';AU.token=ac.token;AU.acad=ac.acad;AU.email=ac.acad.email;AU.seenAt=ac.at||0;
       $('#auL').textContent='Verificando acesso…';scr('auth');
       rpc('auth_me',{p_token:ac.token}).then(function(j){
-        if(j&&j.ok&&j.role==='academy'){AU.seenAt=Date.now();handleAcademy(j.academy)}else{lsDel(AUTHK);showLogin(msg||AERR.sessao_invalida)}
+        if(j&&j.ok&&j.role==='academy'){AU.seenAt=Date.now();sessClaim().then(function(m){if(m){lsDel(AUTHK);showLogin(m);return}handleAcademy(j.academy)})}else{lsDel(AUTHK);showLogin(msg||AERR.sessao_invalida)}
       }).catch(function(er){
         if(!isNet(er)){showLogin(msg);return}
         // sem internet: usa o último estado conhecido por até 7 dias

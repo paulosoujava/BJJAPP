@@ -1,4 +1,4 @@
-// Servidor de teste que imita as funções do Supabase (supabase.sql). Uso: node mock-server.js [porta]
+// Servidor de teste que imita as funções do Supabase (migrations/000_inscricoes_online.sql). Uso: node mock-server.js [porta]
 const http=require('http'),crypto=require('crypto');
 function create(){
   const ev={},regs=[];const sha=t=>crypto.createHash('sha256').update(t).digest('hex');
