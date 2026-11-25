@@ -90,3 +90,7 @@ Tudo é salvo automaticamente no computador. Se o Mac avisar que o app é de des
 **Licença e atualização.** Veja `ferramentas/LEIA-ME-LICENCA.md`. Enquanto você não gerar suas chaves, o programa funciona livre. O app avisa quando houver versão nova (arquivo `version.json` no repositório do site).
 
 Testes em equipamentos reais: `CHECKLIST-TESTES-REAIS.md`.
+
+
+## 1.8.0 · Multi-academia
+Login obrigatório; área root para cadastrar academias (vencimento, valor, status LIBERADO/BLOQUEADO, compartilhar acesso no WhatsApp); tela de bloqueio animada; primeiro acesso com perfil da academia; campeonatos vinculados à academia. Veja `online/LEIA-ME-MULTI-ACADEMIA.md`.

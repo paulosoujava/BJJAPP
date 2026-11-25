@@ -718,12 +718,86 @@ body.remote [data-adj]{display:none!important}
   .cert-camp{margin:4mm 0 0;font-size:13pt;color:#333}
   .cert-sign{display:flex;justify-content:space-around;margin-top:12mm;font:11pt Arial,sans-serif;color:#555}.cert-sign span{border-top:.3mm solid #555;padding-top:2mm;min-width:60mm}
 }
+/* ---------- acesso: login, root, bloqueio ---------- */
+.au{--bg:#070B0E;--surface:#0F171C;--surface-2:#16212A;--line:#20303A;--line-strong:#33454F;--fg:#EEF3F5;--muted:#93A2AC;--accent:#F2BF3C;--accent-fg:#1a1203;--danger:#FF7A6E;--danger-fg:#1a0705;
+  position:fixed;inset:0;z-index:8000;overflow:auto;background:var(--bg);color:var(--fg);display:grid;place-items:center;padding:max(16px,env(safe-area-inset-top)) 16px 24px}
+.au[hidden]{display:none}
+.au.am{z-index:8500;background:rgba(4,7,9,.82);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.au-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.au-bg i{position:absolute;width:60vmax;height:60vmax;border-radius:50%;filter:blur(90px);opacity:.28;animation:auf 18s ease-in-out infinite alternate}
+.au-bg i:nth-child(1){background:#E8734A;left:-20vmax;top:-25vmax}.au-bg i:nth-child(2){background:#2F7BD0;right:-25vmax;bottom:-30vmax;animation-delay:-6s}.au-bg i:nth-child(3){background:#F2BF3C;left:30vw;top:40vh;opacity:.12;animation-delay:-11s}
+@keyframes auf{to{transform:translate(6vmax,4vmax) scale(1.12)}}
+.au-card{position:relative;width:min(440px,100%);background:color-mix(in srgb,var(--surface) 92%,transparent);border:1px solid var(--line);border-radius:20px;padding:28px 24px;box-shadow:0 40px 80px -30px rgba(0,0,0,.8);display:grid;gap:10px}
+.au-card.wide{width:min(720px,100%);margin:auto}
+.au-card h2,.bk-card h2{margin:0;font:800 clamp(1.7rem,5vw,2.4rem)/1 var(--display,inherit);text-transform:uppercase}
+.au-logo{width:56px;height:56px}
+.au-lead{margin:0 0 6px;color:var(--muted)}
+.au .eyebrow{color:var(--accent);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:.75rem}
+.au form{display:grid;gap:12px}
+.au input[type=text],.au input[type=email],.au input[type=password],.au input[type=search],.au input[type=date],.au input[type=tel],.au select{background:var(--surface-2);color:var(--fg);border:1.5px solid var(--line-strong);border-radius:10px;padding:0 12px;height:46px;width:100%;font:inherit}
+.au input:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 4px rgba(242,191,60,.2)}
+.au input.bad{border-color:var(--danger);animation:shake .35s}
+.au-go{width:100%;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.au .btn{background:var(--surface-2);color:var(--fg);border-color:var(--line-strong)}
+.au .btn.primary{background:linear-gradient(135deg,#F2BF3C,#E8734A);border-color:transparent;color:#1a1203;box-shadow:0 18px 34px -14px rgba(232,115,74,.7)}
+.au .btn.warn{background:var(--danger);color:var(--danger-fg);border-color:var(--danger)}
+.au .btn.link{background:none;border:0;box-shadow:none;color:var(--muted)}
+.au a{color:var(--accent)}.au-help{margin:4px 0 0;font-size:.9rem;color:var(--muted);text-align:center}
+.au-sec{margin:10px 0 0;font:700 .95rem var(--display,inherit);text-transform:uppercase;letter-spacing:.1em;color:var(--accent);border-bottom:1px solid var(--line);padding-bottom:6px}
+.au-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.au-grid .full{grid-column:1/-1}
+.au .field{display:grid;gap:5px;min-width:0}.au label{font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.au-hours{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 12px}.au-hours .field{grid-template-columns:90px 1fr;align-items:center}.au-hours label{font-size:.8rem}
+.au-hint{font-size:.8rem;color:var(--muted);margin:0}
+/* bloqueio */
+.au-block{background:radial-gradient(120% 90% at 50% 0,#2a0f0c 0,#0b0708 60%,#050607 100%)}
+.bk-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.bk-bg i{position:absolute;bottom:-12vh;width:14px;height:14px;border-radius:50%;background:var(--c,#E8734A);opacity:.55;animation:bkup 11s linear infinite}
+.bk-bg i:nth-child(1){left:8%;--c:#F2BF3C;animation-delay:0s}.bk-bg i:nth-child(2){left:24%;--c:#2F7BD0;animation-delay:-3s;width:9px;height:9px}.bk-bg i:nth-child(3){left:41%;--c:#7B4FD0;animation-delay:-6s}.bk-bg i:nth-child(4){left:63%;--c:#8A5A36;animation-delay:-2s;width:11px;height:11px}.bk-bg i:nth-child(5){left:78%;--c:#EEF3F5;animation-delay:-8s;width:8px;height:8px}.bk-bg i:nth-child(6){left:92%;--c:#E8734A;animation-delay:-5s}
+@keyframes bkup{to{transform:translateY(-120vh) translateX(40px);opacity:0}}
+.bk-card{position:relative;width:min(520px,100%);text-align:center;display:grid;gap:12px;justify-items:center;padding:12px}
+.bk-art{position:relative;width:200px;height:200px;display:grid;place-items:center}
+.bk-shield{width:110px;position:relative;z-index:2;filter:drop-shadow(0 18px 30px rgba(232,115,74,.55));animation:bkfl 3.4s ease-in-out infinite}
+.bk-ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(255,122,110,.55);animation:bkring 3.2s ease-out infinite}.bk-ring.r2{animation-delay:1s}.bk-ring.r3{animation-delay:2s}
+@keyframes bkfl{50%{transform:translateY(-8px) rotate(-2deg)}}
+@keyframes bkring{from{transform:scale(.5);opacity:.9}to{transform:scale(1.25);opacity:0}}
+.bk-info{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.bk-info span{border:1px solid var(--line-strong);border-radius:99px;padding:3px 12px;font-size:.82rem;color:var(--muted)}
+.au-acts{display:grid;gap:10px;width:min(360px,100%);margin-top:6px}
+@media (prefers-reduced-motion:reduce){.au-bg i,.bk-bg i,.bk-shield,.bk-ring{animation:none}}
+/* painel root */
+.au.rt{display:block;place-items:unset;padding:20px 16px 40px}
+.rt-in{max-width:1100px;margin:0 auto}
+.rt-hact{display:flex;gap:8px;flex-wrap:wrap}
+.rt-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.rt-stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}.rt-stat b{display:block;font:800 1.8rem var(--display,inherit)}.rt-stat span{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.rt-bar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}.rt-bar input{flex:1 1 240px}
+.rt-card{background:var(--surface);border:1px solid var(--line);border-left:5px solid #3FBF8A;border-radius:14px;padding:14px;margin-bottom:12px;display:grid;gap:10px}
+.rt-card.off{border-left-color:var(--danger)}
+.rt-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.rt-top h3{margin:0;font:700 1.3rem var(--display,inherit);text-transform:uppercase}
+.rt-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:6px 16px;font-size:.88rem}.rt-meta span{color:var(--muted);display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em}.rt-meta div{min-width:0;overflow-wrap:anywhere}
+.rt-meta .late{color:var(--danger);font-weight:700}
+.rt-act{display:flex;gap:8px;flex-wrap:wrap}.rt-act .btn{height:38px;padding:0 14px;font-size:.88rem}
+.st-btn{border:0;border-radius:99px;height:38px;padding:0 18px;font:800 .85rem inherit;letter-spacing:.08em;cursor:pointer;background:#3FBF8A;color:#04170f}
+.st-btn.off{background:var(--danger);color:var(--danger-fg)}
+.rt-tag{display:inline-block;border:1px solid var(--line-strong);border-radius:99px;padding:1px 9px;font-size:.72rem;color:var(--muted);margin-left:6px;vertical-align:middle}
+.rt-tag.warn{border-color:var(--danger);color:var(--danger)}
+.rt-empty{text-align:center;color:var(--muted);padding:30px 10px;border:1px dashed var(--line-strong);border-radius:14px}
+.am-card{width:min(640px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px}
+.am-card .reg-h h2{font-size:1.7rem}.am-act{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+.cred{background:var(--surface-2);border:1px dashed var(--line-strong);border-radius:12px;padding:12px;display:grid;gap:6px;margin:8px 0}.cred code{font-size:1.05rem;color:var(--accent);word-break:break-all}
+.acct-btn{position:absolute;right:0;top:50px}
+.top .acct-btn{top:clamp(64px,5.6vw,76px);right:clamp(16px,2.6vw,30px);background:rgba(255,255,255,.07);color:#EEF3F5;border-color:rgba(255,255,255,.22);height:38px;font-size:.85rem;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:900px){.acct-btn,.top .acct-btn{position:static;margin-bottom:12px}.au-grid,.au-hours{grid-template-columns:1fr}}
+body.au-on .wrap,body.au-on .toasts{visibility:visible}
+body.au-on .wrap{display:none}
+.toasts{z-index:9600!important}#dlg{z-index:9400!important}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <button class="btn hist-btn" id="histBtn" type="button">Histórico</button>
+    <button class="btn acct-btn" id="acctBtn" type="button" hidden>Minha conta</button>
     <div class="brand">
       <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2BF3C"/><stop offset="1" stop-color="#E8734A"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="16" fill="url(#lg1)"/><path d="M14 40l9-18 9 12 9-12 9 18" fill="none" stroke="#1a1203" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="14" y="46" width="36" height="5" rx="2.5" fill="#1a1203"/></svg>
       <div><h1>BJJ Arena</h1>
@@ -960,6 +1034,87 @@ body.remote [data-adj]{display:none!important}
 </div>
 <div class="toasts" id="toasts" aria-live="polite"></div>
 
+<div class="au" id="auth" hidden role="dialog" aria-modal="true" aria-labelledby="auT">
+  <div class="au-bg" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="au-card">
+    <svg class="au-logo" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2BF3C"/><stop offset="1" stop-color="#E8734A"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="16" fill="url(#lg2)"/><path d="M18 40l14-20 14 20M24 40h16" fill="none" stroke="#1a1203" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span class="eyebrow">BJJ Arena</span>
+    <h2 id="auT">Entrar</h2>
+    <p class="au-lead" id="auL">Use o e-mail e a senha que você recebeu.</p>
+    <form id="auF" novalidate autocomplete="on">
+      <div class="field"><label for="auE">E-mail</label><input id="auE" type="email" autocomplete="username" inputmode="email" placeholder="voce@academia.com"></div>
+      <div class="field"><label for="auP">Senha</label><input id="auP" type="password" autocomplete="current-password"></div>
+      <button class="btn primary au-go" type="submit" id="auGo">Entrar</button>
+    </form>
+    <p class="au-help">Ainda não tem acesso? <a href="#" id="auWa">Fale com a gente no WhatsApp</a></p>
+  </div>
+</div>
+
+<div class="au" id="setup" hidden role="dialog" aria-modal="true" aria-labelledby="stT">
+  <div class="au-bg" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="au-card wide">
+    <span class="eyebrow">Primeiro acesso</span>
+    <h2 id="stT">Configure sua academia</h2>
+    <p class="au-lead">Crie sua senha e preencha os dados da academia. Só depois disso o sistema é liberado.</p>
+    <form id="stF" novalidate autocomplete="off">
+      <div class="au-sec">Sua senha</div>
+      <div class="au-grid">
+        <div class="field full" id="stOldW" hidden><label for="stOld">Senha provisória</label><input id="stOld" type="password" autocomplete="current-password"></div>
+        <div class="field"><label for="stNew">Nova senha (mín. 8)</label><input id="stNew" type="password" autocomplete="new-password"></div>
+        <div class="field"><label for="stNew2">Repita a nova senha</label><input id="stNew2" type="password" autocomplete="new-password"></div>
+      </div>
+      <div class="au-sec">Dados da academia</div>
+      <div id="stProf"></div>
+      <button class="btn primary au-go" type="submit" id="stGo">Salvar e entrar no sistema</button>
+      <button class="btn link" type="button" id="stOut">Sair</button>
+    </form>
+  </div>
+</div>
+
+<div class="au au-block" id="blocked" hidden role="alertdialog" aria-modal="true" aria-labelledby="bkT">
+  <div class="bk-bg" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="bk-card">
+    <div class="bk-art" aria-hidden="true">
+      <span class="bk-ring r1"></span><span class="bk-ring r2"></span><span class="bk-ring r3"></span>
+      <svg viewBox="0 0 120 140" class="bk-shield"><defs><linearGradient id="bkg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF7A6E"/><stop offset="1" stop-color="#E8734A"/></linearGradient></defs>
+        <path d="M60 6l46 16v38c0 36-20 62-46 74C34 122 14 96 14 60V22z" fill="url(#bkg)"/>
+        <path d="M60 14l38 13v33c0 30-16 52-38 62-22-10-38-32-38-62V27z" fill="#0b1013" opacity=".35"/>
+        <rect x="40" y="62" width="40" height="34" rx="7" fill="#fff"/>
+        <path d="M47 62V50a13 13 0 0 1 26 0v12" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="60" cy="77" r="5" fill="#E8734A"/><rect x="58" y="79" width="4" height="10" rx="2" fill="#E8734A"/></svg>
+    </div>
+    <span class="eyebrow" id="bkE">Acesso suspenso</span>
+    <h2 id="bkT">Seu acesso está bloqueado</h2>
+    <p class="au-lead" id="bkP"></p>
+    <div class="bk-info" id="bkI"></div>
+    <div class="au-acts">
+      <a class="btn primary au-go" id="bkWa" href="#" target="_blank" rel="noopener">Falar com a gente no WhatsApp</a>
+      <button class="btn" type="button" id="bkRe">Já regularizei, verificar novamente</button>
+      <button class="btn link" type="button" id="bkOut">Sair</button>
+    </div>
+  </div>
+</div>
+
+<div class="au rt" id="rootp" hidden role="main" aria-labelledby="rpT">
+  <div class="rt-in">
+    <header class="reg-h">
+      <div><span class="eyebrow">Área root · <span id="rpMail"></span></span><h2 id="rpT">Academias</h2></div>
+      <div class="rt-hact"><button class="btn" type="button" id="rpPw">Alterar minha senha</button><button class="btn" type="button" id="rpOut">Sair</button></div>
+    </header>
+    <div class="rt-stats" id="rpStats"></div>
+    <div class="rt-bar"><input id="rpQ" type="search" placeholder="Buscar por academia, responsável, e-mail ou CPF" aria-label="Buscar academia"><button class="btn primary" type="button" id="rpNew">+ Nova academia</button></div>
+    <div id="rpList"></div>
+  </div>
+</div>
+
+<div class="au am" id="am" hidden role="dialog" aria-modal="true" aria-labelledby="amT">
+  <div class="am-card">
+    <header class="reg-h"><div><span class="eyebrow" id="amE"></span><h2 id="amT"></h2></div></header>
+    <div id="amB"></div>
+    <div class="am-act"><button class="btn" type="button" id="amNo">Cancelar</button><button class="btn primary" type="button" id="amOk">Salvar</button></div>
+  </div>
+</div>
+
 <div class="hist reg lic-ov" id="lic" hidden role="dialog" aria-modal="true" aria-labelledby="licT">
   <div class="hist-in reg-in" style="max-width:640px">
     <header class="reg-h"><div><span class="eyebrow">BJJ Arena</span><h2 id="licT">Ativar licença</h2></div><button class="btn" type="button" id="licClose">Fechar</button></header>
@@ -1031,6 +1186,7 @@ body.remote [data-adj]{display:none!important}
   var METHODS=['Finalização','Pontos','Vantagens','Punições','Decisão do árbitro','Desqualificação','WO','Desistência'];
   var KEYNAME={p:'Ponto',v:'Vantagem',u:'Punição'};
   var KEY='chaveador-jiujitsu-v1';
+  var SB=window.__SB||{url:'https://iaofttelgwvzuaxzsqqq.supabase.co',key:'sb_publishable_2gYH_CexE4Ku3c_13o779w_e7tunTEa'};
   var IS_TELAO=(location.hash==='#telao'); // janela do telão: só exibe, quem controla é a janela principal
   var DESK=window.desktop||null;
   var REMOTE=(!window.desktop&&!IS_TELAO&&/^https?:$/.test(location.protocol)&&/[?&]mesa=\d/.test(location.search));
@@ -2071,12 +2227,12 @@ body.remote [data-adj]{display:none!important}
   function onReady(){var o=S.online;return !!(o.url&&o.key)}
   function regErrText(e){
     var m=(e&&e.message)||'';
-    var map={sem_permissao:'Sem permissão para este campeonato online.',nome_invalido:'Nome do campeonato inválido.',token_invalido:'Falha ao gerar a chave de administração.',evento_inexistente:'Campeonato online não encontrado.'};
+    var map={sem_permissao:'Sem permissão para este campeonato online.',nome_invalido:'Nome do campeonato inválido.',token_invalido:'Falha ao gerar a chave de administração.',evento_inexistente:'Campeonato online não encontrado.',sessao_invalida:'Sua sessão expirou. Entre novamente.',academia_bloqueada:'O acesso da academia está bloqueado.'};
     for(var k in map)if(m.indexOf(k)>=0)return map[k];
     return /Failed to fetch|NetworkError|Load failed/i.test(m)||m==='rede'?'Sem internet ou endereço do Supabase incorreto.':'Não foi possível falar com o servidor ('+(m||'erro')+').';
   }
   function rpc(fn,body){
-    var o=S.online;
+    var o=SB;
     return fetch(o.url.replace(/\/+$/,'')+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json',apikey:o.key,Authorization:'Bearer '+o.key},body:JSON.stringify(body)}).then(function(r){
       return r.text().then(function(t){var j=null;try{j=t?JSON.parse(t):null}catch(e){}
         if(!r.ok)throw new Error((j&&(j.message||j.hint))||('HTTP '+r.status));
@@ -2164,7 +2320,7 @@ body.remote [data-adj]{display:none!important}
     if(nome.length<2){regClose();toast('err','Dê um nome ao campeonato antes de criar o link de inscrição.');return}
     REG.creating=true;REG.msg='';regRender();
     var adm=hex(24);
-    rpc('create_event',{p_name:nome,p_date:S.evento.data||null,p_admin:adm}).then(function(id){
+    rpc('create_event',{p_token:AU.token,p_name:nome,p_date:S.evento.data||null,p_admin:adm}).then(function(id){
       o.eventId=String(id).replace(/"/g,'');o.admin=adm;o.open=true;o.link=buildLink();save();REG.rows=[];REG.newCount=0;REG.creating=false;
       regOpen();openWa();
     }).catch(function(e){REG.creating=false;REG.msg=regErrText(e);toast('err',REG.msg);regRender()});
@@ -2195,7 +2351,6 @@ body.remote [data-adj]{display:none!important}
   $('#regBody').addEventListener('click',function(e){var w=e.target.closest('#rgWa');if(w&&DESK&&DESK.openExternal){e.preventDefault();openWa();return}var t=e.target.closest('[data-rg]');if(t){e.preventDefault();regAct(t.getAttribute('data-rg'))}});
   $('#regBody').addEventListener('change',function(e){var t=e.target;if(t.hasAttribute&&t.hasAttribute('data-rgsel'))REG.sel[t.getAttribute('data-rgsel')]=t.checked});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('#reg').hidden&&$('#dlg').hidden){regClose();e.stopImmediatePropagation();e.preventDefault()}},true);
-  if(!IS_TELAO&&S.online.eventId)setTimeout(function(){regFetch(true)},1500);
 
 
   /* ---------- Dados ao vivo (página do público) ---------- */
@@ -2450,7 +2605,6 @@ body.remote [data-adj]{display:none!important}
   if(!IS_TELAO&&!REMOTE){
     if(DESK&&DESK.licStatus){DESK.licStatus().then(function(st){LIC.st=st;licPaint()}).catch(function(){})}
     if(DESK&&DESK.checkUpdate)setTimeout(function(){DESK.checkUpdate().then(updPaint).catch(function(){})},4000);
-    tourAuto();
   }
 
   /* ---------- Campeonato: encerrar, histórico ---------- */
@@ -2877,6 +3031,373 @@ body.remote [data-adj]{display:none!important}
   document.addEventListener('fullscreenchange',paintFsBtn);
   window.addEventListener('resize',function(){if(TV.open)tvFit()});
 
+  /* ---------- Acesso: root, academias, bloqueio ---------- */
+  var SUP_WA='5548996297813',SITE_URL='https://bjjapp-app.vercel.app/',AUTHK='bjj-auth-v1',LEGACY_KEY='chaveador-jiujitsu-v1',OFFLINE_DAYS=7;
+  var AU={role:'',token:'',acad:null,email:'',tmp:'',list:[],booted:false,tm:null,seenAt:0};
+  var WD=[['seg','Segunda'],['ter','Terça'],['qua','Quarta'],['qui','Quinta'],['sex','Sexta'],['sab','Sábado'],['dom','Domingo']];
+  var AERR={credenciais_invalidas:'E-mail ou senha incorretos.',muitas_tentativas:'Muitas tentativas erradas. Aguarde 15 minutos.',sem_permissao:'Sem permissão.',sessao_invalida:'Sua sessão expirou. Entre novamente.',
+    senha_curta:'A senha precisa ter de 8 a 72 caracteres.',senha_atual_errada:'A senha atual está incorreta.',senha_igual:'A nova senha deve ser diferente da provisória.',perfil_invalido:'Preencha corretamente os dados da academia.',
+    nome_invalido:'Nome da academia inválido.',responsavel_invalido:'Nome do responsável inválido.',cpf_invalido:'CPF inválido.',telefone_invalido:'Telefone inválido (com DDD).',email_invalido:'E-mail inválido.',
+    valor_invalido:'Valor inválido.',vencimento_invalido:'Data de vencimento inválida.',email_ja_cadastrado:'Já existe uma academia com este e-mail.',nao_encontrada:'Academia não encontrada.',academia_bloqueada:'O acesso desta academia está bloqueado.',status_invalido:'Status inválido.'};
+  function aerr(e){var m=(e&&e.message)||'';for(var k in AERR)if(m.indexOf(k)>=0)return AERR[k];return m==='rede'||/Failed to fetch|NetworkError|Load failed/i.test(m)?'Sem conexão com a internet.':'Não foi possível falar com o servidor.'}
+  function isNet(e){return !!e&&(e.message==='rede'||/Failed to fetch|NetworkError|Load failed/i.test(e.message||''))}
+  function pad2(n){return n<10?'0'+n:''+n}
+  function todayIso(){var d=new Date();return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate())}
+  function addDays(n){var d=new Date();d.setDate(d.getDate()+n);return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate())}
+  function brDate(iso){var p=String(iso||'').split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:''}
+  function daysTo(iso){var p=String(iso).split('-'),a=new Date(+p[0],+p[1]-1,+p[2]),b=new Date();b.setHours(0,0,0,0);return Math.round((a-b)/864e5)}
+  function money(c){return (c/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+  function parseMoney(s){s=String(s||'').replace(/[^\d,.]/g,'');if(!s)return null;if(s.indexOf(',')>=0)s=s.replace(/\./g,'').replace(',','.');else if((s.match(/\./g)||[]).length>1)s=s.replace(/\./g,'');var n=parseFloat(s);return isFinite(n)&&n>=0?Math.round(n*100):null}
+  function digits(s){return String(s||'').replace(/\D/g,'')}
+  function cpfOk(c){
+    c=digits(c);if(c.length!==11||/^(\d)\1{10}$/.test(c))return false;
+    for(var t=9;t<11;t++){var s=0;for(var i=0;i<t;i++)s+=(+c[i])*(t+1-i);var r=(s*10)%11;if(r===10)r=0;if(r!==+c[t])return false}
+    return true;
+  }
+  function cpfMask(c){c=digits(c).slice(0,11);return c.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2')}
+  function phoneMask(p){p=digits(p).slice(0,11);if(p.length>10)return p.replace(/(\d{2})(\d{5})(\d{1,4})/,'($1) $2-$3');if(p.length>6)return p.replace(/(\d{2})(\d{4})(\d{1,4})/,'($1) $2-$3');if(p.length>2)return p.replace(/(\d{2})(\d+)/,'($1) $2');return p}
+  function waNum(p){p=digits(p);return p.length<=11?'55'+p:p}
+  function waUrl(p,txt){return 'https://wa.me/'+waNum(p)+(txt?'?text='+encodeURIComponent(txt):'')}
+  function openUrl(u){if(DESK&&DESK.openExternal)DESK.openExternal(u);else window.open(u,'_blank','noopener')}
+  function tmpPass(cpf){var a='abcdefghjkmnpqrstuvwxyz23456789',s='',r=hex(4),i;for(i=0;i<4;i++)s+=a[parseInt(r.substr(i*2,2),16)%a.length];return digits(cpf).slice(-4)+'-'+s}
+  function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  function lsDel(k){try{localStorage.removeItem(k)}catch(e){}try{sessionStorage.removeItem(k)}catch(e){}}
+  function authSave(){
+    if(AU.role==='academy')lsSet(AUTHK,JSON.stringify({role:'academy',token:AU.token,acad:AU.acad,at:AU.seenAt||Date.now()}));
+    else if(AU.role==='root'){try{sessionStorage.setItem(AUTHK,JSON.stringify({role:'root',token:AU.token,email:AU.email}))}catch(e){}}
+  }
+  var AUS=['auth','setup','blocked','rootp'];
+  function scr(id){AUS.forEach(function(k){var el=$('#'+k);if(el)el.hidden=(k!==id)});document.body.classList.toggle('au-on',!!id);if(id){var f=$('#'+id).querySelector('input:not([type=hidden])');if(f&&id!=='rootp')setTimeout(function(){try{f.focus()}catch(e){}},50)}}
+  function busy(btn,on,txt){if(!btn)return;btn.disabled=on;if(on){btn.dataset.t=btn.textContent;btn.textContent=txt||'Aguarde…'}else if(btn.dataset.t)btn.textContent=btn.dataset.t}
+  function needF(sel,msg){var el=$(sel);toast('err',msg);if(el){el.focus();bad(el)}return false}
+
+  /* login */
+  function showLogin(msg){
+    AU.role='';AU.token='';AU.acad=null;
+    $('#auT').textContent='Entrar';$('#auL').textContent=msg||'Use o e-mail e a senha que você recebeu.';
+    $('#auP').value='';scr('auth');
+  }
+  $('#auF').addEventListener('submit',function(e){
+    e.preventDefault();
+    var em=$('#auE').value.trim().toLowerCase(),pw=$('#auP').value;
+    if(!em)return needF('#auE','Informe o e-mail.');
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em))return needF('#auE','E-mail inválido.');
+    if(!pw)return needF('#auP','Informe a senha.');
+    var b=$('#auGo');busy(b,true,'Entrando…');
+    rpc('auth_login',{p_email:em,p_password:pw}).then(function(j){
+      busy(b,false);
+      if(!j||!j.ok){toast('err',AERR[j&&j.error]||'Não foi possível entrar.');$('#auP').value='';$('#auP').focus();return}
+      AU.token=j.token;AU.role=j.role;AU.tmp=pw;$('#auP').value='';
+      if(j.role==='root'){AU.email=j.email;AU.tmp='';authSave();openRoot()}
+      else{AU.email=em;AU.seenAt=Date.now();handleAcademy(j.academy)}
+    }).catch(function(er){busy(b,false);toast('err',aerr(er))});
+  });
+  $('#auWa').addEventListener('click',function(e){e.preventDefault();openUrl(waUrl(SUP_WA,'Olá! Quero saber mais sobre o BJJ Arena.'))});
+
+  /* academia: estados */
+  function localBlocked(a){return !!a&&(a.status==='bloqueado'||String(a.due)<todayIso())}
+  function handleAcademy(a){
+    AU.acad=a;authSave();
+    if(a.effective==='bloqueado'){showBlocked();return}
+    if(a.must_change||!a.profile_done){showSetup();return}
+    enterApp();
+  }
+  function showBlocked(){
+    var a=AU.acad||{},late=a.reason==='vencida'||(a.status!=='bloqueado'&&String(a.due)<todayIso());
+    $('#bkE').textContent=late?'Assinatura vencida':'Acesso suspenso';
+    $('#bkT').textContent=late?'Sua assinatura venceu':'Seu acesso está bloqueado';
+    $('#bkP').textContent=late?'Para continuar usando o BJJ Arena, é só regularizar a renovação. Seus campeonatos continuam guardados.':'O acesso da sua academia foi suspenso. Fale com a gente para resolver rapidamente. Seus dados continuam guardados.';
+    $('#bkI').innerHTML=(a.name?'<span>'+esc(a.name)+'</span>':'')+(a.due?'<span>Vencimento: '+esc(brDate(a.due))+'</span>':'');
+    $('#bkWa').href=waUrl(SUP_WA,'Olá! Sou da academia '+(a.name||'')+' e meu acesso ao BJJ Arena está '+(late?'vencido':'bloqueado')+'. Pode me ajudar?');
+    scr('blocked');
+  }
+  $('#bkWa').addEventListener('click',function(e){if(DESK&&DESK.openExternal){e.preventDefault();DESK.openExternal(this.href)}});
+  $('#bkRe').addEventListener('click',function(){
+    var b=this;busy(b,true,'Verificando…');
+    rpc('auth_me',{p_token:AU.token}).then(function(j){busy(b,false);
+      if(!j||!j.ok){logoutLocal('Sua sessão expirou. Entre novamente.');return}
+      if(j.academy.effective==='bloqueado'){AU.acad=j.academy;authSave();showBlocked();toast('warn','Seu acesso ainda está bloqueado.')}
+      else{toast('ok','Acesso liberado!');handleAcademy(j.academy);if(AU.booted)scr(null)}
+    }).catch(function(er){busy(b,false);toast('err',aerr(er))});
+  });
+  $('#bkOut').addEventListener('click',function(){logout()});
+
+  function hoursHtml(h){h=h||{};return '<div class="au-hours">'+WD.map(function(d){return '<div class="field"><label for="ph_'+d[0]+'">'+d[1]+'</label><input id="ph_'+d[0]+'" data-hd="'+d[0]+'" type="text" maxlength="40" placeholder="Fechado" value="'+esc(h[d[0]]||'')+'"></div>'}).join('')+'</div>'}
+  function profHtml(p){
+    p=p||{};
+    function f(id,l,v,ph,full,t){return '<div class="field'+(full?' full':'')+'"><label for="'+id+'">'+l+'</label><input id="'+id+'" type="'+(t||'text')+'" maxlength="120" placeholder="'+esc(ph||'')+'" value="'+esc(v||'')+'"></div>'}
+    return '<div class="au-grid">'+f('pfIg','Instagram *',p.instagram,'@suaacademia')+f('pfYt','YouTube',p.youtube,'youtube.com/@canal')+
+      f('pfPh','WhatsApp / telefone *',phoneMask(p.phone||''),'(48) 99999-0000',false,'tel')+f('pfEm','E-mail de contato',p.email,'contato@academia.com',false,'email')+
+      f('pfSite','Site',p.site,'https://')+f('pfCity','Cidade / UF',p.city,'Florianópolis / SC')+
+      f('pfAd','Endereço *',p.address,'Rua, número, bairro',true)+'</div>'+
+      '<div class="au-sec" style="margin-top:14px">Horários de funcionamento *</div><p class="au-hint">Preencha ao menos um dia (ex.: 18:00 às 21:00). Deixe em branco os dias fechados.</p>'+hoursHtml(p.hours);
+  }
+  function profRead(){
+    var g=function(id){return ($('#'+id).value||'').trim()},ph=digits(g('pfPh')),hours={},n=0;
+    if(g('pfIg').length<2){needF('#pfIg','Informe o Instagram da academia.');return null}
+    if(ph.length<10||ph.length>13){needF('#pfPh','Informe o WhatsApp/telefone com DDD.');return null}
+    if(g('pfEm')&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(g('pfEm'))){needF('#pfEm','E-mail de contato inválido.');return null}
+    if(g('pfAd').length<5){needF('#pfAd','Informe o endereço da academia.');return null}
+    [].forEach.call(document.querySelectorAll('[data-hd]'),function(i){var v=i.value.trim();if(v){hours[i.getAttribute('data-hd')]=v;n++}});
+    if(!n){needF('#ph_seg','Informe o horário de funcionamento de pelo menos um dia.');return null}
+    return {instagram:g('pfIg'),youtube:g('pfYt'),phone:ph,email:g('pfEm'),site:g('pfSite'),city:g('pfCity'),address:g('pfAd'),hours:hours};
+  }
+  document.addEventListener('input',function(e){var t=e.target;if(t&&t.id==='pfPh'){var p=t.selectionStart===t.value.length;t.value=phoneMask(t.value)}});
+
+  function showSetup(){
+    $('#stProf').innerHTML=profHtml(AU.acad&&AU.acad.profile);
+    $('#stOldW').hidden=!!AU.tmp;$('#stOld').value='';$('#stNew').value='';$('#stNew2').value='';
+    scr('setup');
+  }
+  $('#stOut').addEventListener('click',function(){logout()});
+  $('#stF').addEventListener('submit',function(e){
+    e.preventDefault();
+    var old=AU.tmp||$('#stOld').value,nw=$('#stNew').value,n2=$('#stNew2').value;
+    if(!old)return needF('#stOld','Informe a senha provisória que você recebeu.');
+    if(nw.length<8)return needF('#stNew','A nova senha precisa ter pelo menos 8 caracteres.');
+    if(nw===old)return needF('#stNew','A nova senha deve ser diferente da provisória.');
+    if(nw!==n2)return needF('#stNew2','As senhas não conferem.');
+    var p=profRead();if(!p)return;
+    var b=$('#stGo');busy(b,true,'Salvando…');
+    rpc('academy_setup',{p_token:AU.token,p_old:old,p_new:nw,p_profile:p}).then(function(j){
+      busy(b,false);AU.tmp='';toast('ok','Tudo pronto! Bem-vindo ao BJJ Arena.');handleAcademy(j.academy);
+    }).catch(function(er){busy(b,false);if(/sessao_invalida/.test(er.message||'')){logoutLocal(AERR.sessao_invalida);return}toast('err',aerr(er))});
+  });
+
+  function enterApp(){
+    scr(null);
+    var a=AU.acad;
+    if(!AU.booted){
+      AU.booted=true;
+      KEY=LEGACY_KEY+':'+a.id;
+      if(!lsGet(KEY)&&lsGet(LEGACY_KEY)&&!lsGet('bjj-legacy-claimed')){lsSet(KEY,lsGet(LEGACY_KEY));lsSet('bjj-legacy-claimed',a.id)}
+      bootApp();
+      var ab=$('#acctBtn');ab.hidden=false;ab.textContent=a.name;ab.title='Minha conta';
+      clearInterval(AU.tm);AU.tm=setInterval(recheck,5*60*1000);
+      window.addEventListener('focus',recheck);
+      var d=daysTo(a.due);
+      if(d>=0&&d<=7)setTimeout(function(){toast('warn',d===0?'Sua assinatura vence hoje. Fale com a gente para renovar.':'Sua assinatura vence em '+d+(d===1?' dia':' dias')+' ('+brDate(a.due)+').',9000)},1200);
+    }
+  }
+  var rcBusy=false;
+  function recheck(){
+    if(AU.role!=='academy'||!AU.booted||rcBusy)return;
+    rcBusy=true;
+    rpc('auth_me',{p_token:AU.token}).then(function(j){rcBusy=false;
+      if(!j||!j.ok){logoutLocal(AERR.sessao_invalida);return}
+      AU.seenAt=Date.now();AU.acad=j.academy;authSave();
+      if(j.academy.effective==='bloqueado')showBlocked();
+      else{var b=$('#acctBtn');if(b)b.textContent=j.academy.name;if(!$('#blocked').hidden){scr(null);toast('ok','Acesso liberado!')}}
+    }).catch(function(er){rcBusy=false;
+      if(!isNet(er))return;
+      if(localBlocked(AU.acad)){showBlocked();return}
+      if(Date.now()-(AU.seenAt||0)>OFFLINE_DAYS*864e5)logoutLocal('Conecte-se à internet para validar seu acesso.');
+    });
+  }
+  function logoutLocal(msg){
+    lsDel(AUTHK);
+    if(AU.booted){try{sessionStorage.setItem('bjj-msg',msg||'')}catch(e){}location.reload();return}
+    showLogin(msg);
+  }
+  function logout(){
+    var t=AU.token;
+    var done=function(){logoutLocal('')};
+    if(!t){done();return}
+    rpc('auth_logout',{p_token:t}).then(done,done);
+  }
+
+  /* conta da academia */
+  function amOpen(o){
+    var m=$('#am');
+    $('#amE').textContent=o.eyebrow||'';$('#amT').textContent=o.title;$('#amB').innerHTML=o.html;
+    var ok=$('#amOk'),no=$('#amNo');
+    ok.hidden=o.ok===false;ok.textContent=o.ok||'Salvar';ok.className='btn '+(o.danger?'warn':'primary');
+    no.textContent=o.cancel||'Cancelar';
+    m.hidden=false;m._o=o;
+    if(o.onOpen)o.onOpen();
+    setTimeout(function(){var f=$('#amB').querySelector('input:not([readonly]),button');if(f)try{f.focus()}catch(e){}},40);
+  }
+  function amClose(){var m=$('#am');m.hidden=true;m._o=null;$('#amB').innerHTML=''}
+  $('#amNo').addEventListener('click',amClose);
+  $('#amOk').addEventListener('click',function(){
+    var o=$('#am')._o;if(!o||!o.onOk)return;
+    var b=this;if(b.disabled)return;
+    var r=o.onOk(function(on){busy(b,on,'Aguarde…')});
+    if(r===false)return;
+  });
+  $('#am').addEventListener('mousedown',function(e){if(e.target===this)amClose()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('#am').hidden&&$('#dlg').hidden){amClose();e.stopImmediatePropagation();e.preventDefault()}},true);
+  $('#am').addEventListener('submit',function(e){e.preventDefault();$('#amOk').click()});
+
+  function pwModal(){
+    amOpen({eyebrow:'Segurança',title:'Alterar senha',ok:'Alterar senha',html:'<form class="au-grid" novalidate><div class="field full"><label for="pwO">Senha atual</label><input id="pwO" type="password" autocomplete="current-password"></div><div class="field"><label for="pwN">Nova senha (mín. 8)</label><input id="pwN" type="password" autocomplete="new-password"></div><div class="field"><label for="pwN2">Repita a nova senha</label><input id="pwN2" type="password" autocomplete="new-password"></div></form>',
+      onOk:function(setBusy){
+        var o=$('#pwO').value,n=$('#pwN').value,n2=$('#pwN2').value;
+        if(!o)return needF('#pwO','Informe a senha atual.');
+        if(n.length<8)return needF('#pwN','A nova senha precisa ter pelo menos 8 caracteres.');
+        if(n===o)return needF('#pwN','A nova senha deve ser diferente da atual.');
+        if(n!==n2)return needF('#pwN2','As senhas não conferem.');
+        setBusy(true);
+        rpc('auth_change_password',{p_token:AU.token,p_old:o,p_new:n}).then(function(){setBusy(false);amClose();toast('ok','Senha alterada com sucesso.')}).catch(function(er){setBusy(false);toast('err',aerr(er))});
+      }});
+  }
+  function profModal(){
+    amOpen({eyebrow:'Sua academia',title:'Dados da academia',html:'<form novalidate>'+profHtml(AU.acad&&AU.acad.profile)+'</form>',
+      onOk:function(setBusy){
+        var p=profRead();if(!p)return false;setBusy(true);
+        rpc('academy_update_profile',{p_token:AU.token,p_profile:p}).then(function(j){setBusy(false);AU.acad=j.academy;authSave();amClose();toast('ok','Dados da academia atualizados.')}).catch(function(er){setBusy(false);toast('err',aerr(er))});
+      }});
+  }
+  function acctModal(){
+    var a=AU.acad||{},d=daysTo(a.due);
+    amOpen({eyebrow:'Minha conta',title:a.name||'Academia',ok:false,cancel:'Fechar',
+      html:'<div class="cred"><div><span class="mut">Login</span><br><b>'+esc(AU.email||a.email||'')+'</b></div><div><span class="mut">Assinatura válida até</span><br><b>'+esc(brDate(a.due))+'</b>'+(d>=0&&d<=7?' <span class="rt-tag warn">vence em '+d+' d</span>':'')+'</div></div>'+
+        '<div class="au-acts" style="width:100%"><button class="btn" type="button" data-ac="prof">Editar dados da academia</button><button class="btn" type="button" data-ac="pw">Alterar senha</button><button class="btn" type="button" data-ac="wa">Falar com o suporte</button><button class="btn warn" type="button" data-ac="out">Sair da conta</button></div>'});
+  }
+  $('#amB').addEventListener('click',function(e){
+    var t=e.target.closest('[data-ac]');if(!t)return;var a=t.getAttribute('data-ac');
+    if(a==='prof'){amClose();profModal()}else if(a==='pw'){amClose();pwModal()}else if(a==='wa')openUrl(waUrl(SUP_WA,'Olá! Sou da academia '+((AU.acad||{}).name||'')+' e preciso de ajuda com o BJJ Arena.'));
+    else if(a==='out'){amClose();dialog({tone:'danger',title:'Sair da conta?',text:'Seus dados ficam guardados neste computador. Para voltar, será preciso entrar de novo.',ok:'Sair',cancel:'Ficar',onOk:logout})}
+  });
+  $('#acctBtn').addEventListener('click',acctModal);
+
+  /* ---------- painel ROOT ---------- */
+  function openRoot(){
+    $('#rpMail').textContent=AU.email;scr('rootp');rootLoad();
+  }
+  function rootErr(er){
+    if(/sem_permissao|sessao_invalida/.test(er.message||'')){logoutLocal(AERR.sessao_invalida);return}
+    toast('err',aerr(er));
+  }
+  function rootLoad(){
+    rpc('root_list',{p_token:AU.token}).then(function(l){AU.list=l||[];rootRender()}).catch(rootErr);
+  }
+  function rootRender(){
+    var q=($('#rpQ').value||'').trim().toLowerCase(),qd=digits(q);
+    var L=AU.list.filter(function(a){return !q||[a.name,a.owner_name,a.email].join(' ').toLowerCase().indexOf(q)>=0||(qd&&digits(a.cpf).indexOf(qd)>=0)});
+    var lib=AU.list.filter(function(a){return a.effective==='liberado'}),blk=AU.list.length-lib.length;
+    var soon=lib.filter(function(a){var d=daysTo(a.due);return d>=0&&d<=7}).length;
+    var sum=lib.reduce(function(s,a){return s+(a.value_cents||0)},0);
+    $('#rpStats').innerHTML=[[AU.list.length,'Academias'],[lib.length,'Liberadas'],[blk,'Bloqueadas'],[soon,'Vencem em 7 dias'],[money(sum),'Valor das liberadas']].map(function(x){return '<div class="rt-stat"><b>'+esc(x[0])+'</b><span>'+x[1]+'</span></div>'}).join('');
+    if(!L.length){$('#rpList').innerHTML='<div class="rt-empty">'+(AU.list.length?'Nenhuma academia encontrada.':'Nenhuma academia cadastrada ainda. Clique em “+ Nova academia”.')+'</div>';return}
+    $('#rpList').innerHTML=L.map(function(a){
+      var off=a.effective==='bloqueado',late=a.reason==='vencida',d=daysTo(a.due);
+      return '<article class="rt-card'+(off?' off':'')+'" data-id="'+esc(a.id)+'"><div class="rt-top"><h3>'+esc(a.name)+
+        (late?'<span class="rt-tag warn">vencida</span>':'')+(a.profile_done?'':'<span class="rt-tag">aguardando 1º acesso</span>')+'</h3>'+
+        '<button class="st-btn'+(off&&!late?' off':late?' off':'')+'" type="button" data-ra="status" title="Clique para alternar" aria-label="Status: '+(a.status==='bloqueado'?'bloqueado':'liberado')+'. Alternar">'+(a.status==='bloqueado'?'BLOQUEADO':'LIBERADO')+'</button></div>'+
+        '<div class="rt-meta"><div><span>Responsável</span>'+esc(a.owner_name)+'</div><div><span>CPF</span>'+esc(cpfMask(a.cpf))+'</div><div><span>WhatsApp</span>'+esc(phoneMask(a.phone))+'</div><div><span>E-mail (login)</span>'+esc(a.email)+'</div>'+
+        '<div><span>Valor</span>'+esc(money(a.value_cents||0))+'</div><div><span>Vencimento</span><b class="'+(d<0?'late':'')+'">'+esc(brDate(a.due))+'</b></div><div><span>Criada em</span>'+esc(brDate(String(a.created_at).slice(0,10)))+'</div>'+
+        (a.profile&&a.profile.instagram?'<div><span>Instagram</span>'+esc(a.profile.instagram)+'</div>':'')+'</div>'+
+        '<div class="rt-act"><button class="btn" type="button" data-ra="share">Compartilhar acesso (WhatsApp)</button><button class="btn" type="button" data-ra="edit">Editar</button><button class="btn" type="button" data-ra="del">Excluir</button></div></article>';
+    }).join('');
+  }
+  $('#rpQ').addEventListener('input',rootRender);
+  $('#rpOut').addEventListener('click',function(){logout()});
+  $('#rpPw').addEventListener('click',pwModal);
+  $('#rpNew').addEventListener('click',function(){acadModal(null)});
+  $('#rpList').addEventListener('click',function(e){
+    var t=e.target.closest('[data-ra]');if(!t)return;var id=t.closest('[data-id]').getAttribute('data-id'),a=AU.list.filter(function(x){return x.id===id})[0];if(!a)return;
+    var r=t.getAttribute('data-ra');
+    if(r==='edit')acadModal(a);
+    else if(r==='status'){
+      var to=a.status==='bloqueado'?'liberado':'bloqueado';
+      dialog({tone:to==='bloqueado'?'danger':'info',title:(to==='bloqueado'?'Bloquear ':'Liberar ')+a.name+'?',text:to==='bloqueado'?'A academia verá a tela de bloqueio e não poderá usar o sistema até você liberar.':'A academia volta a poder usar o sistema'+(String(a.due)<todayIso()?' (atenção: o vencimento já passou; atualize a data em “Editar” para liberar de fato).':'.'),ok:to==='bloqueado'?'Bloquear':'Liberar',cancel:'Cancelar',
+        onOk:function(){rpc('root_set_status',{p_token:AU.token,p_id:id,p_status:to}).then(function(){toast('ok',a.name+(to==='bloqueado'?' bloqueada.':' liberada.'));rootLoad()}).catch(rootErr)}});
+    }else if(r==='share'){
+      dialog({tone:'info',title:'Gerar novo acesso?',text:'Vamos criar uma nova senha provisória para '+a.name+' (a anterior deixa de valer) e abrir o WhatsApp para você enviar.',ok:'Gerar e compartilhar',cancel:'Cancelar',
+        onOk:function(){var pw=tmpPass(a.cpf);rpc('root_reset_password',{p_token:AU.token,p_id:id,p_pass:pw}).then(function(x){rootLoad();credModal(x,pw)}).catch(rootErr)}});
+    }else if(r==='del'){
+      dialog({tone:'danger',title:'Excluir '+a.name+'?',text:'A academia e o acesso dela serão apagados para sempre. Isso não pode ser desfeito. Para só suspender, use o botão de status.',ok:'Excluir',cancel:'Cancelar',
+        onOk:function(){rpc('root_delete_academy',{p_token:AU.token,p_id:id}).then(function(){toast('ok','Academia excluída.');rootLoad()}).catch(rootErr)}});
+    }
+  });
+  function acadShareText(a,pw){
+    return 'Olá, '+a.owner_name+'! O acesso da academia *'+a.name+'* ao *BJJ Arena* está liberado. 🥋\n\nEntre pelo site: '+SITE_URL+'\n(ou pelo aplicativo de computador)\n\n*Login:* '+a.email+'\n*Senha provisória:* '+pw+'\n\nNo primeiro acesso você cria sua própria senha e cadastra os dados da academia (Instagram, YouTube, contatos e horários).\nVálido até '+brDate(a.due)+'.';
+  }
+  function credModal(a,pw){
+    var txt=acadShareText(a,pw);
+    amOpen({eyebrow:'Acesso da academia',title:a.name,ok:false,cancel:'Concluir',
+      html:'<div class="cred"><div><span class="mut">Login</span><br><code>'+esc(a.email)+'</code></div><div><span class="mut">Senha provisória</span><br><code id="crPw">'+esc(pw)+'</code></div><p class="au-hint">Guarde esta senha agora: ela não aparece de novo. Se perder, gere outra em “Compartilhar acesso”.</p></div>'+
+        '<div class="au-acts" style="width:100%"><button class="btn primary" type="button" data-cr="wa">Compartilhar no WhatsApp</button><button class="btn" type="button" data-cr="copy">Copiar mensagem</button></div>'});
+    $('#amB').onclick=function(e){
+      var t=e.target.closest('[data-cr]');if(!t)return;
+      if(t.getAttribute('data-cr')==='wa')openUrl(waUrl(a.phone,txt));
+      else{var done=function(){toast('ok','Mensagem copiada.')};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,done);else done()}
+    };
+  }
+  function acadModal(a){
+    var edit=!!a,f=function(id,l,v,ph,t,full,extra){return '<div class="field'+(full?' full':'')+'"><label for="'+id+'">'+l+'</label><input id="'+id+'" type="'+(t||'text')+'" maxlength="120" placeholder="'+esc(ph||'')+'" value="'+esc(v==null?'':v)+'"'+(extra||'')+'></div>'};
+    amOpen({eyebrow:edit?'Editar academia':'Cadastrar academia',title:edit?a.name:'Nova academia',ok:edit?'Salvar':'Cadastrar academia',
+      html:'<form class="au-grid" novalidate>'+f('acN','Nome da academia *',a&&a.name,'Ex.: Alliance Floripa',null,true)+f('acO','Responsável *',a&&a.owner_name,'Nome completo')+f('acC','CPF do responsável *',a?cpfMask(a.cpf):'','000.000.000-00',null,false,' inputmode="numeric"')+
+        f('acP','WhatsApp *',a?phoneMask(a.phone):'','(48) 99999-0000','tel')+f('acE','E-mail (será o login) *',a&&a.email,'responsavel@academia.com','email')+
+        f('acV','Valor desta academia (R$) *',a?String((a.value_cents/100).toFixed(2)).replace('.',','):'','0,00',null,false,' inputmode="decimal"')+f('acD','Vencimento *',a?a.due:addDays(30),'','date')+
+        (edit?'':'<div class="field full"><label>Acesso que será criado</label><div class="cred" id="acPrev"></div></div>')+'</form>',
+      onOpen:function(){
+        var pv=function(){var p=$('#acPrev');if(p)p.innerHTML='<div><span class="mut">Login</span> <b>'+esc($('#acE').value.trim()||'e-mail informado acima')+'</b></div><div><span class="mut">Senha provisória</span> <b>'+(cpfOk($('#acC').value)?esc(digits($('#acC').value).slice(-4))+'-••••':'4 últimos dígitos do CPF + código')+'</b></div>'};
+        $('#acC').addEventListener('input',function(){this.value=cpfMask(this.value);pv()});$('#acP').addEventListener('input',function(){this.value=phoneMask(this.value)});$('#acE').addEventListener('input',pv);pv();
+      },
+      onOk:function(setBusy){
+        var g=function(id){return $('#'+id).value.trim()},cents=parseMoney(g('acV'));
+        if(g('acN').length<2)return needF('#acN','Informe o nome da academia.');
+        if(g('acO').length<2)return needF('#acO','Informe o nome do responsável.');
+        if(!cpfOk(g('acC')))return needF('#acC','CPF inválido.');
+        var ph=digits(g('acP'));if(ph.length<10||ph.length>13)return needF('#acP','Informe o WhatsApp com DDD.');
+        if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(g('acE')))return needF('#acE','Informe um e-mail válido (será o login).');
+        if(cents==null)return needF('#acV','Informe o valor desta academia.');
+        if(!/^\d{4}-\d{2}-\d{2}$/.test(g('acD')))return needF('#acD','Informe a data de vencimento.');
+        setBusy(true);
+        if(edit){
+          rpc('root_update_academy',{p_token:AU.token,p_id:a.id,p_name:g('acN'),p_owner:g('acO'),p_cpf:digits(g('acC')),p_phone:ph,p_email:g('acE'),p_value_cents:cents,p_due:g('acD')}).then(function(){setBusy(false);amClose();toast('ok','Academia atualizada.');rootLoad()}).catch(function(er){setBusy(false);rootErr(er)});
+        }else{
+          var pw=tmpPass(g('acC'));
+          rpc('root_create_academy',{p_token:AU.token,p_name:g('acN'),p_owner:g('acO'),p_cpf:digits(g('acC')),p_phone:ph,p_email:g('acE'),p_value_cents:cents,p_due:g('acD'),p_pass:pw}).then(function(x){setBusy(false);amClose();rootLoad();credModal(x,pw)}).catch(function(er){setBusy(false);rootErr(er)});
+        }
+      }});
+  }
+
+  /* início do acesso */
+  function authStart(){
+    var msg='';try{msg=sessionStorage.getItem('bjj-msg')||'';sessionStorage.removeItem('bjj-msg')}catch(e){}
+    var rs=null,ac=null;
+    try{rs=JSON.parse(sessionStorage.getItem(AUTHK)||'null')}catch(e){}
+    try{ac=JSON.parse(lsGet(AUTHK)||'null')}catch(e){}
+    if(rs&&rs.role==='root'&&rs.token){
+      AU.role='root';AU.token=rs.token;AU.email=rs.email;
+      rpc('auth_me',{p_token:rs.token}).then(function(j){if(j&&j.ok&&j.role==='root')openRoot();else showLogin(msg)}).catch(function(){showLogin(msg||'Sem conexão com a internet.')});
+      $('#auL').textContent='Verificando acesso…';scr('auth');return;
+    }
+    if(ac&&ac.role==='academy'&&ac.token&&ac.acad){
+      AU.role='academy';AU.token=ac.token;AU.acad=ac.acad;AU.email=ac.acad.email;AU.seenAt=ac.at||0;
+      $('#auL').textContent='Verificando acesso…';scr('auth');
+      rpc('auth_me',{p_token:ac.token}).then(function(j){
+        if(j&&j.ok&&j.role==='academy'){AU.seenAt=Date.now();handleAcademy(j.academy)}else{lsDel(AUTHK);showLogin(msg||AERR.sessao_invalida)}
+      }).catch(function(er){
+        if(!isNet(er)){showLogin(msg);return}
+        // sem internet: usa o último estado conhecido por até 7 dias
+        var okOff=Date.now()-(AU.seenAt||0)<OFFLINE_DAYS*864e5;
+        if(!okOff){showLogin('Conecte-se à internet para validar seu acesso.');return}
+        if(localBlocked(ac.acad)){showBlocked();return}
+        if(ac.acad.must_change||!ac.acad.profile_done){showLogin('Conecte-se à internet para concluir seu primeiro acesso.');return}
+        enterApp();toast('warn','Você está sem internet. O acesso será validado quando a conexão voltar.',6000);
+      });
+      return;
+    }
+    showLogin(msg);
+  }
+
+  function bootApp(){
+    load();
+    $('#tempo').value=S.tempo;
+    $('#modo').value=S.modo;
+    initCfg();
+    renderList();renderHint();renderResults();
+    if(DESK){DESK.onStateRequest(sendState);DESK.onTelaoStatus(function(o){TELAO_OPEN=o;paintTelao()})}
+    paintTelao();broadcastSoon();
+    if(S.online.eventId)setTimeout(function(){regFetch(true)},1500);
+    if(!IS_TELAO&&!REMOTE)tourAuto();
+  }
+  window.__bjjBoot=bootApp;
   if(IS_TELAO){
     document.body.classList.add('telao');
     (function(){
@@ -2892,14 +3413,10 @@ body.remote [data-adj]{display:none!important}
     setInterval(telaoCycle,15000);
   }else if(REMOTE){
     remoteBoot();
+  }else if(window.__NOAUTH){
+    bootApp();
   }else{
-    load();
-    $('#tempo').value=S.tempo;
-    $('#modo').value=S.modo;
-    initCfg();
-    renderList();renderHint();renderResults();
-    if(DESK){DESK.onStateRequest(sendState);DESK.onTelaoStatus(function(o){TELAO_OPEN=o;paintTelao()})}
-    paintTelao();broadcastSoon();
+    authStart();
   }
 })();
 </script>

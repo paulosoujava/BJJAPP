@@ -1,0 +1,5 @@
+-- Cria/atualiza o usuário ROOT. NÃO salve a senha real em arquivo nem no GitHub.
+-- Troque os dois textos abaixo, rode no SQL Editor do Supabase e depois apague o texto do editor.
+insert into public.root_admin(id, email, pass_hash)
+values (1, 'SEU-EMAIL', extensions.crypt('SUA-SENHA-FORTE', extensions.gen_salt('bf')))
+on conflict (id) do update set email = excluded.email, pass_hash = excluded.pass_hash, updated_at = now();
