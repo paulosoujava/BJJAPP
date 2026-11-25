@@ -885,8 +885,8 @@ body.au-on .wrap{display:none}
 .gate-bg{position:fixed;inset:0;z-index:-1;opacity:0;pointer-events:none;transition:opacity .5s;background:linear-gradient(180deg,rgba(7,11,14,.5) 0%,rgba(7,11,14,.86) 100%),url(img/fundo-luta.jpg) center 30%/cover no-repeat,#070B0E}
 body:has(#gate:not([hidden])) .gate-bg{opacity:1}
 .gate>*{position:relative}
-.gate form{max-width:560px;padding:clamp(16px,2.4vw,24px);border-radius:20px;background:rgba(8,16,20,.62);border:1px solid rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 24px 50px -28px #000}
-.gate .gfields{display:grid;grid-template-columns:minmax(150px,.75fr) minmax(0,1.5fr);gap:14px}
+.gate form{max-width:none;width:100%;padding:clamp(16px,2.4vw,24px);border-radius:20px;background:rgba(8,16,20,.62);border:1px solid rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 24px 50px -28px #000}
+.gate .gfields{display:grid;grid-template-columns:minmax(200px,.7fr) minmax(0,1.3fr);gap:16px;align-items:start}
 .gate .gfields .grow{grid-column:1/-1;flex:none}
 .gate .gfields .field:not(.grow){flex:none;grid-column:auto;min-width:0}
 .gate .gfields select{height:58px;font-size:1.02rem;border-radius:14px;padding:0 14px;background-color:rgba(255,255,255,.05);border:1.5px solid var(--line-strong);color:#fff;width:100%;text-overflow:ellipsis}
@@ -895,7 +895,8 @@ body:has(#gate:not([hidden])) .gate-bg{opacity:1}
 .gate .gfields:has(.gtipo[hidden]) .field:not(.grow){grid-column:1/-1}
 .gate .es-act{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
 .gate .es-act .btn.primary{flex:1 1 220px;height:58px;font-size:1.1rem;letter-spacing:.02em}
-.gate .es-act .btn:not(.primary){flex:0 1 auto}
+.gate .es-act .btn:not(.primary){flex:0 1 auto;height:58px;padding:0 26px;font-size:1.02rem}
+.gate .gfields input[type=date]{width:100%}
 @media (max-width:760px){.gate .gfields{grid-template-columns:minmax(0,1fr)}}
 
 .toasts{z-index:9600!important}#dlg{z-index:9400!important}
