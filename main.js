@@ -1,5 +1,12 @@
 const { app, BrowserWindow, Menu, shell, nativeTheme, powerSaveBlocker, ipcMain, screen } = require('electron');
 const path = require('path');
+const { createNet } = require('./net-server');
+const license = require('./license');
+const PUB = require('./license-pub');
+let QR = null;
+try { QR = require('qrcode'); } catch (e) {}
+const net = createNet({ appDir: path.join(__dirname, 'app') });
+net.onMesa = (b) => { sendToMain('net:mesa', b); return { ok: true }; };
 
 // Mantém os dados salvos das versões anteriores (antes o app se chamava Chaveador Jiu-Jitsu).
 app.setName('BJJ Arena');
@@ -94,6 +101,7 @@ const fromTelao = (e) => telaoWin && !telaoWin.isDestroyed() && e.sender === tel
 ipcMain.on('state:push', (e, payload) => {
   if (!fromMain(e)) return;
   lastState = payload;
+  net.setState(payload);
   if (telaoWin && !telaoWin.isDestroyed()) telaoWin.webContents.send('state:update', payload);
 });
 ipcMain.on('state:request', (e) => {
@@ -101,6 +109,45 @@ ipcMain.on('state:request', (e) => {
   if (lastState) telaoWin.webContents.send('state:update', lastState);
   sendToMain('state:request');
 });
+const netInfo = () => ({ running: net.running, port: net.port, pin: net.pin, ips: net.ips() });
+ipcMain.handle('net:start', async (e) => {
+  if (!fromMain(e)) return null;
+  try { await net.start(7654); } catch (err) { return { error: String(err.code || err.message) }; }
+  if (lastState) net.setState(lastState);
+  return netInfo();
+});
+ipcMain.handle('net:stop', async (e) => { if (!fromMain(e)) return null; await net.stop(); return netInfo(); });
+ipcMain.handle('net:info', (e) => (fromMain(e) ? netInfo() : null));
+ipcMain.handle('net:pin', (e) => { if (!fromMain(e)) return null; net.regenPin(); return netInfo(); });
+ipcMain.handle('net:qr', async (e, text) => {
+  if (!fromMain(e) || !QR || typeof text !== 'string' || text.length > 600) return '';
+  try { return await QR.toString(text, { type: 'svg', margin: 1, width: 220, color: { dark: '#000000', light: '#ffffff' } }); } catch (err) { return ''; }
+});
+app.on('quit', () => { net.stop(); });
+const licDir = () => app.getPath('userData');
+ipcMain.handle('lic:status', (e) => (fromMain(e) ? { ...license.status(licDir(), PUB), version: app.getVersion() } : null));
+ipcMain.handle('lic:activate', (e, key) => {
+  if (!fromMain(e) || typeof key !== 'string' || key.length > 2000) return { ok: false, error: 'formato' };
+  const r = license.activate(licDir(), key, PUB);
+  return r.ok ? { ok: true, status: { ...r.status, version: app.getVersion() } } : { ok: false, error: r.error };
+});
+// Aviso de versão nova: lê um version.json público (nada é instalado sozinho).
+ipcMain.handle('app:update-check', async (e) => {
+  if (!fromMain(e)) return null;
+  try {
+    const ctl = new AbortController();
+    const t = setTimeout(() => ctl.abort(), 6000);
+    const r = await fetch('https://raw.githubusercontent.com/paulosoujava/BJJArena/main/version.json', { signal: ctl.signal });
+    clearTimeout(t);
+    const j = await r.json();
+    const num = (v) => String(v).split('.').map((x) => parseInt(x, 10) || 0);
+    const a = num(j.version), b = num(app.getVersion());
+    let newer = false;
+    for (let i = 0; i < 3; i++) { if ((a[i] || 0) !== (b[i] || 0)) { newer = (a[i] || 0) > (b[i] || 0); break; } }
+    return { newer, version: String(j.version), url: /^https:\/\//.test(j.url || '') ? j.url : 'https://github.com/paulosoujava/BJJArena', notas: String(j.notas || '').slice(0, 300) };
+  } catch (err) { return null; }
+});
+ipcMain.on('app:open-external', (e, u) => { if (fromMain(e) && typeof u === 'string' && /^https:\/\//.test(u)) shell.openExternal(u); });
 ipcMain.on('app:quit', (e) => { if (fromMain(e) && mainWin) mainWin.close(); });
 ipcMain.on('app:close-confirm', (e) => {
   if (!fromMain(e)) return;

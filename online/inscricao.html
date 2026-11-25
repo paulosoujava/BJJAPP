@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Inscrição · BJJ Arena</title>
+<style>
+:root{--bg:#070B0E;--s:#0F171C;--s2:#16212A;--line:#2A3B46;--fg:#EEF3F5;--mut:#93A2AC;--gold:#F2BF3C;--red:#FF5A4D;--ok:#5FD3B0}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(900px 500px at 80% -10%,#1b2a33 0,transparent 60%),var(--bg);color:var(--fg);font:16px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;min-height:100vh;padding:max(16px,env(safe-area-inset-top)) 16px 48px}
+.wrap{max-width:520px;margin:0 auto}
+.eyebrow{letter-spacing:.2em;text-transform:uppercase;font-size:.72rem;color:var(--gold);font-weight:700}
+h1{font:800 clamp(2rem,9vw,2.8rem)/1 'Barlow Condensed','Arial Narrow',Arial,sans-serif;text-transform:uppercase;margin:.3rem 0 .2rem}
+.sub{color:var(--mut);margin:0 0 1.2rem}
+form{background:var(--s);border:1px solid var(--line);border-radius:16px;padding:18px;display:grid;gap:14px;grid-template-columns:1fr 1fr}
+.f{display:flex;flex-direction:column;gap:6px;min-width:0}.full{grid-column:1/-1}
+label{font-size:.8rem;color:var(--mut);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+input,select{width:100%;background:var(--s2);color:var(--fg);border:1.5px solid var(--line);border-radius:10px;padding:13px 12px;font:inherit;min-width:0}
+input:focus,select:focus{outline:2px solid var(--gold);outline-offset:1px}
+.bad{border-color:var(--red)!important}
+button{grid-column:1/-1;background:var(--gold);color:#1a1203;border:0;border-radius:12px;padding:15px;font:800 1.05rem system-ui;text-transform:uppercase;letter-spacing:.06em;cursor:pointer}
+button[disabled]{opacity:.5}
+.msg{grid-column:1/-1;margin:0;min-height:1.2em;color:var(--red);font-weight:600}
+.card{background:var(--s);border:1px solid var(--line);border-radius:16px;padding:22px}
+.card.ok{border-color:var(--ok)}.card h2{margin:.1rem 0 .4rem}
+small{color:var(--mut)}
+@media(max-width:420px){form{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="eyebrow">BJJ Arena · Inscrição</span>
+  <h1 id="tit">Carregando…</h1>
+  <p class="sub" id="sub"></p>
+  <div id="box"></div>
+</div>
+<script>
+/* Se você preencher aqui, os links ficam curtos (…/inscricao.html?e=ID). Se deixar vazio, o link gerado pelo BJJ Arena já leva a conexão. */
+window.BJJ_CFG={url:'',key:''};
+(function(){
+  var q=new URLSearchParams(location.search),E=q.get('e')||'',URL_=(window.BJJ_CFG.url||q.get('u')||'').replace(/\/+$/,''),KEY=window.BJJ_CFG.key||q.get('k')||'';
+  var $=function(s){return document.querySelector(s)};
+  var ERR={nome_invalido:'Nome inválido.',equipe_invalida:'Informe a equipe ou academia.',sexo_invalido:'Selecione o sexo.',nascimento_invalido:'Ano de nascimento inválido.',peso_invalido:'Peso inválido.',faixa_invalida:'Faixa inválida.',ja_inscrito:'Você já está inscrito neste campeonato.',inscricoes_encerradas:'As inscrições foram encerradas.',limite_atingido:'Limite de inscrições atingido.',evento_inexistente:'Este link de inscrição não é válido.'};
+  function esc(t){return String(t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function rpc(fn,body){
+    return fetch(URL_+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY,Authorization:'Bearer '+KEY},body:JSON.stringify(body)}).then(function(r){
+      return r.json().catch(function(){return null}).then(function(j){if(!r.ok){var m=(j&&(j.message||j.hint||''))+'';var k=Object.keys(ERR).filter(function(x){return m.indexOf(x)>=0})[0];throw new Error(k||'falha')}return j});
+    });
+  }
+  function dateBR(d){if(!d)return '';var p=String(d).split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:''}
+  function closed(t,m){$('#tit').textContent=t;$('#sub').textContent='';$('#box').innerHTML='<div class="card"><p>'+esc(m)+'</p></div>'}
+  if(!E||!URL_||!KEY){closed('Link inválido','Peça ao organizador um novo link de inscrição.');return}
+  rpc('get_event',{p_id:E}).then(function(ev){
+    if(!ev){closed('Link inválido','Este link de inscrição não é válido.');return}
+    $('#tit').textContent=ev.name;$('#sub').textContent=ev.date?('Campeonato em '+dateBR(ev.date)):'';
+    if(!ev.open){closed(ev.name,'As inscrições deste campeonato estão encerradas.');return}
+    form(ev);
+  }).catch(function(){closed('Sem conexão','Não foi possível carregar o campeonato. Tente de novo em instantes.')});
+  function form(ev){
+    var yr=new Date().getFullYear();
+    $('#box').innerHTML='<form id="f" novalidate>'+
+     '<div class="f full"><label for="n">Nome completo</label><input id="n" maxlength="60" autocomplete="name" placeholder="Ex.: Rafael Duarte"></div>'+
+     '<div class="f full"><label for="t">Equipe / Academia</label><input id="t" maxlength="50" placeholder="Ex.: Gracie Barra Floripa"></div>'+
+     '<div class="f"><label for="s">Sexo</label><select id="s"><option value="">Selecione…</option><option value="M">Masculino</option><option value="F">Feminino</option></select></div>'+
+     '<div class="f"><label for="b">Ano de nascimento</label><input id="b" inputmode="numeric" maxlength="4" placeholder="Ex.: 1994"></div>'+
+     '<div class="f"><label for="w">Peso (kg)</label><input id="w" inputmode="decimal" placeholder="Ex.: 76,5"></div>'+
+     '<div class="f"><label for="x">Faixa</label><select id="x"><option value="branca">Branca</option><option value="azul">Azul</option><option value="roxa">Roxa</option><option value="marrom">Marrom</option><option value="preta">Preta</option><option value="__o">Outra…</option></select></div>'+
+     '<div class="f full" id="xo" hidden><label for="xn">Nome da faixa</label><input id="xn" maxlength="24" placeholder="Ex.: Cinza, Amarela"></div>'+
+     '<div class="f full"><label for="p">WhatsApp (opcional)</label><input id="p" inputmode="tel" maxlength="20" placeholder="(48) 99999-9999"></div>'+
+     '<p class="msg" id="m" role="alert"></p><button id="go" type="submit">Enviar inscrição</button>'+
+     '<small class="full" style="grid-column:1/-1">O peso será conferido na pesagem oficial.</small></form>';
+    $('#x').addEventListener('change',function(){$('#xo').hidden=this.value!=='__o'});
+    $('#f').addEventListener('submit',function(e){
+      e.preventDefault();
+      var m=$('#m');m.textContent='';[].forEach.call(document.querySelectorAll('.bad'),function(x){x.classList.remove('bad')});
+      function fail(t,id){m.textContent=t;var el=$('#'+id);el.classList.add('bad');el.focus()}
+      var n=$('#n').value.trim().replace(/\s+/g,' '),t=$('#t').value.trim().replace(/\s+/g,' '),s=$('#s').value,b=parseInt($('#b').value,10),w=parseFloat($('#w').value.replace(',','.')),x=$('#x').value;
+      if(n.length<2)return fail('Informe seu nome.','n');
+      if(t.length<2)return fail('Informe sua equipe ou academia.','t');
+      if(!s)return fail('Selecione o sexo.','s');
+      if(!/^\d{4}$/.test($('#b').value.trim())||b<yr-100||b>yr-3)return fail('Informe o ano de nascimento com 4 dígitos.','b');
+      if(!isFinite(w)||w<15||w>200)return fail('Informe um peso entre 15 e 200 kg.','w');
+      if(x==='__o'){x=$('#xn').value.trim();if(x.length<3)return fail('Escreva o nome da faixa.','xn')}
+      var btn=$('#go');btn.disabled=true;btn.textContent='Enviando…';
+      rpc('submit_registration',{p_event:E,p_name:n,p_team:t,p_sex:s,p_born:b,p_weight:w,p_belt:x,p_phone:$('#p').value.trim()}).then(function(){
+        $('#box').innerHTML='<div class="card ok"><h2>Inscrição enviada!</h2><p><b>'+esc(n)+'</b> · '+esc(t)+'<br><small>Peso informado: '+String(w).replace('.',',')+' kg · aguarde a confirmação do organizador.</small></p></div>';
+        window.scrollTo(0,0);
+      }).catch(function(er){btn.disabled=false;btn.textContent='Enviar inscrição';m.textContent=ERR[er.message]||'Não foi possível enviar. Verifique a conexão e tente de novo.'});
+    });
+  }
+})();
+</script>
+</body>
+</html>

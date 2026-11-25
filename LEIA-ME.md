@@ -1,4 +1,4 @@
-# BJJ Arena — versão 1.6.1
+# BJJ Arena — versão 1.7.0
 
 Programa para Mac que cadastra lutadores, monta as chaves do campeonato, controla o placar e mostra tudo em TV/telão.
 
@@ -75,3 +75,18 @@ Se não houve nenhuma luta decidida, nada é guardado no histórico.
 ## Dados
 
 Tudo é salvo automaticamente no computador. Se o Mac avisar que o app é de desenvolvedor não identificado: botão direito no app → Abrir.
+
+
+## Novidades da 1.7.0
+
+**Equipe, sexo e idade.** O cadastro agora pede equipe/academia, sexo e ano de nascimento. As chaves podem ser separadas por faixa etária (Pré-mirim a Master 7), por sexo (tabela de peso feminina) e, até 15 anos, pela tabela de peso infantil (faixas de 5 em 5 kg). A idade é calculada pelo ano do evento. O sorteio evita que colegas de equipe se enfrentem cedo, e o resumo, o telão e o histórico mostram o **quadro de medalhas por equipe** (ouro 9, prata 3, bronze 1).
+
+**Link de inscrição.** Em *Inscritos > Link de inscrição* você cria um link público do campeonato, copia ou envia pelo WhatsApp. Cada atleta preenche os próprios dados e você adiciona à lista com um clique. Precisa de um projeto gratuito no Supabase: veja `online/LEIA-ME-INSCRICAO.md`.
+
+**Mesas em vários aparelhos e resultados ao vivo.** No painel *Mesas e público*, ligue a rede local: cada tatame ganha um link/QR para abrir no tablet ou notebook (protegido por PIN), e o público vê lutas, chaves e pódio pelo QR de resultados ao vivo. Todos no mesmo Wi-Fi. Cada tatame deve ser controlado por um só aparelho.
+
+**Certificados, som e tutorial.** Botão *Certificados* no resumo e no histórico imprime um certificado A4 por medalhista. O aviso sonoro de fim de tempo pode ser desligado/testado nas opções. O tutorial de 6 passos abre no primeiro uso e em *Como usar*.
+
+**Licença e atualização.** Veja `ferramentas/LEIA-ME-LICENCA.md`. Enquanto você não gerar suas chaves, o programa funciona livre. O app avisa quando houver versão nova (arquivo `version.json` no repositório do site).
+
+Testes em equipamentos reais: `CHECKLIST-TESTES-REAIS.md`.

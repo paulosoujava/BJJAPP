@@ -1,7 +1,7 @@
 {
   "name": "bjj-arena",
   "productName": "BJJ Arena",
-  "version": "1.6.3",
+  "version": "1.7.0",
   "description": "BJJ Arena: cadastro de lutadores, chaveamento, placar e telão para campeonatos de jiu-jitsu",
   "main": "main.js",
   "author": {
@@ -35,6 +35,9 @@
     "files": [
       "main.js",
       "preload.js",
+      "net-server.js",
+      "license.js",
+      "license-pub.js",
       "app/**/*",
       "build/icon.png"
     ],
@@ -96,5 +99,8 @@
     },
     "publish": null
   },
-  "homepage": "https://github.com/paulosoujava/BJJArena"
+  "homepage": "https://github.com/paulosoujava/BJJArena",
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  }
 }

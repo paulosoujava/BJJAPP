@@ -670,6 +670,54 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
 .tl-pod h2 small{font:600 clamp(.9rem,1.4vw,1.4rem) var(--body);font-style:normal;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
 .pod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(480px,100%),1fr));gap:22px;align-content:start}
 @media (prefers-reduced-motion:reduce){.pd,.pd.g::before{animation:none!important}}
+
+  .tm th,.tm td{padding:.55rem .7rem}.tm .md{display:inline-block;width:.7em;height:.7em;border-radius:50%;margin-right:.35em}
+  .tm .md.g{background:#F5C84B}.tm .md.s{background:#C5CBD3}.tm .md.b{background:#C77B3E}
+  .tm-top.tm-1 td:nth-child(2){color:#F5C84B}.tm-big{font-size:1.5rem}.tm-big th{font-size:.8rem}
+  .teams{margin-top:1.2rem}.teams h3{margin:0 0 .6rem;font-size:1.05rem}.teams h3 small{margin-left:.7rem;color:var(--mut,#8A97A3);font-weight:500;font-size:.75rem}
+  .pteam{display:block;font-style:normal;font-size:.72em;opacity:.7;letter-spacing:.04em;text-transform:uppercase}
+
+.reg-in{max-width:980px}.reg-h{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:18px}.reg-h h2{margin:.2rem 0 0;font:800 clamp(1.8rem,5vw,2.8rem)/1 var(--display);text-transform:uppercase}
+.reg-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}.reg-card h3{margin:0 0 .6rem;font:700 1.3rem var(--display);text-transform:uppercase;letter-spacing:.03em}
+.reg-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}.reg-grid label{display:flex;flex-direction:column;gap:6px;font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.reg-grid .full{grid-column:1/-1}
+.reg input[type=text]{background:var(--surface-2);color:var(--fg);border:1.5px solid var(--line-strong);border-radius:10px;padding:11px 12px;font:inherit;width:100%}
+.reg-act{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.reg-top{display:flex;justify-content:space-between;align-items:center;gap:10px}.reg a.btn{text-decoration:none;display:inline-flex;align-items:center}
+.reg .cnt{margin-left:.6rem;background:var(--ouro);color:#1a1203;border-radius:99px;padding:0 .6em;font-size:.85em}.reg .mut{color:var(--muted)}.reg .okc{color:var(--accent)}.reg .badc{color:#FF7A6E}.reg code{background:var(--surface-2);padding:1px 6px;border-radius:6px}
+.rbadge{margin-left:.45rem;background:#E8734A;color:#fff;border-radius:99px;padding:0 .55em;font-size:.75em;font-weight:700}
+.reg .tag{display:inline-block;border:1px solid var(--line-strong);border-radius:99px;padding:1px 9px;font-size:.78rem}
+@media(max-width:640px){.reg-grid{grid-template-columns:1fr}}
+
+body.remote .top,body.remote main.layout,body.remote #gate{display:none!important}
+body.remote .tv-ctl [data-tvact="close"],body.remote #tvExit,body.remote #tvFs{display:none!important}
+.rm-wait{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;background:#070B0E;color:#EEF3F5;z-index:50}
+.rm-wait h2{font:800 clamp(2rem,6vw,3.4rem) var(--display);text-transform:uppercase;margin:.3rem 0}.rm-wait[hidden]{display:none}
+
+.net-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px}.net-card{display:flex;gap:16px;align-items:flex-start}.net-card input{width:100%;margin-top:6px;font-size:.85rem}
+.qr{width:150px;height:150px;flex:none;background:#fff;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center}.qr svg{width:100%;height:100%}
+.pin{font:800 1.6rem var(--display);letter-spacing:.2em;color:var(--ouro)}
+.qr-tl{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center}.qr-box{background:#0F171C;color:#EEF3F5;border:2px solid #F2BF3C;border-radius:20px;padding:28px;text-align:center;max-width:min(92vw,460px)}.qr-box svg{width:min(70vw,340px);height:auto;background:#fff;border-radius:12px}.qr-box h2{font:800 2.2rem var(--display);text-transform:uppercase;margin:.8rem 0 .2rem}
+body.remote [data-adj]{display:none!important}
+
+.notebar{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;padding:9px 16px;font-size:.95rem;border-bottom:1px solid var(--line-strong);background:var(--surface-2)}
+.notebar.lic{background:#3a2a05;color:#F2BF3C}.notebar.upd{background:#06201A;color:#5FD3B0}
+.lic-ov{z-index:5000}.pin{font:700 1.2em var(--display);letter-spacing:.12em}
+#cert{display:none}
+@media print{
+  @page{size:A4 landscape;margin:0}
+  body.printing>*:not(#cert){display:none!important}
+  body.printing #cert{display:block!important}
+  body.printing{background:#fff!important}
+  .cert{width:297mm;height:209mm;page-break-after:always;break-after:page;display:flex;align-items:center;justify-content:center;background:#fff;color:#111;font-family:Georgia,'Times New Roman',serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .cert-in{width:276mm;height:188mm;border:3mm double #B8860B;padding:12mm;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:3mm}
+  .cert.s .cert-in{border-color:#8E9AA3}.cert.b .cert-in{border-color:#B0652B}
+  .cert-eye{letter-spacing:.4em;text-transform:uppercase;font:700 12pt Arial,sans-serif;color:#555}
+  .cert h1{margin:0;font-size:48pt;letter-spacing:.1em;text-transform:uppercase}
+  .cert h2{margin:0;font-size:40pt;font-style:italic}.cert-lead,.cert-txt{margin:0;font-size:14pt;color:#444}
+  .cert-team{margin:0;font:600 14pt Arial,sans-serif;color:#555;text-transform:uppercase;letter-spacing:.1em}
+  .cert-place{font:800 34pt Arial,sans-serif;text-transform:uppercase;color:#B8860B}.cert.s .cert-place{color:#6b7782}.cert.b .cert-place{color:#B0652B}
+  .cert-camp{margin:4mm 0 0;font-size:13pt;color:#333}
+  .cert-sign{display:flex;justify-content:space-around;margin-top:12mm;font:11pt Arial,sans-serif;color:#555}.cert-sign span{border-top:.3mm solid #555;padding-top:2mm;min-width:60mm}
+}
 </style>
 </head>
 <body>
@@ -679,12 +727,15 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
     <div class="brand">
       <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2BF3C"/><stop offset="1" stop-color="#E8734A"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="16" fill="url(#lg1)"/><path d="M14 40l9-18 9 12 9-12 9 18" fill="none" stroke="#1a1203" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="14" y="46" width="36" height="5" rx="2.5" fill="#1a1203"/></svg>
       <div><h1>BJJ Arena</h1>
-      <p>Cadastre os lutadores, defina o tempo de luta e gere as chaves por faixa e categoria de peso.</p></div>
+      <p>Cadastre os lutadores, defina o tempo de luta e gere as chaves por faixa e categoria de peso. <button class="btn link" id="tourBtn" type="button">Como usar (tutorial)</button></p></div>
     </div>
     <div class="beltbar" aria-hidden="true">
       <span style="background:var(--belt-branca)"></span><span style="background:var(--belt-azul)"></span><span style="background:var(--belt-roxa)"></span><span style="background:var(--belt-marrom)"></span><span style="background:var(--belt-preta)"></span>
     </div>
   </header>
+
+  <div class="notebar lic" id="licBar" hidden></div>
+  <div class="notebar upd" id="updBar" hidden></div>
 
   <section class="panel gate" id="gate" hidden aria-labelledby="gTitle">
     <span class="eyebrow">BJJ Arena</span>
@@ -711,6 +762,11 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
           <label for="nome">Nome do lutador</label>
           <input id="nome" type="text" maxlength="60" autocomplete="off" placeholder="Ex.: Rafael Duarte">
         </div>
+        <div class="field full">
+          <label for="equipe">Equipe / Academia</label>
+          <input id="equipe" type="text" maxlength="50" autocomplete="off" list="equipes" placeholder="Ex.: Gracie Barra Floripa">
+          <datalist id="equipes"></datalist>
+        </div>
         <div class="field">
           <label for="peso">Peso (kg)</label>
           <input id="peso" type="text" inputmode="decimal" autocomplete="off" placeholder="Ex.: 76,5">
@@ -726,6 +782,15 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
             <option value="__outra">Outra…</option>
           </select>
         </div>
+        <div class="field">
+          <label for="sexo">Sexo</label>
+          <select id="sexo"><option value="">Selecione…</option><option value="M">Masculino</option><option value="F">Feminino</option></select>
+        </div>
+        <div class="field">
+          <label for="nasc">Ano de nascimento</label>
+          <input id="nasc" type="text" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="Ex.: 1994">
+        </div>
+        <p class="hint full" id="idadeHint" style="grid-column:1/-1;margin:0"></p>
         <div class="field full" id="faixaOutraBox" hidden>
           <label for="faixaOutra">Nome da faixa</label>
           <input id="faixaOutra" type="text" maxlength="24" autocomplete="off" placeholder="Ex.: Cinza, Amarela, Verde">
@@ -736,6 +801,7 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
 
       <div class="listhead">
         <h3>Inscritos<span id="count">0</span></h3>
+        <button class="btn link" id="regBtn" type="button">Link de inscrição<span class="rbadge" id="regBadge" hidden></span></button>
         <button class="btn link" id="clearBtn" type="button" hidden>Limpar lista</button>
       </div>
       <ul class="list" id="lista"></ul>
@@ -795,6 +861,10 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
         </div>
         <div class="checks">
           <label class="chk"><input type="checkbox" id="autoPen"> Punições automáticas: a 2ª dá vantagem ao adversário, a 3ª dá 2 pontos e a 4ª desclassifica</label>
+          <label class="chk"><input type="checkbox" id="divIdade"> Separar por faixa etária (Pré-mirim a Master 7) e usar tabela de peso infantil até 15 anos</label>
+          <label class="chk"><input type="checkbox" id="divSexo"> Separar masculino e feminino (tabela de peso feminina)</label>
+          <label class="chk"><input type="checkbox" id="sepEquipe"> Evitar que atletas da mesma equipe se enfrentem logo no início</label>
+          <label class="chk"><input type="checkbox" id="som"> Aviso sonoro quando o tempo da luta acabar <button class="btn link" type="button" id="somTest">Testar som</button></label>
           <label class="chk"><input type="checkbox" id="rr3"> Categoria com 3 lutadores: todos contra todos</label>
         </div>
         <p class="hint" id="cfgHint"></p>
@@ -824,6 +894,13 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
           <label class="chk"><input type="checkbox" id="telAuto" checked> Mostrar o placar no telão enquanto uma luta estiver aberta</label>
         </div>
         <p class="hint" id="telHint"></p>
+      </section>
+
+      <section class="panel" id="netPanel" aria-labelledby="h-net">
+        <h2 id="h-net"><span class="step">4</span>Mesas e público</h2>
+        <p class="hint">Use um notebook ou tablet por tatame e mostre os resultados ao vivo para o público, tudo pelo Wi-Fi do ginásio. Sem internet.</p>
+        <button class="btn primary go" id="netOpen" type="button">Abrir painel de rede</button>
+        <span class="mut" id="netState"></span>
       </section>
 
       <section id="resultado" class="results" aria-live="polite"></section>
@@ -883,6 +960,24 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
 </div>
 <div class="toasts" id="toasts" aria-live="polite"></div>
 
+<div class="hist reg lic-ov" id="lic" hidden role="dialog" aria-modal="true" aria-labelledby="licT">
+  <div class="hist-in reg-in" style="max-width:640px">
+    <header class="reg-h"><div><span class="eyebrow">BJJ Arena</span><h2 id="licT">Ativar licença</h2></div><button class="btn" type="button" id="licClose">Fechar</button></header>
+    <div id="licBody"></div>
+  </div>
+</div>
+<div class="hist reg" id="net" hidden role="dialog" aria-modal="true" aria-labelledby="netT">
+  <div class="hist-in reg-in">
+    <header class="reg-h"><div><span class="eyebrow">Rede local</span><h2 id="netT">Mesas e público</h2></div><button class="btn" type="button" id="netClose">Fechar</button></header>
+    <div id="netBody"></div>
+  </div>
+</div>
+<div class="hist reg" id="reg" hidden role="dialog" aria-modal="true" aria-labelledby="regT">
+  <div class="hist-in reg-in">
+    <header class="reg-h"><div><span class="eyebrow">Inscrição online</span><h2 id="regT">Link de inscrição</h2></div><button class="btn" type="button" id="regClose">Fechar</button></header>
+    <div id="regBody"></div>
+  </div>
+</div>
 <div class="hist" id="hist" hidden role="dialog" aria-modal="true" aria-labelledby="histTitle">
   <div class="h-bg" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="hist-in">
@@ -915,16 +1010,34 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
   function applyCustom(){BELTS=BASE_BELTS.concat((S&&S.customBelts)||[])}
   // Categorias adulto masculino com kimono (limite superior em kg, já com o kimono).
   var CATS=[{nome:'Galo',max:57.5},{nome:'Pluma',max:64},{nome:'Pena',max:70},{nome:'Leve',max:76},{nome:'Médio',max:82.3},{nome:'Meio-Pesado',max:88.3},{nome:'Pesado',max:94.3},{nome:'Super-Pesado',max:100.5},{nome:'Pesadíssimo',max:Infinity}];
+  var CATSF=[{nome:'Galo',max:48.5},{nome:'Pluma',max:53.5},{nome:'Pena',max:58.5},{nome:'Leve',max:64},{nome:'Médio',max:69},{nome:'Meio-Pesado',max:74},{nome:'Pesado',max:79.3},{nome:'Super-Pesado',max:Infinity}];
+  var CATSK=[20,25,30,35,40,45,50,60,70].map(function(m){return {nome:'Até '+m+' kg',max:m}}).concat([{nome:'Acima de 70 kg',max:Infinity}]);
+  var TABS={M:CATS,F:CATSF,K:CATSK};
+  var AGES=[['Pré-mirim',4,5],['Mirim',6,7],['Infantil A',8,9],['Infantil B',10,11],['Infanto-juvenil A',12,13],['Infanto-juvenil B',14,15],['Juvenil',16,17],['Adulto',18,29],['Master 1',30,35],['Master 2',36,40],['Master 3',41,45],['Master 4',46,50],['Master 5',51,55],['Master 6',56,60],['Master 7',61,200]].map(function(a){return {nome:a[0],min:a[1],max:a[2]}});
+  function evYear(){var y=parseInt((S.evento.data||'').slice(0,4),10);return y>=1900?y:new Date().getFullYear()}
+  function ageOf(f){return f.born?evYear()-f.born:null}
+  function ageIdx(f){
+    var a=ageOf(f);if(a==null)return 7;
+    for(var i=0;i<AGES.length;i++)if(a<=AGES[i].max)return Math.max(i,0);
+    return AGES.length-1;
+  }
+  function ageName(f){var a=ageOf(f);return a==null?'Adulto':(a<4?'Menor de 4 anos':AGES[ageIdx(f)].nome)}
+  function sexName(x){return x==='F'?'Feminino':'Masculino'}
+  function tabOf(f){return (S.divIdade&&ageIdx(f)<6)?'K':((S.divSexo&&f.sex==='F')?'F':'M')}
+  function catOfF(f,w){var t=TABS[tabOf(f)];for(var i=0;i<t.length;i++)if(w<=t[i].max)return {t:tabOf(f),i:i};return {t:tabOf(f),i:t.length-1}}
+  function teamKey(t){return String(t||'').trim().toLowerCase()}
   // Pontuação das posições (regras IBJJF adulto).
   var MOVES=[['Queda',2],['Raspagem',2],['Joelho na barriga',2],['Passagem de guarda',3],['Montada',4],['Pegada de costas',4]];
   var METHODS=['Finalização','Pontos','Vantagens','Punições','Decisão do árbitro','Desqualificação','WO','Desistência'];
   var KEYNAME={p:'Ponto',v:'Vantagem',u:'Punição'};
   var KEY='chaveador-jiujitsu-v1';
   var IS_TELAO=(location.hash==='#telao'); // janela do telão: só exibe, quem controla é a janela principal
-  var DESK=window.desktop||null;          // ponte com o aplicativo (Electron)
+  var DESK=window.desktop||null;
+  var REMOTE=(!window.desktop&&!IS_TELAO&&/^https?:$/.test(location.protocol)&&/[?&]mesa=\d/.test(location.search));
+  var QS=new URLSearchParams(location.search),MAT=+QS.get('mesa')||1,RPIN=QS.get('pin')||'';          // ponte com o aplicativo (Electron)
   var VIEW={mode:'revezar',i:0,autoBoard:true,mat:0}; // o que o telão mostra
   var BOARD=null,REV=0,bcT=null,TELAO_OPEN=false;
-  var S={fighters:[],tempo:5,modo:'faixa-peso',brackets:null,people:{},sig:'',tatames:1,tempoModo:'unico',temposFaixa:{branca:5,azul:6,roxa:7,marrom:8,preta:10},autoPen:true,rr3:true,myMat:0,customBelts:[],evento:{nome:'',data:''},history:[]};
+  var S={gen:'',fighters:[],tempo:5,modo:'faixa-peso',brackets:null,people:{},sig:'',tatames:1,tempoModo:'unico',temposFaixa:{branca:5,azul:6,roxa:7,marrom:8,preta:10},online:{url:'',key:'',site:'https://bjjarena.vercel.app/inscricao.html',short:false,eventId:'',admin:'',open:true,link:''},autoPen:true,rr3:true,divIdade:true,divSexo:true,sepEquipe:true,som:true,myMat:0,customBelts:[],evento:{nome:'',data:''},history:[]};
   var TV={open:false,i:0,rot:false,iv:null,msgT:null};
   var T=null; // luta aberta no placar
   var WEIGH=null; // lutador em pesagem
@@ -944,12 +1057,13 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
   function save(){
     if(IS_TELAO)return;
     REV++;
+    if(REMOTE){remoteSendSoon();return}
     try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
     broadcastSoon();
   }
   function sendState(){
     if(!DESK||IS_TELAO)return;
-    try{DESK.sendState({S:S,view:VIEW,board:T?{b:T.b,r:T.r,m:T.m}:null,rev:REV})}catch(e){}
+    try{DESK.sendState({S:S,view:VIEW,board:T?{b:T.b,r:T.r,m:T.m}:null,rev:REV,live:liveData()})}catch(e){}
   }
   function broadcastSoon(){
     if(!DESK||IS_TELAO||bcT)return;
@@ -963,13 +1077,14 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
         applyCustom();
         if(d.evento&&typeof d.evento==='object'){S.evento={nome:String(d.evento.nome||'').slice(0,80),data:/^\d{4}-\d{2}-\d{2}$/.test(d.evento.data||'')?d.evento.data:''}}
         if(Array.isArray(d.history))S.history=d.history.filter(function(h){return h&&h.id&&Array.isArray(h.brackets)&&h.people&&Array.isArray(h.fighters)}).slice(0,200);
-        S.fighters=d.fighters.filter(function(f){return f&&f.id&&f.name&&isFinite(f.weight)&&beltOf(f.belt)});
+        S.fighters=d.fighters.filter(function(f){return f&&f.id&&f.name&&isFinite(f.weight)&&beltOf(f.belt)}).map(function(f){f.team=String(f.team||'').slice(0,50);f.sex=f.sex==='F'?'F':'M';f.born=(f.born>=1900&&f.born<=2100)?Math.round(f.born):null;return f});
         if(d.tempo>=1&&d.tempo<=60)S.tempo=Math.round(d.tempo);
         if(['faixa-peso','faixa','todos'].indexOf(d.modo)>=0)S.modo=d.modo;
         if(d.tatames>=1&&d.tatames<=8)S.tatames=Math.round(d.tatames);
         if(d.tempoModo==='faixa')S.tempoModo='faixa';
         if(d.temposFaixa){BELTS.forEach(function(b){var v=Math.round(d.temposFaixa[b.id]);if(v>=1&&v<=60)S.temposFaixa[b.id]=v})}
-        S.autoPen=d.autoPen!==false;S.rr3=d.rr3!==false;
+        if(d.online&&typeof d.online==='object'){var o=d.online;S.online={url:String(o.url||'').slice(0,200),key:String(o.key||'').slice(0,800),site:String(o.site||S.online.site).slice(0,300),short:!!o.short,eventId:String(o.eventId||'').slice(0,60),admin:String(o.admin||'').slice(0,80),open:o.open!==false,link:String(o.link||'').slice(0,1500)}}
+        S.autoPen=d.autoPen!==false;S.rr3=d.rr3!==false;S.divIdade=d.divIdade!==false;S.divSexo=d.divSexo!==false;S.sepEquipe=d.sepEquipe!==false;S.som=d.som!==false;
         S.myMat=d.myMat>=0&&d.myMat<=8?Math.round(d.myMat):0;
         if(Array.isArray(d.brackets)&&d.people){
           S.brackets=d.brackets;S.people=d.people;S.sig=d.sig||'';
@@ -1078,9 +1193,11 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
     var br=S.brackets[ADJ.bi];
     if(playedReal(br,oldId)){err.textContent='Este lutador já lutou e não pode ser substituído.';return}
     var nid=newId();w=Math.round(w*10)/10;
-    S.fighters.push({id:nid,name:n,weight:w,belt:belt});
-    var old=S.fighters.filter(function(f){return f.id===oldId})[0];if(old)old.st='faltou';
-    S.people[nid]={name:n,weight:w,belt:belt};
+    var old=S.fighters.filter(function(f){return f.id===oldId})[0];
+    var tm=(old&&old.team)||(S.people[oldId]&&S.people[oldId].team)||'',sx=(old&&old.sex)||'M',bn=old?old.born||null:null;
+    S.fighters.push({id:nid,name:n,weight:w,belt:belt,team:tm,sex:sx,born:bn});
+    if(old)old.st='faltou';
+    S.people[nid]={name:n,weight:w,belt:belt,team:tm,sex:sx,born:bn};
     br.ids=br.ids.map(function(x){return x===oldId?nid:x});
     br.rounds.forEach(function(round){round.forEach(function(mt){
       if(mt.a===oldId)mt.a=nid;if(mt.b===oldId)mt.b=nid;if(mt.winner===oldId)mt.winner=nid;
@@ -1115,32 +1232,64 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
     return rounds;
   }
   function groupFighters(){
-    var map={},keys=[];
+    var map={},keys=[],TI={M:0,F:1,K:2};
     active().forEach(function(f){
-      var bi=BELTS.map(function(b){return b.id}).indexOf(f.belt),ci=catIndex(ew(f));
-      var key=S.modo==='faixa-peso'?bi*100+ci:(S.modo==='faixa'?bi*100:0);
-      if(!map[key]){map[key]={key:key,bi:bi,ci:ci,list:[]};keys.push(key)}
+      var bi=BELTS.map(function(b){return b.id}).indexOf(f.belt),c=catOfF(f,ew(f)),ai=S.divIdade?ageIdx(f):0,sx=S.divSexo&&f.sex==='F'?1:0;
+      var ci=c.i+TI[c.t]*20;
+      var key=sx*10000000+ai*100000+(S.modo==='faixa-peso'?bi*1000+ci:(S.modo==='faixa'?bi*1000:0));
+      if(!map[key]){map[key]={key:key,bi:bi,ci:c.i,t:c.t,ai:ai,sx:sx,f0:f,list:[]};keys.push(key)}
       map[key].list.push(f);
     });
     return keys.sort(function(a,b){return a-b}).map(function(k){return map[k]});
   }
   function groupMeta(g){
+    var ex=[];
+    if(S.divIdade)ex.push(ageName(g.f0));
+    if(S.divSexo)ex.push(g.sx?'Feminino':'Masculino');
+    var exs=ex.join(' · '),exShort=S.divIdade||S.divSexo?(S.divSexo?(g.sx?'Fem':'Masc'):'')+(S.divIdade&&S.divSexo?' ':'')+(S.divIdade?ageName(g.f0):''):'';
+    function j(a,b){return a&&b?a+' · '+b:(a||b)}
     if(S.modo==='faixa-peso'){
-      var c=CATS[g.ci];
-      var lim=c.max===Infinity?'acima de '+kg(CATS[g.ci-1].max)+' kg':'até '+kg(c.max)+' kg';
-      return {title:'Faixa '+BELTS[g.bi].nome,sub:c.nome+' · '+lim,belt:BELTS[g.bi].id,short:BELTS[g.bi].nome+' · '+c.nome};
+      var T=TABS[g.t],c=T[g.ci],lim;
+      if(g.t==='K')lim=c.nome;
+      else lim=c.nome+' · '+(c.max===Infinity?'acima de '+kg(T[g.ci-1].max)+' kg':'até '+kg(c.max)+' kg');
+      return {title:'Faixa '+BELTS[g.bi].nome,sub:j(exs,lim),belt:BELTS[g.bi].id,short:j(BELTS[g.bi].nome+' · '+(g.t==='K'?c.nome:c.nome),exShort)};
     }
-    if(S.modo==='faixa')return {title:'Faixa '+BELTS[g.bi].nome,sub:'Todos os pesos',belt:BELTS[g.bi].id,short:BELTS[g.bi].nome};
-    return {title:'Absoluto',sub:'Todas as faixas e pesos',belt:null,short:'Absoluto'};
+    if(S.modo==='faixa')return {title:'Faixa '+BELTS[g.bi].nome,sub:j(exs,'Todos os pesos'),belt:BELTS[g.bi].id,short:j(BELTS[g.bi].nome,exShort)};
+    return {title:'Absoluto',sub:j(exs,'Todas as faixas e pesos'),belt:null,short:j('Absoluto',exShort)};
   }
-  function signature(){return S.fighters.map(function(f){return f.id+':'+ew(f)+':'+(f.st||'')}).join(',')+'|'+S.modo+(S.rr3?'|r':'')}
+  function signature(){return S.fighters.map(function(f){return f.id+':'+ew(f)+':'+(f.st||'')+':'+(f.team||'')+':'+(f.sex||'')+':'+(f.born||'')}).join(',')+'|'+S.modo+(S.rr3?'|r':'')+(S.divIdade?'|i':'')+(S.divSexo?'|s':'')+(S.sepEquipe?'|e':'')+'|'+evYear()}
+  function seedOrder(size){var o=[1];while(o.length<size){var L=o.length;o=o.reduce(function(a,x){a.push(x,2*L+1-x);return a},[])}return o}
+  // Sorteia várias vezes e fica com a ordem em que colegas de equipe se encontram o mais tarde possível.
+  function spreadTeams(ids){
+    var base=shuffle(ids);
+    if(!S.sepEquipe||ids.length<4)return base;
+    var tk=ids.map(function(id){return teamKey(S.people[id]&&S.people[id].team)});
+    var any=false,cnt={};tk.forEach(function(t){if(t){cnt[t]=(cnt[t]||0)+1;if(cnt[t]>1)any=true}});
+    if(!any)return base;
+    var size=1;while(size<ids.length)size*=2;
+    var K=Math.round(Math.log(size)/Math.LN2),order=seedOrder(size),posOf={};
+    order.forEach(function(v,i){posOf[v-1]=i});
+    function cost(arr){
+      var c=0,i2,j2;
+      for(i2=0;i2<arr.length;i2++){var ti=teamKey(S.people[arr[i2]].team);if(!ti)continue;
+        for(j2=i2+1;j2<arr.length;j2++){
+          if(teamKey(S.people[arr[j2]].team)!==ti)continue;
+          var p=posOf[i2],q=posOf[j2],r=1;while((p>>r)!==(q>>r))r++;
+          c+=Math.pow(4,K-r);
+        }}
+      return c;
+    }
+    var best=base,bc=cost(base);
+    for(var n=0;n<400&&bc>0;n++){var cand=shuffle(ids),cc=cost(cand);if(cc<bc){best=cand;bc=cc}}
+    return best;
+  }
   function generate(){
     closeBoard();
-    S.people={};
-    active().forEach(function(f){S.people[f.id]={name:f.name,weight:ew(f),belt:f.belt}});
+    S.people={};S.gen=newId();
+    active().forEach(function(f){S.people[f.id]={name:f.name,weight:ew(f),belt:f.belt,team:f.team||'',sex:f.sex||'M',born:f.born||null}});
     S.brackets=groupFighters().map(function(g){
       var meta=groupMeta(g);
-      var ids=shuffle(g.list.map(function(f){return f.id}));
+      var ids=spreadTeams(g.list.map(function(f){return f.id}));
       var rr=S.rr3&&ids.length===3;
       var rounds=rr?[[mkMatch(ids[0],ids[1]),mkMatch(ids[2],ids[0]),mkMatch(ids[1],ids[2])]]:buildRounds(ids);
       return {title:meta.title,sub:meta.sub+(rr?' · todos contra todos':''),belt:meta.belt,short:meta.short,type:rr?'rr':'elim',ids:ids,rounds:rounds,mat:1};
@@ -1149,6 +1298,32 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
     S.sig=signature();
     save();renderResults();renderHint();paintTelao();
     openTV(0);
+  }
+  // Quadro de medalhas por equipe: ouro 9, prata 3, bronze 1 (pontuação por equipe da IBJJF).
+  function teamBoard(brs,people){
+    var map={},order=[];
+    function add(id,k){
+      var pe=people[id],nm=(pe&&pe.team||'').trim();if(!nm)nm='Sem equipe';
+      var key=nm.toLowerCase();
+      if(!map[key]){map[key]={team:nm,g:0,s:0,b:0,pts:0};order.push(key)}
+      map[key][k]++;map[key].pts+=k==='g'?9:k==='s'?3:1;
+    }
+    brs.forEach(function(br){
+      if(br.ids.length<2)return;
+      var p=podium(br);if(!p)return;
+      add(p.gold,'g');if(p.silver)add(p.silver,'s');p.bronze.forEach(function(id){add(id,'b')});
+    });
+    return order.map(function(k){return map[k]}).sort(function(a,b){return b.pts-a.pts||b.g-a.g||b.s-a.s||b.b-a.b||(a.team<b.team?-1:1)});
+  }
+  function teamTableHTML(rows,big){
+    if(!rows.length)return '<p class="call-none">Nenhuma medalha distribuída ainda.</p>';
+    return '<div class="ht-wrap"><table class="ht tm'+(big?' tm-big':'')+'"><thead><tr><th>#</th><th>Equipe</th><th class="num">Ouro</th><th class="num">Prata</th><th class="num">Bronze</th><th class="num">Pontos</th></tr></thead><tbody>'+
+      rows.map(function(r,i){return '<tr class="'+(i<3?'tm-top tm-'+(i+1):'')+'"><td class="num">'+(i+1)+'º</td><td><b>'+esc(r.team)+'</b></td><td class="num"><i class="md g"></i>'+r.g+'</td><td class="num"><i class="md s"></i>'+r.s+'</td><td class="num"><i class="md b"></i>'+r.b+'</td><td class="num"><b>'+r.pts+'</b></td></tr>'}).join('')+'</tbody></table></div>';
+  }
+  function teamsBlock(){
+    var rows=teamBoard(S.brackets,S.people);
+    if(!rows.length)return '';
+    return '<section class="teams"><h3>Quadro de medalhas por equipe<small>Ouro 9 · Prata 3 · Bronze 1</small></h3>'+teamTableHTML(rows,false)+'</section>';
   }
   function champOf(br){var p=podium(br);return p?p.gold:null}
   function rrStandings(br){
@@ -1266,7 +1441,7 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
     if(!S.brackets||!S.fighters.length)renderResults();
     $('#lista').innerHTML=S.fighters.slice().reverse().map(function(f){
       var w=ew(f);
-      var meta='Faixa '+beltOf(f.belt).nome+' · '+kg(f.weight)+' kg'+(f.w2!=null&&f.w2!==f.weight?' → pesagem '+kg(f.w2)+' kg':'')+' · '+CATS[catIndex(w)].nome;
+      var meta=(f.team?f.team+' · ':'')+(f.sex==='F'?'Fem':'Masc')+(f.born?' · '+f.born:'')+' · Faixa '+beltOf(f.belt).nome+' · '+kg(f.weight)+' kg'+(f.w2!=null&&f.w2!==f.weight?' → pesagem '+kg(f.w2)+' kg':'')+' · '+TABS[catOfF(f,w).t][catOfF(f,w).i].nome;
       var tag=f.st==='faltou'?'<span class="tag miss">Faltou</span>':(f.w2!=null?'<span class="tag ok">Pesado</span>':'');
       if(WEIGH===f.id){
         return '<li class="weigh"><div class="who"><strong>'+esc(f.name)+'</strong><span>Peso cadastrado: '+kg(f.weight)+' kg</span></div>'+
@@ -1372,7 +1547,7 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
   }
   function ufcSide(p,side){
     var parts=nameParts(p.name);
-    return '<div class="ufc-f '+side+'" style="--bc:var(--belt-'+p.belt+',var(--belt-outra))"><span class="ufc-bar"></span>'+(parts[0]?'<em>'+esc(parts[0])+'</em>':'<em>&nbsp;</em>')+'<strong>'+esc(parts[1])+'</strong><small>Faixa '+esc(beltOf(p.belt).nome)+' · '+kg(p.weight)+' kg</small></div>';
+    return '<div class="ufc-f '+side+'" style="--bc:var(--belt-'+p.belt+',var(--belt-outra))"><span class="ufc-bar"></span>'+(parts[0]?'<em>'+esc(parts[0])+'</em>':'<em>&nbsp;</em>')+'<strong>'+esc(parts[1])+'</strong><small>'+(p.team?esc(p.team)+' · ':'')+'Faixa '+esc(beltOf(p.belt).nome)+' · '+kg(p.weight)+' kg</small></div>';
   }
   function callRow(it,tag,i,label){
     var A=S.people[it.mt.a],B=S.people[it.mt.b];
@@ -1444,7 +1619,7 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
   function summaryHTML(){
     var fights=0,done=0,mins=0;
     S.brackets.forEach(function(b){b.rounds.forEach(function(r){r.forEach(function(m){if(!m.bye){fights++;mins+=tempoFor(b);if(m.winner)done++}})})});
-    return '<div class="summary"><div><b>'+S.brackets.length+'</b>'+(S.brackets.length===1?'chave':'chaves')+'</div><div><b>'+done+'/'+fights+'</b>lutas decididas</div><div><b>'+fmtTotal(mins)+'</b>de luta somados</div><div class="sum-act"><button class="btn" type="button" data-hist>Histórico</button><button class="btn" type="button" data-endchamp>'+(endArmed?'Confirmar: salvar no histórico e limpar':'Encerrar campeonato')+'</button><button class="btn primary" type="button" data-tv="0">Abrir em tela cheia</button></div></div>';
+    return '<div class="summary"><div><b>'+S.brackets.length+'</b>'+(S.brackets.length===1?'chave':'chaves')+'</div><div><b>'+done+'/'+fights+'</b>lutas decididas</div><div><b>'+fmtTotal(mins)+'</b>de luta somados</div><div class="sum-act"><button class="btn" type="button" data-certs>Certificados</button><button class="btn" type="button" data-hist>Histórico</button><button class="btn" type="button" data-endchamp>'+(endArmed?'Confirmar: salvar no histórico e limpar':'Encerrar campeonato')+'</button><button class="btn primary" type="button" data-tv="0">Abrir em tela cheia</button></div></div>'+teamsBlock();
   }
   function renderSummary(){var s=document.getElementById('summary');if(s&&S.brackets)s.innerHTML=summaryHTML()}
   function renderResults(){
@@ -1481,7 +1656,7 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
   }
   function paintTvMat(){
     var el=$('#tvMat');if(!el)return;
-    if(S.tatames<2){el.hidden=true;return}
+    if(S.tatames<2||REMOTE){el.hidden=true;return}
     var o='<option value="0">Todos os tatames</option>';
     for(var k=1;k<=S.tatames;k++)o+='<option value="'+k+'">Meu tatame: '+k+'</option>';
     el.innerHTML=o;el.value=String(S.myMat>S.tatames?0:S.myMat);el.hidden=false;
@@ -1518,7 +1693,7 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
   function tlScreens(){
     var n=S.brackets.length,list=[],i;
     var pods=S.brackets.filter(function(b){return b.ids.length>1&&podium(b)}).length,pages=Math.max(1,Math.ceil(pods/6));
-    function podAll(){for(var p=0;p<pages;p++)list.push({k:'pod',p:p})}
+    function podAll(){for(var p=0;p<pages;p++)list.push({k:'pod',p:p});if(teamBoard(S.brackets,S.people).length)list.push({k:'teams'})}
     if(VIEW.mode==='chaves')list.push(VIEW.i>=n?{k:'call'}:{k:'b',i:VIEW.i});
     else if(VIEW.mode==='chamada')list.push({k:'call'});
     else if(VIEW.mode==='podio')podAll();
@@ -1532,7 +1707,7 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
     function side(sd){
       var id=mt[sd],p=S.people[id],sc=mt.sc[sd];
       return '<section class="side '+sd+(done?(mt.winner===id?' win':' lose'):'')+'"><div class="sd-name">'+esc(p.name)+'</div>'+
-        '<div class="sd-meta">'+dot(p.belt)+'Faixa '+beltOf(p.belt).nome+' · '+kg(p.weight)+' kg</div>'+
+        '<div class="sd-meta">'+dot(p.belt)+(p.team?esc(p.team)+' · ':'')+'Faixa '+beltOf(p.belt).nome+' · '+kg(p.weight)+' kg</div>'+
         '<div class="sd-pts"><b>'+sc.p+'</b><span>pontos</span></div>'+
         '<div class="sd-cnt"><div class="cn"><span>Vantagens</span><b>'+sc.v+'</b></div><div class="cn"><span>Punições</span><b>'+sc.u+'</b></div></div></section>';
     }
@@ -1545,7 +1720,7 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
   }
   function podiosHTML(page){
     var list=S.brackets.filter(function(b){return b.ids.length>1&&podium(b)});
-    function line(cls,lab,id,b){return '<div class="pd '+cls+'"><span class="pn" aria-hidden="true">'+(cls==='g'?'1':cls==='s'?'2':'3')+'</span><div class="pb"><span class="pl">'+lab+'</span><strong>'+esc(S.people[id].name)+'</strong>'+pwHTML(b,id)+'</div></div>'}
+    function line(cls,lab,id,b){return '<div class="pd '+cls+'"><span class="pn" aria-hidden="true">'+(cls==='g'?'1':cls==='s'?'2':'3')+'</span><div class="pb"><span class="pl">'+lab+'</span><strong>'+esc(S.people[id].name)+'</strong>'+(S.people[id].team?'<em class="pteam">'+esc(S.people[id].team)+'</em>':'')+pwHTML(b,id)+'</div></div>'}
     var cards=list.slice(page*6,page*6+6).map(function(b){
       var p=podium(b);
       return '<section class="pod-card"><h3>'+(b.belt?dot(b.belt):'')+esc(b.title)+'<small>'+esc(b.sub)+'</small></h3>'+line('g','Campeão',p.gold,b)+(p.silver?line('s','2º lugar',p.silver,b):'')+p.bronze.map(function(id){return line('b','3º lugar',id,b)}).join('')+'</section>';
@@ -1563,6 +1738,7 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
     TL.key=key;
     if(cur.k==='b')tlShowTv(cur.i);
     else if(cur.k==='call')tlShowTv(S.brackets.length);
+    else if(cur.k==='teams')tlShowHtml('<div class="tl-pod"><h2><span>Equipes</span><small>Quadro de medalhas</small></h2>'+teamTableHTML(teamBoard(S.brackets,S.people),true)+'</div>');
     else tlShowHtml(podiosHTML(cur.p));
   }
   function telaoUpdate(p){
@@ -1585,6 +1761,7 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
     enterFS();paintFsBtn();tvRot();tvRender();
   }
   function closeTV(){
+    if(REMOTE)return;
     TV.open=false;clearInterval(TV.iv);TV.iv=null;
     $('#tv').hidden=true;exitFS();
   }
@@ -1607,7 +1784,7 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
   var AC=null;
   function primeAudio(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}}
   function beep(){
-    if(!AC)return;
+    if(!AC||!S.som)return;
     try{for(var i=0;i<3;i++){var o=AC.createOscillator(),g=AC.createGain();o.frequency.value=880;o.connect(g);g.connect(AC.destination);var t=AC.currentTime+i*.45;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.35,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.35);o.start(t);o.stop(t+.4)}}catch(e){}
   }
   function curM(){return ensure(S.brackets[T.b].rounds[T.r][T.m])}
@@ -1630,7 +1807,7 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
         '<button class="sm" type="button" data-sb="adj" data-side="'+side+'" data-k="'+key+'" data-d="1"'+dis+' aria-label="Adicionar '+why+' a '+esc(p.name)+'">+</button></div></div>';
     }
     return '<div class="sd-name">'+esc(p.name)+'</div>'+
-      '<div class="sd-meta">'+dot(p.belt)+'Faixa '+beltOf(p.belt).nome+' · '+kg(p.weight)+' kg</div>'+
+      '<div class="sd-meta">'+dot(p.belt)+(p.team?esc(p.team)+' · ':'')+'Faixa '+beltOf(p.belt).nome+' · '+kg(p.weight)+' kg</div>'+
       '<div class="sd-pts"><b>'+sc.p+'</b><span>pontos</span><button class="btn link" type="button" data-sb="adj" data-side="'+side+'" data-k="p" data-d="-1"'+dis+'>corrigir −1</button></div>'+
       '<div class="sd-cnt">'+ctr('v','Vantagens','vantagem')+ctr('u','Punições','punição')+'</div>'+
       '<div class="moves">'+moves+'</div>'+injHTML(side,mt);
@@ -1684,6 +1861,7 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
   }
   function openBoard(b,r,m){
     var br=S.brackets&&S.brackets[b];if(!br)return;
+    if(REMOTE&&(br.mat||1)!==MAT){toast('warn','Esta chave é do tatame '+(br.mat||1)+'. Esta mesa controla o tatame '+MAT+'.');return}
     var mt=ensure(br.rounds[r][m]);
     if(!(mt.a&&mt.b)||mt.bye)return;
     stopTick();
@@ -1841,6 +2019,18 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
     var o=this.value==='__outra';showOutra(o);
     if(o)$('#faixaOutra').focus();
   });
+  function renderTeamList(){
+    var seen={},out=[];
+    S.fighters.forEach(function(f){var k=teamKey(f.team);if(k&&!seen[k]){seen[k]=1;out.push(f.team)}});
+    $('#equipes').innerHTML=out.sort().map(function(t){return '<option value="'+esc(t)+'">'}).join('');
+  }
+  function paintIdade(){
+    var born=parseInt($('#nasc').value,10),el=$('#idadeHint');
+    if(!/^\d{4}$/.test($('#nasc').value.trim())){el.textContent='';return}
+    var f={born:born,sex:$('#sexo').value||'M'},a=ageOf(f);
+    el.textContent=a<3||a>110?'':('Idade no ano do evento: '+a+' anos · '+ageName(f));
+  }
+  $('#nasc').addEventListener('input',paintIdade);
   function showErr(msg,sel){$('#err').textContent=msg;toast('err',msg);if(sel){var el=$(sel);el.focus();bad(el)}}
   $('#f').addEventListener('submit',function(e){
     e.preventDefault();
@@ -1848,6 +2038,12 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
     var w=parseFloat($('#peso').value.replace(',','.'));
     var belt=$('#faixa').value;
     if(!name){showErr('Informe o nome do lutador.','#nome');return}
+    var team=$('#equipe').value.trim().replace(/\s+/g,' ');
+    if(!team){showErr('Informe a equipe ou academia do lutador.','#equipe');return}
+    var sex=$('#sexo').value;
+    if(!sex){showErr('Selecione o sexo do lutador.','#sexo');return}
+    var born=parseInt($('#nasc').value,10),yr=new Date().getFullYear();
+    if(!/^\d{4}$/.test($('#nasc').value.trim())||born<yr-100||born>yr-3){showErr('Informe o ano de nascimento com 4 dígitos (ex.: 1994).','#nasc');return}
     if(belt==='__outra'){
       var bn=$('#faixaOutra').value.trim().replace(/\s+/g,' ');
       if(!bn){showErr('Escreva o nome da faixa.','#faixaOutra');return}
@@ -1861,12 +2057,404 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
     }
     if(!isFinite(w)||w<20||w>200){showErr('Informe um peso entre 20 e 200 kg.','#peso');return}
     w=Math.round(w*10)/10;
-    var dup=S.fighters.some(function(f){return f.name.toLowerCase()===name.toLowerCase()&&f.weight===w&&f.belt===belt});
+    var dup=S.fighters.some(function(f){return f.name.toLowerCase()===name.toLowerCase()&&f.born===born&&f.belt===belt});
     if(dup){showErr('Este lutador já está cadastrado.','#nome');return}
-    S.fighters.push({id:newId(),name:name,weight:w,belt:belt});
-    $('#err').textContent='';$('#nome').value='';$('#peso').value='';
-    save();renderList();renderHint();$('#nome').focus();toast('ok',name+' cadastrado: '+kg(w)+' kg, faixa '+hb({belts:BELTS},belt)+'.',2800);
+    S.fighters.push({id:newId(),name:name,weight:w,belt:belt,team:team,sex:sex,born:born});
+    $('#err').textContent='';$('#nome').value='';$('#peso').value='';$('#nasc').value='';$('#idadeHint').textContent='';
+    save();renderList();renderTeamList();renderHint();$('#nome').focus();toast('ok',name+' cadastrado: '+kg(w)+' kg, faixa '+hb({belts:BELTS},belt)+'.',2800);
   });
+
+
+  /* ---------- Inscrição online (link público) ---------- */
+  var REG={rows:[],sel:{},busy:false,iv:null,newCount:0,msg:''};
+  function hex(n){var a=new Uint8Array(n),i,o='';(window.crypto&&crypto.getRandomValues)?crypto.getRandomValues(a):a.forEach(function(_,k){a[k]=Math.floor(Math.random()*256)});for(i=0;i<n;i++)o+=('0'+a[i].toString(16)).slice(-2);return o}
+  function onReady(){var o=S.online;return !!(o.url&&o.key)}
+  function regErrText(e){
+    var m=(e&&e.message)||'';
+    var map={sem_permissao:'Sem permissão para este campeonato online.',nome_invalido:'Nome do campeonato inválido.',token_invalido:'Falha ao gerar a chave de administração.',evento_inexistente:'Campeonato online não encontrado.'};
+    for(var k in map)if(m.indexOf(k)>=0)return map[k];
+    return /Failed to fetch|NetworkError|Load failed/i.test(m)||m==='rede'?'Sem internet ou endereço do Supabase incorreto.':'Não foi possível falar com o servidor ('+(m||'erro')+').';
+  }
+  function rpc(fn,body){
+    var o=S.online;
+    return fetch(o.url.replace(/\/+$/,'')+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json',apikey:o.key,Authorization:'Bearer '+o.key},body:JSON.stringify(body)}).then(function(r){
+      return r.text().then(function(t){var j=null;try{j=t?JSON.parse(t):null}catch(e){}
+        if(!r.ok)throw new Error((j&&(j.message||j.hint))||('HTTP '+r.status));
+        return j});
+    },function(){throw new Error('rede')});
+  }
+  function buildLink(){
+    var o=S.online,u=o.site.indexOf('?')>=0?o.site+'&':o.site+'?';
+    var l=u+'e='+encodeURIComponent(o.eventId);
+    if(!o.short)l+='&u='+encodeURIComponent(o.url.replace(/\/+$/,''))+'&k='+encodeURIComponent(o.key);
+    return l;
+  }
+  function waLink(){
+    var nome=(S.evento.nome||'o campeonato').trim();
+    var txt='Inscrições abertas: *'+nome+'*'+(S.evento.data?' ('+dayLabel(S.evento.data)+')':'')+'\nFaça sua inscrição pelo link:\n'+S.online.link;
+    return 'https://wa.me/?text='+encodeURIComponent(txt);
+  }
+  function regPending(){return REG.rows.filter(function(r){return !r.imported&&!isDupReg(r)})}
+  function isDupReg(r){return S.fighters.some(function(f){return f.name.toLowerCase()===String(r.name).toLowerCase()&&f.born===r.born})}
+  function paintRegBadge(){
+    var n=REG.newCount,b=$('#regBadge');
+    b.hidden=!n;b.textContent=n>99?'99+':n;
+  }
+  function regRender(){
+    var o=S.online,h='';
+    if(!o.eventId){
+      h+='<section class="reg-card"><h3>1 · Conexão</h3><p class="mut">Informe os dados do seu projeto no <b>Supabase</b> (gratuito). O passo a passo está na pasta <code>online/LEIA-ME-INSCRICAO.md</code>.</p>'+
+        '<div class="reg-grid"><label>Project URL<input id="rgUrl" type="text" autocomplete="off" placeholder="https://xxxx.supabase.co" value="'+esc(o.url)+'"></label>'+
+        '<label>Chave pública (anon / publishable)<input id="rgKey" type="text" autocomplete="off" placeholder="eyJ… ou sb_publishable_…" value="'+esc(o.key)+'"></label>'+
+        '<label class="full">Página pública de inscrição<input id="rgSite" type="text" autocomplete="off" value="'+esc(o.site)+'"></label></div>'+
+        '<label class="chk"><input type="checkbox" id="rgShort"'+(o.short?' checked':'')+'> Minha página já tem a conexão preenchida (link mais curto)</label>'+
+        '<div class="reg-act"><button class="btn primary" type="button" data-rg="create">Criar link de inscrição</button></div></section>';
+    }else{
+      h+='<section class="reg-card"><h3>Link para compartilhar</h3><div class="reg-link"><input id="rgLink" type="text" readonly value="'+esc(o.link)+'"></div>'+
+        '<div class="reg-act"><button class="btn primary" type="button" data-rg="copy">Copiar link</button><a class="btn" id="rgWa" target="_blank" rel="noopener" href="'+esc(waLink())+'">Enviar pelo WhatsApp</a>'+
+        '<button class="btn" type="button" data-rg="toggle">'+(o.open?'Encerrar inscrições':'Reabrir inscrições')+'</button></div>'+
+        '<p class="mut">Inscrições '+(o.open?'<b class="okc">abertas</b>':'<b class="badc">encerradas</b>')+'. Quem tiver o link preenche nome, equipe, sexo, ano de nascimento, peso e faixa.</p></section>';
+      var pend=regPending(),done=REG.rows.length-pend.length;
+      h+='<section class="reg-card"><div class="reg-top"><h3>Inscrições recebidas<span class="cnt">'+REG.rows.length+'</span></h3><button class="btn" type="button" data-rg="fetch"'+(REG.busy?' disabled':'')+'>'+(REG.busy?'Buscando…':'Atualizar')+'</button></div>';
+      if(!REG.rows.length)h+='<p class="mut">Nenhuma inscrição recebida ainda. Compartilhe o link.</p>';
+      else{
+        h+='<div class="reg-act"><button class="btn primary" type="button" data-rg="addall"'+(pend.length?'':' disabled')+'>Adicionar todas as novas ('+pend.length+')</button><button class="btn" type="button" data-rg="addsel">Adicionar selecionadas</button></div>'+
+          '<div class="ht-wrap"><table class="ht"><thead><tr><th></th><th>Atleta</th><th>Equipe</th><th>Sexo</th><th class="num">Nasc.</th><th class="num">Peso</th><th>Faixa</th><th>Situação</th></tr></thead><tbody>'+
+          REG.rows.map(function(r){
+            var dup=isDupReg(r),st=dup?'<span class="tag ok">Na lista</span>':'<span class="tag">Nova</span>';
+            return '<tr><td><input type="checkbox" data-rgsel="'+esc(r.id)+'"'+(REG.sel[r.id]?' checked':'')+(dup?' disabled':'')+' aria-label="Selecionar '+esc(r.name)+'"></td><td><b>'+esc(r.name)+'</b>'+(r.phone?'<small class="mut"> · '+esc(r.phone)+'</small>':'')+'</td><td>'+esc(r.team)+'</td><td>'+(r.sex==='F'?'Fem':'Masc')+'</td><td class="num">'+r.born+'</td><td class="num">'+kg(r.weight)+' kg</td><td>'+esc(r.belt)+'</td><td>'+st+'</td></tr>';
+          }).join('')+'</tbody></table></div><p class="mut">'+done+' já na lista de inscritos. O peso informado pelo atleta é conferido depois na pesagem.</p>';
+      }
+      h+='</section><section class="reg-card"><button class="btn link" type="button" data-rg="reset">Desligar este link e começar outro</button></section>';
+    }
+    $('#regBody').innerHTML=h+(REG.msg?'<p class="err" role="alert">'+esc(REG.msg)+'</p>':'');
+  }
+  function regOpen(){
+    $('#reg').hidden=false;$('#reg').scrollTop=0;REG.msg='';regRender();
+    if(S.online.eventId){regFetch(true);clearInterval(REG.iv);REG.iv=setInterval(function(){regFetch(true)},30000)}
+  }
+  function regClose(){$('#reg').hidden=true;clearInterval(REG.iv);REG.iv=null;try{$('#regBtn').focus()}catch(e){}}
+  function regFetch(quiet){
+    if(!S.online.eventId||REG.busy)return Promise.resolve();
+    REG.busy=true;if(!quiet)regRender();
+    return rpc('list_registrations',{p_event:S.online.eventId,p_admin:S.online.admin}).then(function(rows){
+      REG.rows=(rows||[]).map(function(r){r.weight=+r.weight;r.born=+r.born;return r});
+      REG.newCount=regPending().length;REG.msg='';
+    }).catch(function(e){REG.msg=regErrText(e);if(!quiet)toast('err',REG.msg)}).then(function(){REG.busy=false;paintRegBadge();if(!$('#reg').hidden)regRender()});
+  }
+  function beltFromName(raw){
+    var nm=String(raw||'').trim().replace(/\s+/g,' ');
+    var ex=BELTS.filter(function(b){return b.nome.toLowerCase()===nm.toLowerCase()})[0];
+    if(ex)return ex.id;
+    if(S.customBelts.length>=12||nm.length<3)return 'branca';
+    var n=1;S.customBelts.forEach(function(b){n=Math.max(n,+b.id.slice(1)+1)});
+    ex={id:'x'+n,nome:nm.charAt(0).toUpperCase()+nm.slice(1)};S.customBelts.push(ex);applyCustom();renderTf();fillBelts();
+    return ex.id;
+  }
+  function regImport(list){
+    var add=list.filter(function(r){return !isDupReg(r)});
+    if(!add.length){toast('warn','Nenhuma inscrição nova para adicionar.');return}
+    add.forEach(function(r){S.fighters.push({id:newId(),name:String(r.name).slice(0,60),weight:Math.round(r.weight*10)/10,belt:beltFromName(r.belt),team:String(r.team).slice(0,50),sex:r.sex==='F'?'F':'M',born:r.born})});
+    save();renderList();renderTeamList();renderHint();REG.sel={};
+    toast('ok',add.length+(add.length===1?' atleta adicionado à lista.':' atletas adicionados à lista.'),3200);
+    rpc('mark_imported',{p_event:S.online.eventId,p_admin:S.online.admin,p_ids:add.map(function(r){return r.id})}).then(function(){add.forEach(function(r){r.imported=true})}).catch(function(){}).then(function(){REG.newCount=regPending().length;paintRegBadge();regRender()});
+    REG.newCount=regPending().length;paintRegBadge();regRender();
+  }
+  function regAct(a){
+    var o=S.online;
+    if(a==='create'){
+      var url=($('#rgUrl').value||'').trim(),key=($('#rgKey').value||'').trim(),site=($('#rgSite').value||'').trim();
+      if(!/^(https:\/\/[^\s/]+\.[^\s/]+|http:\/\/(localhost|127\.0\.0\.1)(:\d+)?)/.test(url)){showErr2('Informe o Project URL do Supabase (começa com https://).','#rgUrl');return}
+      if(key.length<20){showErr2('Cole a chave pública (anon) do Supabase.','#rgKey');return}
+      if(!/^https?:\/\/\S+/.test(site)){showErr2('Informe o endereço da página pública de inscrição.','#rgSite');return}
+      var nome=(S.evento.nome||'').trim();
+      if(nome.length<2){toast('err','Dê um nome ao campeonato antes de criar o link.');return}
+      o.url=url.replace(/\/+$/,'');o.key=key;o.site=site;o.short=$('#rgShort').checked;
+      var adm=hex(24),btn=document.querySelector('[data-rg="create"]');btn.disabled=true;btn.textContent='Criando…';
+      rpc('create_event',{p_name:nome,p_date:S.evento.data||null,p_admin:adm}).then(function(id){
+        o.eventId=String(id).replace(/"/g,'');o.admin=adm;o.open=true;o.link=buildLink();save();REG.rows=[];REG.newCount=0;
+        toast('ok','Link de inscrição criado.');regOpen();
+      }).catch(function(e){save();btn.disabled=false;btn.textContent='Criar link de inscrição';REG.msg=regErrText(e);toast('err',REG.msg);regRender()});
+    }else if(a==='copy'){
+      var inp=$('#rgLink');
+      var done=function(){toast('ok','Link copiado. É só colar no WhatsApp.',2600)};
+      if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(o.link).then(done,function(){inp.select();try{document.execCommand('copy')}catch(e){}done()});
+      else{inp.select();try{document.execCommand('copy')}catch(e){}done()}
+    }else if(a==='toggle'){
+      var nv=!o.open;
+      dialog({tone:nv?'info':'warn',title:nv?'Reabrir inscrições?':'Encerrar inscrições?',text:nv?'Quem tiver o link volta a conseguir se inscrever.':'Ninguém mais conseguirá se inscrever pelo link. Você pode reabrir quando quiser.',ok:nv?'Reabrir':'Encerrar',cancel:'Cancelar',
+        onOk:function(){rpc('set_open',{p_event:o.eventId,p_admin:o.admin,p_open:nv}).then(function(){o.open=nv;save();REG.msg='';regRender();toast('ok',nv?'Inscrições reabertas.':'Inscrições encerradas.')}).catch(function(e){REG.msg=regErrText(e);toast('err',REG.msg);regRender()})}});
+    }else if(a==='fetch')regFetch(false);
+    else if(a==='addall')regImport(regPending());
+    else if(a==='addsel')regImport(REG.rows.filter(function(r){return REG.sel[r.id]}));
+    else if(a==='reset'){
+      dialog({tone:'danger',title:'Desligar este link?',text:'O link atual continua existindo no servidor, mas o app deixa de acompanhá-lo. As inscrições já adicionadas à lista permanecem.',ok:'Desligar',cancel:'Cancelar',
+        onOk:function(){o.eventId='';o.admin='';o.link='';REG.rows=[];REG.newCount=0;clearInterval(REG.iv);save();paintRegBadge();regRender()}});
+    }
+  }
+  function showErr2(msg,sel){toast('err',msg);var el=$(sel);if(el){el.focus();bad(el)}}
+  $('#regBtn').addEventListener('click',regOpen);
+  $('#regClose').addEventListener('click',regClose);
+  $('#regBody').addEventListener('click',function(e){var t=e.target.closest('[data-rg]');if(t){e.preventDefault();regAct(t.getAttribute('data-rg'))}});
+  $('#regBody').addEventListener('change',function(e){var t=e.target;if(t.hasAttribute&&t.hasAttribute('data-rgsel'))REG.sel[t.getAttribute('data-rgsel')]=t.checked});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('#reg').hidden&&$('#dlg').hidden){regClose();e.stopImmediatePropagation();e.preventDefault()}},true);
+  if(!IS_TELAO&&S.online.eventId)setTimeout(function(){regFetch(true)},1500);
+
+
+  /* ---------- Dados ao vivo (página do público) ---------- */
+  function liveData(){
+    if(!S.brackets||!S.brackets.length)return {vazio:true,nome:S.evento.nome||''};
+    function side(id){var p=S.people[id]||{};return {name:p.name||'',team:p.team||'',belt:p.belt||''}}
+    function item(it){
+      var sc=it.mt.sc||{a:{p:0,v:0,u:0},b:{p:0,v:0,u:0}};
+      return {cat:it.br.short||it.br.title,stage:stageName(it.br,it.r),num:it.num,a:side(it.mt.a),b:side(it.mt.b),sc:{a:{p:sc.a.p,v:sc.a.v,u:sc.a.u},b:{p:sc.b.p,v:sc.b.v,u:sc.b.u}}};
+    }
+    var mats=[],k,n=Math.max(S.tatames,maxMat());
+    for(k=1;k<=n;k++){var q=matQueue(k);mats.push({mat:k,live:q.live.slice(0,2).map(item),next:q.queue.slice(0,5).map(item),left:q.queue.length+q.live.length})}
+    var brs=S.brackets.map(function(b){
+      var tot=0,done=0;b.rounds.forEach(function(r){r.forEach(function(m){if(!m.bye){tot++;if(m.winner)done++}})});
+      var p=b.ids.length>1?podium(b):null;
+      return {title:b.title,sub:b.sub,short:b.short||b.title,mat:b.mat||1,done:done,total:tot,
+        pod:p?{gold:side(p.gold),silver:p.silver?side(p.silver):null,bronze:p.bronze.map(side)}:null};
+    });
+    return {nome:S.evento.nome||'',data:S.evento.data||'',updated:Date.now(),mats:mats,brackets:brs,teams:teamBoard(S.brackets,S.people)};
+  }
+
+  /* ---------- Mesa remota (tablet/notebook na mesma rede) ---------- */
+  var REM={t:null,rev:-1,started:false,errAt:0,timer:null};
+  function remoteUrl(path){return path+(path.indexOf('?')>=0?'&':'?')+'pin='+encodeURIComponent(RPIN)}
+  function remoteErr(m){var n=Date.now();if(n-REM.errAt>6000){REM.errAt=n;toast('err',m)}}
+  function remoteSendSoon(){
+    if(REM.t)return;
+    REM.t=setTimeout(function(){
+      REM.t=null;
+      var brs={},ppl={};
+      (S.brackets||[]).forEach(function(b,i){if((b.mat||1)===MAT){brs[i]=b;b.ids.forEach(function(id){if(S.people[id])ppl[id]=S.people[id]})}});
+      fetch(remoteUrl('/api/mesa'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({gen:S.gen,mat:MAT,brackets:brs,people:ppl})}).then(function(r){
+        if(!r.ok)throw new Error(r.status===401?'pin':'http');
+      }).catch(function(e){remoteErr(e.message==='pin'?'PIN incorreto. Abra de novo o link da mesa.':'Sem conexão com o computador principal. Tentando de novo…');remoteSendSoon()});
+    },150);
+  }
+  function remoteApply(st){
+    var fresh=!S.brackets||st.gen!==S.gen;
+    var keep=!fresh?S.brackets:null,mine={};
+    if(keep)keep.forEach(function(b,i){if((b.mat||1)===MAT)mine[i]=b});
+    var people=!fresh?S.people:null,mypeople={};
+    if(people)Object.keys(mine).forEach(function(i){mine[i].ids.forEach(function(id){mypeople[id]=S.people[id]})});
+    ['gen','fighters','tempo','modo','sig','tatames','tempoModo','temposFaixa','autoPen','rr3','divIdade','divSexo','sepEquipe','evento'].forEach(function(k){if(st[k]!==undefined)S[k]=st[k]});
+    S.customBelts=st.customBelts||[];applyCustom();
+    S.people=st.people||{};
+    S.brackets=(st.brackets||[]).map(function(b,i){return (mine[i]&&(b.mat||1)===MAT)?mine[i]:b});
+    Object.keys(mypeople).forEach(function(id){if(mypeople[id]&&S.people[id])S.people[id]=mypeople[id]});
+    S.brackets.forEach(function(br){br.rounds.forEach(function(r){r.forEach(ensure)})});
+    S.myMat=MAT;
+    if(fresh&&T)closeBoard();
+    if(!S.brackets.length){TV.open=false;$('#tv').hidden=true;$('#rmWait').hidden=false;return}
+    $('#rmWait').hidden=true;
+    if(!TV.open){
+      var first=0;S.brackets.forEach(function(b,i){if(!first&&(b.mat||1)===MAT)first=i});
+      openTV(first);
+    }else if(!T)tvRender();
+  }
+  function remotePoll(){
+    fetch(remoteUrl('/api/state?since='+REM.rev)).then(function(r){
+      if(r.status===401)throw new Error('pin');
+      return r.json();
+    }).then(function(j){
+      if(j.rev!==undefined&&j.rev!==REM.rev&&j.S){REM.rev=j.rev;remoteApply(j.S)}
+      else if(j.empty||j.same){}
+    }).catch(function(e){remoteErr(e.message==='pin'?'PIN incorreto. Abra de novo o link da mesa.':'Sem conexão com o computador principal.')}).then(function(){REM.timer=setTimeout(remotePoll,1200)});
+  }
+  function remoteBoot(){
+    document.body.classList.add('remote');
+    var w=document.createElement('div');w.id='rmWait';w.className='rm-wait';w.innerHTML='<div><span class="eyebrow">BJJ Arena · Mesa '+MAT+'</span><h2>Aguardando as chaves…</h2><p>O organizador ainda não gerou as chaves.</p></div>';
+    document.body.appendChild(w);
+    S.myMat=MAT;remotePoll();
+  }
+
+
+  if(DESK&&DESK.onMesa&&!IS_TELAO)DESK.onMesa(function(b){
+    if(!b||!S.brackets||b.gen!==S.gen||!b.brackets)return;
+    var any=false;
+    Object.keys(b.brackets).forEach(function(i){
+      var cur=S.brackets[+i],nb=b.brackets[i];
+      if(!cur||!nb||(cur.mat||1)!==b.mat||nb.ids.length!==cur.ids.length)return;
+      S.brackets[+i]=nb;any=true;
+      nb.ids.forEach(function(id){if(b.people&&b.people[id]&&S.people[id])S.people[id]=b.people[id]});
+    });
+    if(!any)return;
+    save();renderResults();if(TV.open&&!T)tvRender();paintTelao();
+  });
+
+
+  /* ---------- Painel de rede: mesas extras e página ao vivo ---------- */
+  var NET={info:null,ip:'',busy:false};
+  function netBase(){return 'http://'+(NET.ip||(NET.info&&NET.info.ips[0])||'localhost')+':'+NET.info.port}
+  function netRender(){
+    var b=$('#netBody');
+    if(!DESK||!DESK.netStart){b.innerHTML='<section class="reg-card"><h3>Disponível no aplicativo</h3><p class="mut">Mesas extras e resultados ao vivo funcionam no BJJ Arena instalado no computador, pela rede local.</p></section>';return}
+    var i=NET.info;
+    if(!i||!i.running){
+      b.innerHTML='<section class="reg-card"><h3>Rede local desligada</h3><p class="mut">Ao ligar, este computador passa a atender tablets e celulares que estiverem no <b>mesmo Wi-Fi</b>: cada tatame ganha uma mesa de controle e o público vê o andamento ao vivo.</p>'+
+        '<p class="mut">Se o Windows ou o Mac perguntar sobre a rede, permita o acesso em <b>redes privadas</b>.</p><div class="reg-act"><button class="btn primary" type="button" data-nt="start"'+(NET.busy?' disabled':'')+'>Ligar rede local</button></div></section>';
+      return;
+    }
+    if(!NET.ip)NET.ip=i.ips[0]||'';
+    var base=netBase(),h='<section class="reg-card"><div class="reg-top"><h3>Rede ligada</h3><button class="btn" type="button" data-nt="stop">Desligar</button></div>'+
+      '<p class="mut">PIN das mesas: <b class="pin" id="netPin">'+esc(i.pin)+'</b> <button class="btn link" type="button" data-nt="pin">Gerar novo PIN</button></p>';
+    if(i.ips.length>1)h+='<label class="mut">Endereço deste computador <select id="netIp">'+i.ips.map(function(a){return '<option'+(a===NET.ip?' selected':'')+'>'+esc(a)+'</option>'}).join('')+'</select></label>';
+    if(!i.ips.length)h+='<p class="err">Este computador não está conectado a nenhuma rede. Conecte-o ao Wi-Fi do ginásio.</p>';
+    h+='</section>';
+    var rows=[];
+    for(var k=1;k<=Math.max(S.tatames,1);k++)rows.push({t:'Mesa do tatame '+k,d:'Abra no tablet ou notebook do tatame '+k+'. Ele controla só as lutas deste tatame.',u:base+'/?mesa='+k+'&pin='+i.pin});
+    rows.push({t:'Resultados ao vivo (público)',d:'Mostre o QR no telão ou imprima. Quem escanear vê lutas, chaves e pódio.',u:base+'/live'});
+    h+='<div class="net-grid">'+rows.map(function(r,n){return '<section class="reg-card net-card"><div class="qr" data-qr="'+n+'"></div><div><h3>'+esc(r.t)+'</h3><p class="mut">'+esc(r.d)+'</p><input type="text" readonly value="'+esc(r.u)+'"><div class="reg-act"><button class="btn" type="button" data-nt="copy" data-u="'+esc(r.u)+'">Copiar link</button>'+(n===rows.length-1?'<button class="btn primary" type="button" data-nt="qrtl">QR no telão</button>':'')+'</div></div></section>'}).join('')+'</div>';
+    b.innerHTML=h;
+    [].forEach.call(b.querySelectorAll('[data-qr]'),function(el){
+      var r=rows[+el.getAttribute('data-qr')];
+      DESK.qr(r.u).then(function(svg){el.innerHTML=svg||'<small class="mut">QR indisponível</small>'}).catch(function(){});
+    });
+    NET.rows=rows;
+  }
+  function netRefresh(){
+    if(!DESK||!DESK.netInfo)return Promise.resolve();
+    return DESK.netInfo().then(function(i){NET.info=i;paintNetState();if(!$('#net').hidden)netRender()});
+  }
+  function paintNetState(){var i=NET.info;$('#netState').textContent=i&&i.running?'Rede ligada · porta '+i.port:''}
+  function netOpen(){$('#net').hidden=false;$('#net').scrollTop=0;netRender();netRefresh()}
+  function netClose(){$('#net').hidden=true;try{$('#netOpen').focus()}catch(e){}}
+  $('#netOpen').addEventListener('click',netOpen);
+  $('#netClose').addEventListener('click',netClose);
+  $('#netBody').addEventListener('change',function(e){if(e.target.id==='netIp'){NET.ip=e.target.value;netRender()}});
+  $('#netBody').addEventListener('click',function(e){
+    var t=e.target.closest('[data-nt]');if(!t)return;e.preventDefault();
+    var a=t.getAttribute('data-nt');
+    if(a==='start'){NET.busy=true;netRender();DESK.netStart().then(function(i){NET.busy=false;if(i&&i.error){toast('err','Não foi possível ligar a rede ('+i.error+').');netRefresh();return}NET.info=i;NET.ip='';paintNetState();netRender();sendState()}).catch(function(){NET.busy=false;netRender()})}
+    else if(a==='stop')dialog({tone:'warn',title:'Desligar a rede local?',text:'As mesas dos outros aparelhos e a página ao vivo deixam de funcionar.',ok:'Desligar',cancel:'Cancelar',onOk:function(){DESK.netStop().then(function(i){NET.info=i;paintNetState();netRender()})}});
+    else if(a==='pin')DESK.netPin().then(function(i){NET.info=i;netRender();toast('ok','Novo PIN gerado. Os links das mesas mudaram.')});
+    else if(a==='copy'){var u=t.getAttribute('data-u');var done=function(){toast('ok','Link copiado.',2200)};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(done,done);else done()}
+    else if(a==='qrtl'){netQrTelao()}
+  });
+  function netQrTelao(){
+    var r=NET.rows&&NET.rows[NET.rows.length-1];if(!r)return;
+    DESK.qr(r.u).then(function(svg){
+      var el=document.createElement('div');el.className='qr-tl';el.innerHTML='<div class="qr-box">'+svg+'<h2>Resultados ao vivo</h2><p>Aponte a câmera do celular · mesmo Wi-Fi</p><small>'+esc(r.u)+'</small><button class="btn primary" type="button">Fechar</button></div>';
+      el.addEventListener('click',function(ev){if(ev.target===el||ev.target.tagName==='BUTTON')el.remove()});
+      document.body.appendChild(el);
+    });
+  }
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('#net').hidden&&$('#dlg').hidden){netClose();e.stopImmediatePropagation();e.preventDefault()}},true);
+  if(DESK&&DESK.netInfo&&!IS_TELAO)netRefresh();
+
+
+  /* ---------- Som, certificados, tutorial, licença e atualização ---------- */
+  $('#som').addEventListener('change',function(){S.som=this.checked;save()});
+  $('#somTest').addEventListener('click',function(e){
+    e.preventDefault();
+    try{if(!AC){var C=window.AudioContext||window.webkitAudioContext;if(C)AC=new C()}}catch(x){}
+    var was=S.som;S.som=true;beep();S.som=was;
+  });
+
+  function certList(brs,people,ev){
+    var out=[];
+    brs.forEach(function(br){
+      if(br.ids.length<2)return;
+      var p=podium(br);if(!p)return;
+      var cat=(br.belt?'Faixa ':'')+(br.title.replace(/^Faixa /,'')==='Absoluto'?'Absoluto':br.title.replace(/^Faixa /,'')+' · '+br.sub);
+      function add(id,l){var pe=people[id];if(pe)out.push({nome:pe.name,equipe:pe.team||'',lugar:l,cat:br.title+' · '+br.sub,camp:ev.nome,data:ev.data})}
+      add(p.gold,1);if(p.silver)add(p.silver,2);p.bronze.forEach(function(id){add(id,3)});
+    });
+    return out;
+  }
+  function certsPrint(list){
+    if(!list.length){toast('warn','Ainda não há medalhistas. Termine ao menos uma chave.');return}
+    var old=document.getElementById('cert');if(old)old.remove();
+    var box=document.createElement('div');box.id='cert';
+    box.innerHTML=list.map(function(c){
+      var lug=c.lugar===1?'1º lugar':c.lugar===2?'2º lugar':'3º lugar',cls=c.lugar===1?'g':c.lugar===2?'s':'b';
+      return '<section class="cert '+cls+'"><div class="cert-in"><span class="cert-eye">BJJ Arena</span><h1>Certificado</h1><p class="cert-lead">Conferimos a</p><h2>'+esc(c.nome)+'</h2>'+
+        (c.equipe?'<p class="cert-team">'+esc(c.equipe)+'</p>':'')+'<p class="cert-txt">pela conquista do</p><div class="cert-place">'+lug+'</div><p class="cert-txt">na categoria <b>'+esc(c.cat)+'</b></p>'+
+        '<p class="cert-camp">'+esc(c.camp||'')+(c.data?' · '+esc(dayLabel(c.data)):'')+'</p><div class="cert-sign"><span>Organização</span><span>Árbitro central</span></div></div></section>';
+    }).join('');
+    document.body.appendChild(box);document.body.classList.add('printing');
+    function done(){document.body.classList.remove('printing');box.remove();window.removeEventListener('afterprint',done)}
+    window.addEventListener('afterprint',done);
+    try{window.print()}catch(e){done()}
+  }
+  window.__certList=certList;
+  document.addEventListener('click',function(e){
+    var t=e.target.closest?e.target.closest('[data-certs],[data-hcerts]'):null;if(!t)return;
+    if(t.hasAttribute('data-certs'))certsPrint(certList(S.brackets||[],S.people,S.evento));
+    else{var h=S.history.filter(function(x){return x.id===HOPEN})[0];if(h)certsPrint(certList(h.brackets,h.people,{nome:h.nome,data:h.data}))}
+  });
+
+  var TOUR=[
+    ['1 de 6 · Cadastro','Cadastre cada atleta com <b>nome, equipe, sexo, ano de nascimento, peso e faixa</b>. Em vez de digitar, você pode gerar um <b>link de inscrição</b> e mandar pelo WhatsApp: cada atleta se cadastra sozinho.'],
+    ['2 de 6 · Configuração','Escolha o tempo de luta, quantos tatames, e se separa por <b>faixa, peso, idade e sexo</b>. A opção de equipes evita que colegas de academia se enfrentem logo no começo.'],
+    ['3 de 6 · Pesagem e chaves','Confira o peso na <b>Pesagem</b>, marque quem faltou e clique em <b>Gerar chaves</b>. A chave é sorteada na hora e abre em tela cheia.'],
+    ['4 de 6 · Lutas e tatames','Abra uma luta para marcar pontos, vantagens e punições. Com vários tatames, use <b>Mesas e público</b> para dar a cada tablet o controle do seu tatame.'],
+    ['5 de 6 · Telão e público','Abra o <b>telão</b> no segundo monitor e mostre o <b>QR de resultados ao vivo</b>: o público acompanha lutas, chaves e pódio pelo celular.'],
+    ['6 de 6 · Encerrar','Ao terminar, veja o <b>quadro de medalhas por equipe</b>, imprima os <b>certificados</b> e encerre: tudo vai para o <b>Histórico</b>.']
+  ];
+  function tourStep(i){
+    if(i>=TOUR.length){try{localStorage.setItem('bjj-arena-tour','1')}catch(e){}return}
+    var last=i===TOUR.length-1;
+    dialog({tone:'info',icon:'info',title:TOUR[i][0],html:'<p>'+TOUR[i][1]+'</p>',ok:last?'Começar':'Próximo',cancel:last?false:'Pular tutorial',
+      onOk:function(){setTimeout(function(){tourStep(i+1)},0)},onNo:function(){try{localStorage.setItem('bjj-arena-tour','1')}catch(e){}}});
+  }
+  $('#tourBtn').addEventListener('click',function(){tourStep(0)});
+  function tourAuto(){
+    var seen=false;try{seen=!!localStorage.getItem('bjj-arena-tour')}catch(e){}
+    if(!seen)setTimeout(function(){if(!S.fighters.length&&!S.evento.nome&&$('#dlg').hidden)tourStep(0)},600);
+  }
+
+  var LIC={st:null};
+  function licWa(){return 'https://wa.me/5548996297813?text='+encodeURIComponent('Olá! Quero a licença do BJJ Arena.'+(LIC.st&&LIC.st.machine?' Código do computador: '+LIC.st.machine:''))}
+  function licPaint(){
+    var st=LIC.st,bar=$('#licBar');
+    if(!st||st.mode==='off'||st.mode==='licensed'){bar.hidden=true}
+    else if(st.mode==='trial'){bar.hidden=false;bar.innerHTML='<span><b>Teste grátis:</b> '+st.days+(st.days===1?' dia restante':' dias restantes')+'.</span><button class="btn" type="button" data-lic="open">Ativar licença</button>'}
+    else bar.hidden=true;
+    if(st&&st.mode==='expired')licOpen(true);
+  }
+  function licOpen(block){
+    var st=LIC.st||{},ov=$('#lic');
+    $('#licClose').hidden=!!block;ov.setAttribute('data-block',block?'1':'');
+    var head=st.mode==='expired'?'<p class="err" role="alert" style="display:block">'+esc(st.reason==='licença vencida'?'Sua licença venceu.':st.reason==='relógio alterado'?'A data do computador foi alterada. Corrija o relógio ou ative uma licença.':'O período de teste terminou.')+' Ative uma licença para continuar.</p>':
+      st.mode==='licensed'?'<p class="mut">Licenciado para <b>'+esc(st.cliente||'')+'</b>'+(st.expira?' até '+esc(dayLabel(st.expira)):' (sem vencimento)')+'.</p>':'<p class="mut">Cole abaixo a chave que você recebeu.</p>';
+    $('#licBody').innerHTML='<section class="reg-card">'+head+'<p class="mut">Código deste computador: <b class="pin">'+esc(st.machine||'')+'</b></p>'+
+      '<label class="mut" for="licKey">Chave de licença</label><textarea id="licKey" rows="4" spellcheck="false" autocomplete="off" style="width:100%;background:var(--surface-2);color:var(--fg);border:1.5px solid var(--line-strong);border-radius:10px;padding:10px;font:inherit"></textarea>'+
+      '<div class="reg-act"><button class="btn primary" type="button" data-lic="go">Ativar</button><a class="btn" target="_blank" rel="noopener" href="'+esc(licWa())+'">Pedir licença pelo WhatsApp</a></div></section>';
+    ov.hidden=false;
+    setTimeout(function(){try{$('#licKey').focus()}catch(e){}},0);
+  }
+  document.addEventListener('click',function(e){
+    var t=e.target.closest?e.target.closest('[data-lic]'):null;if(!t)return;e.preventDefault();
+    if(t.getAttribute('data-lic')==='open'){licOpen(false);return}
+    var k=($('#licKey').value||'').trim();
+    if(!k){showErr2('Cole a chave de licença.','#licKey');return}
+    DESK.licActivate(k).then(function(r){
+      if(r&&r.ok){LIC.st=r.status;$('#lic').hidden=true;licPaint();toast('ok','Licença ativada. Obrigado!',3500)}
+      else{var m={assinatura:'Esta chave não é válida.',formato:'Chave incompleta ou com erro de cópia.',maquina:'Esta chave foi emitida para outro computador.',expirada:'Esta chave já venceu.'}[r&&r.error]||'Não foi possível ativar.';showErr2(m,'#licKey')}
+    });
+  });
+  $('#licClose').addEventListener('click',function(){$('#lic').hidden=true});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('#lic').hidden){if(!$('#lic').getAttribute('data-block'))$('#lic').hidden=true;e.stopImmediatePropagation();e.preventDefault()}},true);
+  function updPaint(u){
+    var bar=$('#updBar');
+    if(!u||!u.newer){bar.hidden=true;return}
+    bar.hidden=false;bar.innerHTML='<span><b>Versão '+esc(u.version)+' disponível.</b> '+esc(u.notas||'')+'</span><button class="btn" type="button" data-upd="'+esc(u.url)+'">Baixar</button><button class="btn link" type="button" data-upd="">Depois</button>';
+  }
+  document.addEventListener('click',function(e){
+    var t=e.target.closest?e.target.closest('[data-upd]'):null;if(!t)return;
+    var u=t.getAttribute('data-upd');if(u&&DESK&&DESK.openExternal)DESK.openExternal(u);
+    $('#updBar').hidden=true;
+  });
+  if(!IS_TELAO&&!REMOTE){
+    if(DESK&&DESK.licStatus){DESK.licStatus().then(function(st){LIC.st=st;licPaint()}).catch(function(){})}
+    if(DESK&&DESK.checkUpdate)setTimeout(function(){DESK.checkUpdate().then(updPaint).catch(function(){})},4000);
+    tourAuto();
+  }
 
   /* ---------- Campeonato: encerrar, histórico ---------- */
   function todayISO(){var d=new Date();function z(n){return (n<10?'0':'')+n}return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())}
@@ -1879,7 +2467,7 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
       rounds:b.rounds.map(function(r){return r.map(function(m){return {a:m.a,b:m.b,winner:m.winner,bye:!!m.bye,method:m.method||null,sc:JSON.parse(JSON.stringify(m.sc))}})})}});
     return {id:newId(),nome:(S.evento.nome||'').trim()||'Campeonato sem nome',data:S.evento.data||todayISO(),savedAt:Date.now(),tatames:S.tatames,
       belts:BELTS.map(function(b){return {id:b.id,nome:b.nome}}),
-      fighters:S.fighters.map(function(f){return {name:f.name,weight:ew(f),belt:f.belt,st:f.st||null}}),
+      fighters:S.fighters.map(function(f){return {name:f.name,weight:ew(f),belt:f.belt,st:f.st||null,team:f.team||'',sex:f.sex||'M',born:f.born||null}}),
       people:JSON.parse(JSON.stringify(S.people)),brackets:brs};
   }
   var IC={
@@ -2036,7 +2624,7 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
   function histPeople(h,st){
     var prow='';
     st.forEach(function(x){x.rows.forEach(function(r){var p=h.people[r.id];
-      prow+='<tr data-n="'+esc(norm(p.name))+'"><td>'+dot(p.belt)+esc(p.name)+'</td><td>Faixa '+esc(hb(h,p.belt))+'</td><td class="num">'+kg(p.weight)+' kg</td><td>'+esc(x.br.short||x.br.title)+'</td><td class="num">'+r.w+' V · '+r.l+' D</td><td class="num">'+r.pts+'</td><td>'+esc(r.place)+'</td></tr>'})});
+      prow+='<tr data-n="'+esc(norm(p.name))+'"><td>'+dot(p.belt)+esc(p.name)+(p.team?'<small class="mut"> · '+esc(p.team)+'</small>':'')+'</td><td>Faixa '+esc(hb(h,p.belt))+'</td><td class="num">'+kg(p.weight)+' kg</td><td>'+esc(x.br.short||x.br.title)+'</td><td class="num">'+r.w+' V · '+r.l+' D</td><td class="num">'+r.pts+'</td><td>'+esc(r.place)+'</td></tr>'})});
     h.fighters.filter(function(f){return f.st==='faltou'}).forEach(function(f){
       prow+='<tr data-n="'+esc(norm(f.name))+'"><td>'+dot(f.belt)+esc(f.name)+'</td><td>Faixa '+esc(hb(h,f.belt))+'</td><td class="num">'+kg(f.weight)+' kg</td><td>—</td><td class="num">—</td><td class="num">—</td><td>Faltou</td></tr>'});
     return '<label class="hq hpq"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="hpq" type="search" placeholder="Buscar atleta" autocomplete="off" aria-label="Buscar atleta"></label>'+
@@ -2088,8 +2676,8 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
     el.innerHTML='<div class="hd-in"><button class="btn" type="button" data-hback>← Voltar ao histórico</button>'+
       '<header class="hd-head"><span class="hd-meta">'+esc(dayLabel(h.data))+' · encerrado às '+hora+'</span><h2>'+esc(h.nome)+'</h2>'+
       '<div class="hc-stats"><span><b>'+hPresent(h)+'</b>atletas</span><span><b>'+h.brackets.length+'</b>'+(h.brackets.length===1?'chave':'chaves')+'</span><span><b>'+hCount(h)+'</b>'+(hCount(h)===1?'luta decidida':'lutas decididas')+'</span>'+(h.tatames>1?'<span><b>'+h.tatames+'</b>tatames</span>':'')+'</div></header>'+
-      '<nav class="hd-tabs" role="tablist"><button type="button" role="tab" data-htab="champ" class="on">Campeões</button><button type="button" role="tab" data-htab="lutas">Lutas</button><button type="button" role="tab" data-htab="atl">Participantes</button></nav>'+
-      '<div class="hd-pane" id="hdPane"></div><div class="hd-foot"><button class="btn" type="button" data-hdel="'+h.id+'">'+(hdelArm===h.id?'Confirmar exclusão':'Excluir do histórico')+'</button></div></div>';
+      '<nav class="hd-tabs" role="tablist"><button type="button" role="tab" data-htab="champ" class="on">Campeões</button><button type="button" role="tab" data-htab="eq">Equipes</button><button type="button" role="tab" data-htab="lutas">Lutas</button><button type="button" role="tab" data-htab="atl">Participantes</button></nav>'+
+      '<div class="hd-pane" id="hdPane"></div><div class="hd-foot"><button class="btn" type="button" data-hcerts>Imprimir certificados</button> <button class="btn" type="button" data-hdel="'+h.id+'">'+(hdelArm===h.id?'Confirmar exclusão':'Excluir do histórico')+'</button></div></div>';
     el.hidden=false;el.scrollTop=0;histPane();
     var b=el.querySelector('[data-hback]');if(b)b.focus();
   }
@@ -2099,6 +2687,7 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
     [].forEach.call($('#histDetail').querySelectorAll('[data-htab]'),function(b){var on=b.getAttribute('data-htab')===HTAB;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
     var inner;
     if(HTAB==='champ')inner='<div class="hpods">'+st.map(function(x){return hpodHTML(h,x)}).join('')+'</div>';
+    else if(HTAB==='eq')inner=teamTableHTML(teamBoard(h.brackets,h.people),false);
     else if(HTAB==='lutas'){inner=st.map(function(x,i){return histMatches(h,x,i===0)}).join('')||'<p class="mut">Nenhuma luta registrada.</p>'}
     else inner=histPeople(h,st);
     var n=box.cloneNode(false);n.innerHTML=inner;box.parentNode.replaceChild(n,box);
@@ -2192,12 +2781,15 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
   function initCfg(){
     fillBelts($('#faixa').value&&$('#faixa').value!=='__outra'?$('#faixa').value:'branca');
     $('#tatames').value=String(S.tatames);$('#tempoModo').value=S.tempoModo;
-    $('#autoPen').checked=S.autoPen;$('#rr3').checked=S.rr3;renderTf();initEv();renderHistBtn();
+    $('#autoPen').checked=S.autoPen;$('#rr3').checked=S.rr3;$('#divIdade').checked=S.divIdade;$('#divSexo').checked=S.divSexo;$('#sepEquipe').checked=S.sepEquipe;$('#som').checked=S.som;renderTeamList();renderTf();initEv();renderHistBtn();
   }
   $('#tatames').addEventListener('change',function(){S.tatames=+this.value;save();paintTelao();if(S.brackets){renderResults();if(TV.open)tvRender()}});
   $('#tempoModo').addEventListener('change',function(){S.tempoModo=this.value;renderTf();save();if(S.brackets)renderResults()});
   $('#autoPen').addEventListener('change',function(){S.autoPen=this.checked;save()});
   $('#rr3').addEventListener('change',function(){S.rr3=this.checked;save();renderHint()});
+  $('#divIdade').addEventListener('change',function(){S.divIdade=this.checked;save();renderHint();paintIdade()});
+  $('#divSexo').addEventListener('change',function(){S.divSexo=this.checked;save();renderHint()});
+  $('#sepEquipe').addEventListener('change',function(){S.sepEquipe=this.checked;save();renderHint()});
   $('#tfBox').addEventListener('change',function(e){
     var id=e.target.getAttribute('data-tf');if(!id)return;
     var v=Math.round(Number(e.target.value));
@@ -2300,6 +2892,8 @@ input:focus,select:focus{outline:0;border-color:var(--accent);background:var(--s
     if(DESK){DESK.onState(telaoUpdate);DESK.requestState()}
     telaoRender(true);
     setInterval(telaoCycle,15000);
+  }else if(REMOTE){
+    remoteBoot();
   }else{
     load();
     $('#tempo').value=S.tempo;
