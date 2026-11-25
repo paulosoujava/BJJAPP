@@ -60,14 +60,14 @@ window.BJJ_CFG={url:'',key:''};
   function form(ev){
     var yr=new Date().getFullYear();
     $('#box').innerHTML='<form id="f" novalidate>'+
-     '<div class="f full"><label for="n">Nome completo</label><input id="n" maxlength="60" autocomplete="name" placeholder="Ex.: Rafael Duarte"></div>'+
-     '<div class="f full"><label for="t">Equipe / Academia</label><input id="t" maxlength="50" placeholder="Ex.: Gracie Barra Floripa"></div>'+
-     '<div class="f"><label for="s">Sexo</label><select id="s"><option value="">Selecione…</option><option value="M">Masculino</option><option value="F">Feminino</option></select></div>'+
-     '<div class="f"><label for="b">Ano de nascimento</label><input id="b" inputmode="numeric" maxlength="4" placeholder="Ex.: 1994"></div>'+
-     '<div class="f"><label for="w">Peso (kg)</label><input id="w" inputmode="decimal" placeholder="Ex.: 76,5"></div>'+
-     '<div class="f"><label for="x">Faixa</label><select id="x"><option value="branca">Branca</option><option value="azul">Azul</option><option value="roxa">Roxa</option><option value="marrom">Marrom</option><option value="preta">Preta</option><option value="__o">Outra…</option></select></div>'+
-     '<div class="f full" id="xo" hidden><label for="xn">Nome da faixa</label><input id="xn" maxlength="24" placeholder="Ex.: Cinza, Amarela"></div>'+
-     '<div class="f full"><label for="p">WhatsApp (opcional)</label><input id="p" inputmode="tel" maxlength="20" placeholder="(48) 99999-9999"></div>'+
+     '<div class="f full"><label for="n">Nome completo *</label><input id="n" maxlength="60" autocomplete="name" placeholder="Ex.: Rafael Duarte"></div>'+
+     '<div class="f full"><label for="t">Equipe / Academia *</label><input id="t" maxlength="50" placeholder="Ex.: Gracie Barra Floripa"></div>'+
+     '<div class="f"><label for="s">Sexo *</label><select id="s"><option value="">Selecione…</option><option value="M">Masculino</option><option value="F">Feminino</option></select></div>'+
+     '<div class="f"><label for="b">Ano de nascimento *</label><input id="b" inputmode="numeric" maxlength="4" placeholder="Ex.: 1994"></div>'+
+     '<div class="f"><label for="w">Peso (kg) *</label><input id="w" inputmode="decimal" placeholder="Ex.: 76,5"></div>'+
+     '<div class="f"><label for="x">Faixa *</label><select id="x"><option value="">Selecione…</option><option value="branca">Branca</option><option value="azul">Azul</option><option value="roxa">Roxa</option><option value="marrom">Marrom</option><option value="preta">Preta</option><option value="__o">Outra…</option></select></div>'+
+     '<div class="f full" id="xo" hidden><label for="xn">Nome da faixa *</label><input id="xn" maxlength="24" placeholder="Ex.: Cinza, Amarela"></div>'+
+     '<div class="f full"><label for="p">WhatsApp *</label><input id="p" inputmode="tel" maxlength="20" placeholder="(48) 99999-9999"></div>'+
      '<p class="msg" id="m" role="alert"></p><button id="go" type="submit">Enviar inscrição</button>'+
      '<small class="full" style="grid-column:1/-1">O peso será conferido na pesagem oficial.</small></form>';
     $('#x').addEventListener('change',function(){$('#xo').hidden=this.value!=='__o'});
@@ -81,7 +81,9 @@ window.BJJ_CFG={url:'',key:''};
       if(!s)return fail('Selecione o sexo.','s');
       if(!/^\d{4}$/.test($('#b').value.trim())||b<yr-100||b>yr-3)return fail('Informe o ano de nascimento com 4 dígitos.','b');
       if(!isFinite(w)||w<15||w>200)return fail('Informe um peso entre 15 e 200 kg.','w');
+      if(!x)return fail('Selecione a faixa.','x');
       if(x==='__o'){x=$('#xn').value.trim();if(x.length<3)return fail('Escreva o nome da faixa.','xn')}
+      var ph=$('#p').value.replace(/\D/g,'');if(ph.length<10||ph.length>13)return fail('Informe seu WhatsApp com DDD.','p');
       var btn=$('#go');btn.disabled=true;btn.textContent='Enviando…';
       rpc('submit_registration',{p_event:E,p_name:n,p_team:t,p_sex:s,p_born:b,p_weight:w,p_belt:x,p_phone:$('#p').value.trim()}).then(function(){
         $('#box').innerHTML='<div class="card ok"><h2>Inscrição enviada!</h2><p><b>'+esc(n)+'</b> · '+esc(t)+'<br><small>Peso informado: '+String(w).replace('.',',')+' kg · aguarde a confirmação do organizador.</small></p></div>';

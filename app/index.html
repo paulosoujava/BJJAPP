@@ -2292,7 +2292,9 @@ body.au-on .wrap{display:none}
     REG.busy=true;if(!quiet)regRender();
     return rpc('list_registrations',{p_event:S.online.eventId,p_admin:S.online.admin}).then(function(rows){
       REG.rows=(rows||[]).map(function(r){r.weight=+r.weight;r.born=+r.born;return r});
-      REG.newCount=regPending().length;REG.msg='';
+      REG.msg='';
+      var pend=regPending();if(pend.length&&S.online.auto!==false&&!IS_TELAO&&!REMOTE)regImport(pend);
+      REG.newCount=regPending().length;
     }).catch(function(e){REG.msg=regErrText(e);if(!quiet)toast('err',REG.msg)}).then(function(){REG.busy=false;paintRegBadge();if(!$('#reg').hidden)regRender()});
   }
   function beltFromName(raw){
@@ -2322,6 +2324,7 @@ body.au-on .wrap{display:none}
     var adm=hex(24);
     rpc('create_event',{p_token:AU.token,p_name:nome,p_date:S.evento.data||null,p_admin:adm}).then(function(id){
       o.eventId=String(id).replace(/"/g,'');o.admin=adm;o.open=true;o.link=buildLink();save();REG.rows=[];REG.newCount=0;REG.creating=false;
+      clearInterval(REG.bg);REG.bg=setInterval(function(){if(S.online.eventId&&S.online.open!==false)regFetch(true)},30000);
       regOpen();openWa();
     }).catch(function(e){REG.creating=false;REG.msg=regErrText(e);toast('err',REG.msg);regRender()});
   }
@@ -3395,6 +3398,7 @@ body.au-on .wrap{display:none}
     if(DESK){DESK.onStateRequest(sendState);DESK.onTelaoStatus(function(o){TELAO_OPEN=o;paintTelao()})}
     paintTelao();broadcastSoon();
     if(S.online.eventId)setTimeout(function(){regFetch(true)},1500);
+    if(S.online.eventId){clearInterval(REG.bg);REG.bg=setInterval(function(){if(S.online.eventId&&S.online.open!==false)regFetch(true)},30000)}
     if(!IS_TELAO&&!REMOTE)tourAuto();
   }
   window.__bjjBoot=bootApp;
