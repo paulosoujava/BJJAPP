@@ -787,6 +787,8 @@ body.remote [data-adj]{display:none!important}
 .tl-feat li::before{content:"";position:absolute;left:12px;top:50%;width:10px;height:10px;margin-top:-5px;border-radius:50%;background:linear-gradient(135deg,#F2BF3C,#E8734A);box-shadow:0 0 10px rgba(242,191,60,.7)}
 #telCtl[hidden]{display:none}
 @media (prefers-reduced-motion:reduce){.tl-screen::after,.tl-live i{animation:none}.tl-slide,.tl-br .c i,.tl-rows b,.tl-pod span{animation:none}.tl-slide.s1{opacity:1}.tl-br .c i,.tl-rows b,.tl-pod span{opacity:1}}
+#equipe.locked{background:color-mix(in srgb,var(--accent) 10%,var(--surface));font-weight:700;cursor:not-allowed}
+.gtipo{grid-column:1/-1}.gtipo[hidden]{display:none}
 /* ---------- acesso: login, root, bloqueio ---------- */
 .hours{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-top:8px;width:100%}.hday{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:color-mix(in srgb,var(--surface-2) 40%,transparent)}
 .hday h4{margin:0 0 6px;font:700 1rem var(--display,inherit);text-transform:uppercase;letter-spacing:.06em}
@@ -899,6 +901,7 @@ body.au-on .wrap{display:none}
       <div class="gfields">
         <div class="field grow"><label for="gNome">Nome do campeonato</label><input id="gNome" type="text" maxlength="80" autocomplete="off" placeholder="Ex.: Copa Arena de Jiu-Jitsu 2026"></div>
         <div class="field"><label for="gData">Data</label><input id="gData" type="date"></div>
+        <div class="field full gtipo"><label for="gTipo">Tipo de campeonato</label><select id="gTipo"><option value="aberto">Aberto: atletas de várias equipes</option><option value="interno">Interno: só alunos da minha academia</option></select><small class="mut" id="gTipoH"></small></div>
       </div>
       <p class="err" id="gErr" role="alert"></p>
       <div class="es-act"><button class="btn primary" type="submit" id="gStart">Começar campeonato</button><button class="btn" type="button" id="gCancel" hidden>Cancelar</button><button class="btn" type="button" id="gHist" data-hist hidden>Ver histórico</button></div>
@@ -1312,12 +1315,14 @@ body.au-on .wrap{display:none}
     try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
     broadcastSoon();
   }
+  var WCH=null;try{if(!DESK&&window.BroadcastChannel)WCH=new BroadcastChannel('bjj-telao')}catch(e){}
   function sendState(){
-    if(!DESK||IS_TELAO)return;
+    if(IS_TELAO||(!DESK&&!WCH))return;
+    if(!DESK){try{WCH.postMessage({t:'state',p:{S:S,view:VIEW,board:T?{b:T.b,r:T.r,m:T.m}:null,rev:REV,live:liveData()}})}catch(e){}return}
     try{DESK.sendState({S:S,view:VIEW,board:T?{b:T.b,r:T.r,m:T.m}:null,rev:REV,live:liveData()})}catch(e){}
   }
   function broadcastSoon(){
-    if(!DESK||IS_TELAO||bcT)return;
+    if((!DESK&&!WCH)||IS_TELAO||bcT)return;
     bcT=setTimeout(function(){bcT=null;sendState()},120);
   }
   function load(){
@@ -1326,7 +1331,7 @@ body.au-on .wrap{display:none}
       if(d&&Array.isArray(d.fighters)){
         if(Array.isArray(d.customBelts))S.customBelts=d.customBelts.filter(function(b){return b&&/^x\d+$/.test(b.id)&&typeof b.nome==='string'&&b.nome.length&&b.nome.length<=24}).slice(0,12).map(function(b){return {id:b.id,nome:b.nome}});
         applyCustom();
-        if(d.evento&&typeof d.evento==='object'){S.evento={nome:String(d.evento.nome||'').slice(0,80),data:/^\d{4}-\d{2}-\d{2}$/.test(d.evento.data||'')?d.evento.data:''}}
+        if(d.evento&&typeof d.evento==='object'){S.evento={interno:d.evento.interno===true,nome:String(d.evento.nome||'').slice(0,80),data:/^\d{4}-\d{2}-\d{2}$/.test(d.evento.data||'')?d.evento.data:''}}
         if(Array.isArray(d.history))S.history=d.history.filter(function(h){return h&&h.id&&Array.isArray(h.brackets)&&h.people&&Array.isArray(h.fighters)}).slice(0,200);
         S.fighters=d.fighters.filter(function(f){return f&&f.id&&f.name&&isFinite(f.weight)&&beltOf(f.belt)}).map(function(f){f.team=String(f.team||'').slice(0,50);f.sex=f.sex==='F'?'F':'M';f.born=(f.born>=1900&&f.born<=2100)?Math.round(f.born):null;return f});
         if(d.tempo>=1&&d.tempo<=60)S.tempo=Math.round(d.tempo);
@@ -2034,9 +2039,9 @@ body.au-on .wrap{display:none}
   }
 
   function paintTelao(){
-    var has=!!DESK,mats=Math.max(S.tatames,S.brackets?maxMat():1),o='<option value="0">Todos os tatames</option>';
+    var has=!!DESK||!!WCH,mats=Math.max(S.tatames,S.brackets?maxMat():1),o='<option value="0">Todos os tatames</option>';
     $('#telOpen').disabled=!has;$('#telOpen').hidden=TELAO_OPEN;$('#telClose').hidden=!TELAO_OPEN;
-    $('#telHint').textContent=!has?'':(TELAO_OPEN?'Telão aberto. O placar aparece sozinho quando você abre uma luta.':'Com um segundo monitor ou TV ligado, o telão abre em tela cheia nele. Com uma tela só, abre em tela cheia em um espaço próprio: volte ao painel com Ctrl + setas (ou deslize com 3 dedos) e feche o telão com Cmd + W.');
+    $('#telHint').textContent=!has?'':(TELAO_OPEN?'Telão aberto. O placar aparece sozinho quando você abre uma luta.':!DESK?'O telão abre em uma nova janela. Arraste-a para a TV ou o projetor e dê dois cliques nela para ficar em tela cheia.':'Com um segundo monitor ou TV ligado, o telão abre em tela cheia nele. Com uma tela só, abre em tela cheia em um espaço próprio: volte ao painel com Ctrl + setas (ou deslize com 3 dedos) e feche o telão com Cmd + W.');
     for(var k=1;k<=mats;k++)o+='<option value="'+k+'">Tatame '+k+'</option>';
     $('#telMat').innerHTML=o;$('#telMat').value=String(VIEW.mat>mats?0:VIEW.mat);
     $('#telMatField').hidden=mats<2;
@@ -2349,6 +2354,7 @@ body.au-on .wrap{display:none}
   function buildLink(){
     var o=S.online,u=o.site.indexOf('?')>=0?o.site+'&':o.site+'?';
     var l=u+'e='+encodeURIComponent(o.eventId);
+    if(S.evento.interno&&acadName())l+='&t='+encodeURIComponent(acadName());
     if(!o.short)l+='&u='+encodeURIComponent(o.url.replace(/\/+$/,''))+'&k='+encodeURIComponent(o.key);
     return l;
   }
@@ -2416,7 +2422,7 @@ body.au-on .wrap{display:none}
   function regImport(list){
     var add=list.filter(function(r){return !isDupReg(r)});
     if(!add.length){toast('warn','Nenhuma inscrição nova para adicionar.');return}
-    add.forEach(function(r){S.fighters.push({id:newId(),name:String(r.name).slice(0,60),weight:Math.round(r.weight*10)/10,belt:beltFromName(r.belt),team:String(r.team).slice(0,50),sex:r.sex==='F'?'F':'M',born:r.born})});
+    add.forEach(function(r){S.fighters.push({id:newId(),name:String(r.name).slice(0,60),weight:Math.round(r.weight*10)/10,belt:beltFromName(r.belt),team:(S.evento.interno&&acadName()?acadName():String(r.team)).slice(0,50),sex:r.sex==='F'?'F':'M',born:r.born})});
     save();renderList();renderTeamList();renderHint();REG.sel={};
     toast('ok',add.length+(add.length===1?' atleta adicionado à lista.':' atletas adicionados à lista.'),3200);
     rpc('mark_imported',{p_event:S.online.eventId,p_admin:S.online.admin,p_ids:add.map(function(r){return r.id})}).then(function(){add.forEach(function(r){r.imported=true})}).catch(function(){}).then(function(){REG.newCount=regPending().length;paintRegBadge();regRender()});
@@ -2790,6 +2796,12 @@ body.au-on .wrap{display:none}
   function flash(t){toast('ok',t,6000)}
   var GATE_EDIT=false,gateShown=false;
   function gateOn(){return !S.evento.nome||GATE_EDIT}
+  function acadName(){return (typeof AU!=='undefined'&&AU.acad&&AU.acad.name)||''}
+  function applyTeamLock(){
+    var e=$('#equipe'),lock=!!S.evento.interno&&!!acadName();
+    if(lock){e.value=acadName();e.readOnly=true;e.classList.add('locked');e.title='Campeonato interno: a equipe é a sua academia'}
+    else if(e.readOnly){e.readOnly=false;e.classList.remove('locked');e.title=''}
+  }
   function paintGate(){
     var on=gateOn();
     $('#gate').hidden=!on;$('main.layout').hidden=on;
@@ -2797,6 +2809,7 @@ body.au-on .wrap{display:none}
     $('#evNome').value=S.evento.nome||'';$('#evData').value=S.evento.data;
     if(on){
       $('#gNome').value=S.evento.nome||'';$('#gData').value=S.evento.data;$('#gErr').textContent='';
+      $('#gTipo').value=S.evento.interno?'interno':'aberto';$('#gTipo').closest('.gtipo').hidden=!acadName();
       $('#gTitle').textContent=GATE_EDIT?'Editar campeonato':'Novo campeonato';
       $('#gStart').textContent=GATE_EDIT?'Salvar':'Começar campeonato';
       $('#gCancel').hidden=!GATE_EDIT;
@@ -2805,6 +2818,7 @@ body.au-on .wrap{display:none}
     }else{
       gateShown=false;
     }
+    applyTeamLock();
   }
   function initEv(){paintGate()}
   function renderHistBtn(){var n=S.history.length;$('#histBtn').innerHTML='Histórico'+(n?'<span class="cnt">'+n+'</span>':'')}
@@ -2812,7 +2826,7 @@ body.au-on .wrap{display:none}
     var saved=false;
     if(hasResults()){S.history.unshift(snapshot());if(S.history.length>200)S.history.length=200;saved=true}
     S.online.eventId='';S.online.admin='';S.online.link='';S.online.open=true;REG.rows=[];REG.newCount=0;clearInterval(REG.iv);paintRegBadge();
-    S.fighters=[];S.brackets=null;S.people={};S.sig='';S.evento={nome:'',data:todayISO()};
+    S.fighters=[];S.brackets=null;S.people={};S.sig='';S.evento={nome:'',data:todayISO(),interno:false};
     endArmed=false;clearTimeout(endTimer);
     save();initEv();renderList();renderHint();renderResults();renderHistBtn();
     flash(saved?'Campeonato salvo no histórico. A lista está vazia para o próximo.':'Lista limpa.');
@@ -2997,7 +3011,7 @@ body.au-on .wrap{display:none}
     e.preventDefault();
     var n=$('#gNome').value.trim().replace(/\s+/g,' ');
     if(n.length<2){var gm='O nome do campeonato é obrigatório (mínimo 2 letras).';$('#gErr').textContent=gm;toast('err',gm);$('#gNome').focus();bad($('#gNome'));return}
-    S.evento={nome:n,data:$('#gData').value||todayISO()};GATE_EDIT=false;save();paintGate();
+    S.evento={interno:$('#gTipo').value==='interno'&&!!acadName(),nome:n,data:$('#gData').value||todayISO()};GATE_EDIT=false;save();paintGate();
     toast('ok','Campeonato "'+n+'" iniciado. Cadastre os lutadores.',3500);
     try{$('#nome').focus()}catch(x){}
   });
@@ -3059,8 +3073,14 @@ body.au-on .wrap{display:none}
     if(!(v>=1&&v<=60)){e.target.value=S.temposFaixa[id]||S.tempo;return}
     S.temposFaixa[id]=v;save();if(S.brackets)renderResults();
   });
-  $('#telOpen').addEventListener('click',function(){if(DESK)DESK.openTelao()});
-  $('#telClose').addEventListener('click',function(){if(DESK)DESK.closeTelao()});
+  $('#telOpen').addEventListener('click',function(){
+    if(DESK){DESK.openTelao();return}
+    var w=window.open(location.href.split('#')[0]+'#telao','bjj-telao','popup=yes,width=1280,height=720');
+    if(!w){toast('err','O navegador bloqueou a janela do telão. Permita pop-ups para este site e tente de novo.');return}
+    TELAO_OPEN=true;paintTelao();setTimeout(sendState,600);
+  });
+  $('#telClose').addEventListener('click',function(){if(DESK)DESK.closeTelao();else if(WCH){try{WCH.postMessage({t:'close'})}catch(e){}TELAO_OPEN=false;paintTelao()}});
+  if(WCH&&!IS_TELAO)WCH.onmessage=function(m){var d=m.data||{};if(d.t==='req'||d.t==='open'){TELAO_OPEN=true;paintTelao();sendState()}else if(d.t==='closed'){TELAO_OPEN=false;paintTelao()}};
   $('#telMode').addEventListener('change',function(){VIEW.mode=this.value;broadcastSoon()});
   $('#telMat').addEventListener('change',function(){VIEW.mat=+this.value;broadcastSoon()});
   $('#telAuto').addEventListener('change',function(){VIEW.autoBoard=this.checked;broadcastSoon()});
@@ -3555,6 +3575,14 @@ body.au-on .wrap{display:none}
       btn.addEventListener('click',sair);wake();
     })();
     if(DESK){DESK.onState(telaoUpdate);DESK.requestState()}
+    else if(WCH){
+      var gotS=false;
+      WCH.onmessage=function(m){var d=m.data||{};if(d.t==='state'){gotS=true;telaoUpdate(d.p)}else if(d.t==='close'){window.close()}};
+      var ask=function(){try{WCH.postMessage({t:'req'})}catch(e){}};ask();
+      var askT=setInterval(function(){if(gotS)clearInterval(askT);else ask()},1500);
+      window.addEventListener('beforeunload',function(){try{WCH.postMessage({t:'closed'})}catch(e){}});
+      document.addEventListener('dblclick',function(){if(document.fullscreenElement)document.exitFullscreen();else if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(function(){})});
+    }
     telaoRender(true);
     setInterval(telaoCycle,15000);
   }else if(REMOTE){

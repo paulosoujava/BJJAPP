@@ -70,6 +70,7 @@ window.BJJ_CFG={url:'',key:''};
      '<div class="f full"><label for="p">WhatsApp *</label><input id="p" inputmode="tel" maxlength="20" placeholder="(48) 99999-9999"></div>'+
      '<p class="msg" id="m" role="alert"></p><button id="go" type="submit">Enviar inscrição</button>'+
      '<small class="full" style="grid-column:1/-1">O peso será conferido na pesagem oficial.</small></form>';
+    var TT=(q.get('t')||'').trim().slice(0,50);if(TT){$('#t').value=TT;$('#t').readOnly=true;$('#t').style.fontWeight='700'}
     $('#x').addEventListener('change',function(){$('#xo').hidden=this.value!=='__o'});
     $('#f').addEventListener('submit',function(e){
       e.preventDefault();
