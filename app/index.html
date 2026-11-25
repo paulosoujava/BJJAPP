@@ -748,6 +748,45 @@ body.remote [data-adj]{display:none!important}
 .list li.fc.absent{opacity:.7;filter:grayscale(.6)}
 .list li.weigh{grid-column:1/-1}
 @media (max-width:420px){#lista.list{grid-template-columns:minmax(0,1fr)}.fc-kg b{font-size:2.1rem}}
+
+/* ---------- cartão do telão ---------- */
+#telaoPanel{position:relative;overflow:hidden}
+.tl-hero{display:grid;gap:18px;margin:6px 0 18px}
+.tl-tv{position:relative;display:grid;justify-items:center;width:min(100%,460px);margin:0 auto}
+.tl-screen{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;border:3px solid #26333b;background:radial-gradient(120% 120% at 20% 0,#1b2a35 0,#0a0f13 70%);box-shadow:0 0 0 1px #000,0 24px 50px -22px #0b1013,0 0 38px -8px rgba(242,191,60,.45);overflow:hidden;color:#fff}
+.tl-screen::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.07) 50%,transparent 60%);transform:translateX(-120%);animation:tlsh 6s ease-in-out infinite}
+@keyframes tlsh{55%,100%{transform:translateX(120%)}}
+.tl-stand{display:block;width:34%;height:10px;margin-top:-1px;border-radius:0 0 12px 12px;background:linear-gradient(#26333b,#10171c)}
+.tl-live{position:absolute;top:9px;left:11px;z-index:3;display:flex;align-items:center;gap:6px;font:800 .66rem var(--display,inherit);letter-spacing:.18em;color:#fff;background:rgba(0,0,0,.45);padding:3px 9px;border-radius:99px}
+.tl-live i{width:7px;height:7px;border-radius:50%;background:#FF4D4D;animation:tlpulse 1.2s ease-in-out infinite}
+@keyframes tlpulse{50%{opacity:.25;transform:scale(.7)}}
+.tl-slide{position:absolute;inset:0;display:grid;place-items:center;padding:34px 22px 16px;opacity:0;animation:tlcyc 9s infinite}
+.tl-slide.s2{animation-delay:3s}.tl-slide.s3{animation-delay:6s}
+@keyframes tlcyc{0%{opacity:0;transform:scale(.97)}5%,30%{opacity:1;transform:scale(1)}36%,100%{opacity:0;transform:scale(1.02)}}
+.tl-br{display:flex;align-items:center;justify-content:space-between;width:92%;height:100%}
+.tl-br .c{display:grid;gap:10px;align-content:center}
+.tl-br .c i{display:block;width:54px;height:15px;border-radius:5px;background:linear-gradient(90deg,#33444f,#233039);border-left:4px solid #F2BF3C;animation:tlpop 9s infinite;opacity:0}
+.tl-slide.s1 .c:nth-child(2) i{border-left-color:#2F7BD0;animation-delay:.25s}.tl-slide.s1 .c:nth-child(3) i{width:74px;height:22px;border-left-color:#3FBF8A;background:linear-gradient(90deg,#F2BF3C,#E8734A);animation-delay:.5s}
+.tl-br .c i:nth-child(2){animation-delay:.1s}.tl-br .c i:nth-child(3){animation-delay:.2s}.tl-br .c i:nth-child(4){animation-delay:.3s}
+@keyframes tlpop{0%{opacity:0;transform:translateX(-14px)}6%,30%{opacity:1;transform:none}36%,100%{opacity:0}}
+.tl-rows{display:grid;gap:8px;width:92%}
+.tl-rows b{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;opacity:0;animation:tlpop 9s infinite;animation-delay:3s}
+.tl-rows b:nth-child(2){animation-delay:3.15s}.tl-rows b:nth-child(3){animation-delay:3.3s}.tl-rows b:nth-child(4){animation-delay:3.45s}
+.tl-rows u,.tl-rows em{display:block;height:13px;border-radius:4px;background:#33444f}.tl-rows em{background:#233039}
+.tl-rows b::after{content:"VS";order:0;font:800 .62rem var(--display,inherit);color:#F2BF3C;letter-spacing:.1em;grid-column:2;grid-row:1}
+.tl-rows u{grid-column:1;grid-row:1}.tl-rows em{grid-column:3;grid-row:1}
+.tl-pod{display:flex;align-items:flex-end;gap:10px;height:100%;padding-top:6px}
+.tl-pod span{position:relative;display:grid;place-items:start center;width:58px;border-radius:7px 7px 0 0;transform-origin:bottom;animation:tlrise 9s infinite;animation-delay:6s;opacity:0}
+.tl-pod em{font:800 1.1rem var(--display,inherit);font-style:normal;color:#1a1203;margin-top:5px}
+.tl-pod .p1{height:84%;background:linear-gradient(#F7D774,#D4A72C)}.tl-pod .p2{height:60%;background:linear-gradient(#E4EBEF,#9FB0BA);animation-delay:6.2s}.tl-pod .p3{height:44%;background:linear-gradient(#E5A877,#B26E3C);animation-delay:6.4s}
+@keyframes tlrise{0%{opacity:0;transform:scaleY(.1)}8%,30%{opacity:1;transform:scaleY(1)}36%,100%{opacity:0;transform:scaleY(1)}}
+.tl-txt{display:grid;gap:12px;text-align:center}
+.tl-desc{margin:0;color:var(--muted);line-height:1.5}.tl-desc b{color:var(--fg)}
+.tl-feat{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;text-align:left}
+.tl-feat li{position:relative;padding:9px 12px 9px 34px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--accent) 6%,var(--surface));font-weight:600;font-size:.88rem}
+.tl-feat li::before{content:"";position:absolute;left:12px;top:50%;width:10px;height:10px;margin-top:-5px;border-radius:50%;background:linear-gradient(135deg,#F2BF3C,#E8734A);box-shadow:0 0 10px rgba(242,191,60,.7)}
+#telCtl[hidden]{display:none}
+@media (prefers-reduced-motion:reduce){.tl-screen::after,.tl-live i{animation:none}.tl-slide,.tl-br .c i,.tl-rows b,.tl-pod span{animation:none}.tl-slide.s1{opacity:1}.tl-br .c i,.tl-rows b,.tl-pod span{opacity:1}}
 /* ---------- acesso: login, root, bloqueio ---------- */
 .hours{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-top:8px;width:100%}.hday{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:color-mix(in srgb,var(--surface-2) 40%,transparent)}
 .hday h4{margin:0 0 6px;font:700 1rem var(--display,inherit);text-transform:uppercase;letter-spacing:.06em}
@@ -986,6 +1025,22 @@ body.au-on .wrap{display:none}
 
       <section class="panel" id="telaoPanel" aria-labelledby="h-tel">
         <h2 id="h-tel"><span class="step">3</span>Telão</h2>
+        <div class="tl-hero">
+          <div class="tl-tv" aria-hidden="true">
+            <div class="tl-screen">
+              <span class="tl-live"><i></i>AO VIVO</span>
+              <div class="tl-slide s1"><div class="tl-br"><div class="c"><i></i><i></i><i></i><i></i></div><div class="c"><i></i><i></i></div><div class="c"><i class="w"></i></div></div></div>
+              <div class="tl-slide s2"><div class="tl-rows"><b><u></u><em></em></b><b><u></u><em></em></b><b><u></u><em></em></b><b><u></u><em></em></b></div></div>
+              <div class="tl-slide s3"><div class="tl-pod"><span class="p2"><em>2</em></span><span class="p1"><em>1</em></span><span class="p3"><em>3</em></span></div></div>
+            </div>
+            <i class="tl-stand"></i>
+          </div>
+          <div class="tl-txt">
+            <p class="tl-desc">O <b>telão</b> transforma uma TV ou projetor no painel oficial do campeonato. O público acompanha, em tela cheia e em tempo real, tudo o que acontece no tatame.</p>
+            <ul class="tl-feat"><li>Chaves ao vivo</li><li>Chamada das próximas lutas</li><li>Placar em tela cheia</li><li>Pódio dos campeões</li></ul>
+          </div>
+        </div>
+        <div id="telCtl">
         <div class="cfg">
           <div class="field">
             <label for="telMode">Mostrar no telão</label>
@@ -1007,6 +1062,7 @@ body.au-on .wrap{display:none}
           <label class="chk"><input type="checkbox" id="telAuto" checked> Mostrar o placar no telão enquanto uma luta estiver aberta</label>
         </div>
         <p class="hint" id="telHint"></p>
+        </div>
       </section>
 
       <section class="panel" id="netPanel" aria-labelledby="h-net">
@@ -1980,11 +2036,12 @@ body.au-on .wrap{display:none}
   function paintTelao(){
     var has=!!DESK,mats=Math.max(S.tatames,S.brackets?maxMat():1),o='<option value="0">Todos os tatames</option>';
     $('#telOpen').disabled=!has;$('#telOpen').hidden=TELAO_OPEN;$('#telClose').hidden=!TELAO_OPEN;
-    $('#telHint').textContent=!has?'O telão em outra tela funciona no aplicativo para Mac.':(TELAO_OPEN?'Telão aberto. O placar aparece sozinho quando você abre uma luta.':'Com um segundo monitor ou TV ligado, o telão abre em tela cheia nele. Com uma tela só, abre em tela cheia em um espaço próprio: volte ao painel com Ctrl + setas (ou deslize com 3 dedos) e feche o telão com Cmd + W.');
+    $('#telHint').textContent=!has?'':(TELAO_OPEN?'Telão aberto. O placar aparece sozinho quando você abre uma luta.':'Com um segundo monitor ou TV ligado, o telão abre em tela cheia nele. Com uma tela só, abre em tela cheia em um espaço próprio: volte ao painel com Ctrl + setas (ou deslize com 3 dedos) e feche o telão com Cmd + W.');
     for(var k=1;k<=mats;k++)o+='<option value="'+k+'">Tatame '+k+'</option>';
     $('#telMat').innerHTML=o;$('#telMat').value=String(VIEW.mat>mats?0:VIEW.mat);
     $('#telMatField').hidden=mats<2;
     $('#telMode').value=VIEW.mode;$('#telAuto').checked=VIEW.autoBoard;
+    $('#telCtl').hidden=!has;
   }
   /* ---------- Placar ---------- */
   var AC=null;
