@@ -872,7 +872,21 @@ body.remote [data-adj]{display:none!important}
 body.au-on .wrap,body.au-on .toasts{visibility:visible}
 body.au-on .wrap{display:none}
 /* ===== Painel "Público ao vivo" ===== */
-#net .reg-in{max-width:1120px}
+#net .reg-in{max-width:none;min-height:100vh;display:flex;flex-direction:column;padding-bottom:clamp(18px,3vw,40px)}
+#net #netBody{flex:1;display:flex}
+#net .npx{flex:1;width:100%;grid-template-columns:minmax(0,1fr) minmax(0,1fr);padding:clamp(28px,4.5vw,80px);gap:clamp(32px,5vw,96px)}
+#net .npx-off{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)}
+#net .npx-qr{width:min(100%,62vh,640px);padding:clamp(20px,2.2vw,36px);border-radius:clamp(28px,3vw,44px)}
+#net .npx-ring{width:min(100%,64vh,660px);top:-14px}
+#net .npx-scan{font-size:clamp(1.4rem,2.2vw,2.4rem)}
+#net .npx h3{font-size:clamp(2.8rem,6.2vw,7rem)}
+#net .npx-copy>p{font-size:clamp(1.05rem,1.35vw,1.45rem);max-width:52ch}
+#net .npx-steps li{padding:clamp(10px,1.2vw,18px) clamp(14px,1.4vw,22px);font-size:clamp(1rem,1.2vw,1.3rem)}
+#net .npx-steps b{width:clamp(34px,2.8vw,48px);height:clamp(34px,2.8vw,48px);font-size:clamp(1.05rem,1.4vw,1.5rem)}
+#net .npx-link input,#net .npx-link .btn{height:clamp(48px,4vw,60px);font-size:clamp(.98rem,1.1vw,1.15rem)}
+#net .npx .btn.primary.npx-go{height:clamp(56px,4.6vw,72px);padding:0 clamp(30px,2.6vw,44px);font-size:clamp(1.08rem,1.3vw,1.4rem)}
+#net .npx-phone{width:clamp(240px,18vw,320px)}
+#net .npx-qrw{justify-items:center;align-self:center}
 .npx{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(24px,4vw,56px);align-items:center;padding:clamp(24px,4vw,48px);border-radius:28px;background:radial-gradient(120% 120% at 0% 0%,#123a33 0%,#0B1418 45%,#0A0E11 100%);border:1px solid rgba(255,255,255,.08);color:#EEF3F5;box-shadow:0 40px 90px -50px #000}
 .npx::before{content:"";position:absolute;z-index:-1;right:-15%;top:-40%;width:70%;aspect-ratio:1;border-radius:50%;background:radial-gradient(closest-side,rgba(242,191,60,.28),transparent);animation:hfloat 14s ease-in-out infinite alternate}
 .npx::after{content:"";position:absolute;z-index:-1;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(90deg,#000,transparent 75%);-webkit-mask-image:linear-gradient(90deg,#000,transparent 75%)}
