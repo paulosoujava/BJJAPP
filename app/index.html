@@ -1083,7 +1083,7 @@ body.remote [data-adj]{display:none!important}
         if(d.tatames>=1&&d.tatames<=8)S.tatames=Math.round(d.tatames);
         if(d.tempoModo==='faixa')S.tempoModo='faixa';
         if(d.temposFaixa){BELTS.forEach(function(b){var v=Math.round(d.temposFaixa[b.id]);if(v>=1&&v<=60)S.temposFaixa[b.id]=v})}
-        if(d.online&&typeof d.online==='object'){var o=d.online;S.online={url:String(o.url||'').slice(0,200),key:String(o.key||'').slice(0,800),site:String(o.site||S.online.site).slice(0,300),short:!!o.short,eventId:String(o.eventId||'').slice(0,60),admin:String(o.admin||'').slice(0,80),open:o.open!==false,link:String(o.link||'').slice(0,1500)}}
+        if(d.online&&typeof d.online==='object'){var o=d.online;S.online={url:String(o.url||S.online.url).slice(0,200),key:String(o.key||S.online.key).slice(0,800),site:String(o.site||S.online.site).slice(0,300),short:o.short!==false,eventId:String(o.eventId||'').slice(0,60),admin:String(o.admin||'').slice(0,80),open:o.open!==false,link:String(o.link||'').slice(0,1500)}}
         S.autoPen=d.autoPen!==false;S.rr3=d.rr3!==false;S.divIdade=d.divIdade!==false;S.divSexo=d.divSexo!==false;S.sepEquipe=d.sepEquipe!==false;S.som=d.som!==false;
         S.myMat=d.myMat>=0&&d.myMat<=8?Math.round(d.myMat):0;
         if(Array.isArray(d.brackets)&&d.people){
@@ -2103,15 +2103,11 @@ body.remote [data-adj]{display:none!important}
   function regRender(){
     var o=S.online,h='';
     if(!o.eventId){
-      h+='<section class="reg-card"><h3>1 · Conexão</h3><p class="mut">Informe os dados do seu projeto no <b>Supabase</b> (gratuito). O passo a passo está na pasta <code>online/LEIA-ME-INSCRICAO.md</code>.</p>'+
-        '<div class="reg-grid"><label>Project URL<input id="rgUrl" type="text" autocomplete="off" placeholder="https://xxxx.supabase.co" value="'+esc(o.url)+'"></label>'+
-        '<label>Chave pública (anon / publishable)<input id="rgKey" type="text" autocomplete="off" placeholder="eyJ… ou sb_publishable_…" value="'+esc(o.key)+'"></label>'+
-        '<label class="full">Página pública de inscrição<input id="rgSite" type="text" autocomplete="off" value="'+esc(o.site)+'"></label></div>'+
-        '<label class="chk"><input type="checkbox" id="rgShort"'+(o.short?' checked':'')+'> Minha página já tem a conexão preenchida (link mais curto)</label>'+
-        '<div class="reg-act"><button class="btn primary" type="button" data-rg="create">Criar link de inscrição</button></div></section>';
+      h+='<section class="reg-card"><h3>'+(REG.creating?'Criando seu link…':'Não foi possível criar o link')+'</h3>'+
+        (REG.creating?'<p class="mut">Só um instante.</p>':'<p class="mut">Confira a internet e tente de novo.</p><div class="reg-act"><button class="btn primary" type="button" data-rg="create">Tentar novamente</button></div>')+'</section>';
     }else{
       h+='<section class="reg-card"><h3>Link para compartilhar</h3><div class="reg-link"><input id="rgLink" type="text" readonly value="'+esc(o.link)+'"></div>'+
-        '<div class="reg-act"><button class="btn primary" type="button" data-rg="copy">Copiar link</button><a class="btn" id="rgWa" target="_blank" rel="noopener" href="'+esc(waLink())+'">Enviar pelo WhatsApp</a>'+
+        '<div class="reg-act"><a class="btn primary" id="rgWa" target="_blank" rel="noopener" href="'+esc(waLink())+'">Compartilhar no WhatsApp</a><button class="btn" type="button" data-rg="copy">Copiar link</button>'+
         '<button class="btn" type="button" data-rg="toggle">'+(o.open?'Encerrar inscrições':'Reabrir inscrições')+'</button></div>'+
         '<p class="mut">Inscrições '+(o.open?'<b class="okc">abertas</b>':'<b class="badc">encerradas</b>')+'. Quem tiver o link preenche nome, equipe, sexo, ano de nascimento, peso e faixa.</p></section>';
       var pend=regPending(),done=REG.rows.length-pend.length;
@@ -2131,6 +2127,7 @@ body.remote [data-adj]{display:none!important}
   }
   function regOpen(){
     $('#reg').hidden=false;$('#reg').scrollTop=0;REG.msg='';regRender();
+    if(!S.online.eventId){regCreate();return}
     if(S.online.eventId){regFetch(true);clearInterval(REG.iv);REG.iv=setInterval(function(){regFetch(true)},30000)}
   }
   function regClose(){$('#reg').hidden=true;clearInterval(REG.iv);REG.iv=null;try{$('#regBtn').focus()}catch(e){}}
@@ -2160,21 +2157,21 @@ body.remote [data-adj]{display:none!important}
     rpc('mark_imported',{p_event:S.online.eventId,p_admin:S.online.admin,p_ids:add.map(function(r){return r.id})}).then(function(){add.forEach(function(r){r.imported=true})}).catch(function(){}).then(function(){REG.newCount=regPending().length;paintRegBadge();regRender()});
     REG.newCount=regPending().length;paintRegBadge();regRender();
   }
+  function openWa(){var u=waLink();if(DESK&&DESK.openExternal)DESK.openExternal(u);else window.open(u,'_blank','noopener')}
+  function regCreate(){
+    var o=S.online,nome=(S.evento.nome||'').trim();
+    if(REG.creating)return;
+    if(nome.length<2){regClose();toast('err','Dê um nome ao campeonato antes de criar o link de inscrição.');return}
+    REG.creating=true;REG.msg='';regRender();
+    var adm=hex(24);
+    rpc('create_event',{p_name:nome,p_date:S.evento.data||null,p_admin:adm}).then(function(id){
+      o.eventId=String(id).replace(/"/g,'');o.admin=adm;o.open=true;o.link=buildLink();save();REG.rows=[];REG.newCount=0;REG.creating=false;
+      regOpen();openWa();
+    }).catch(function(e){REG.creating=false;REG.msg=regErrText(e);toast('err',REG.msg);regRender()});
+  }
   function regAct(a){
     var o=S.online;
-    if(a==='create'){
-      var url=($('#rgUrl').value||'').trim(),key=($('#rgKey').value||'').trim(),site=($('#rgSite').value||'').trim();
-      if(!/^(https:\/\/[^\s/]+\.[^\s/]+|http:\/\/(localhost|127\.0\.0\.1)(:\d+)?)/.test(url)){showErr2('Informe o Project URL do Supabase (começa com https://).','#rgUrl');return}
-      if(key.length<20){showErr2('Cole a chave pública (anon) do Supabase.','#rgKey');return}
-      if(!/^https?:\/\/\S+/.test(site)){showErr2('Informe o endereço da página pública de inscrição.','#rgSite');return}
-      var nome=(S.evento.nome||'').trim();
-      if(nome.length<2){toast('err','Dê um nome ao campeonato antes de criar o link.');return}
-      o.url=url.replace(/\/+$/,'');o.key=key;o.site=site;o.short=$('#rgShort').checked;
-      var adm=hex(24),btn=document.querySelector('[data-rg="create"]');btn.disabled=true;btn.textContent='Criando…';
-      rpc('create_event',{p_name:nome,p_date:S.evento.data||null,p_admin:adm}).then(function(id){
-        o.eventId=String(id).replace(/"/g,'');o.admin=adm;o.open=true;o.link=buildLink();save();REG.rows=[];REG.newCount=0;
-        toast('ok','Link de inscrição criado.');regOpen();
-      }).catch(function(e){save();btn.disabled=false;btn.textContent='Criar link de inscrição';REG.msg=regErrText(e);toast('err',REG.msg);regRender()});
+    if(a==='create'){regCreate();return;
     }else if(a==='copy'){
       var inp=$('#rgLink');
       var done=function(){toast('ok','Link copiado. É só colar no WhatsApp.',2600)};
@@ -2195,7 +2192,7 @@ body.remote [data-adj]{display:none!important}
   function showErr2(msg,sel){toast('err',msg);var el=$(sel);if(el){el.focus();bad(el)}}
   $('#regBtn').addEventListener('click',regOpen);
   $('#regClose').addEventListener('click',regClose);
-  $('#regBody').addEventListener('click',function(e){var t=e.target.closest('[data-rg]');if(t){e.preventDefault();regAct(t.getAttribute('data-rg'))}});
+  $('#regBody').addEventListener('click',function(e){var w=e.target.closest('#rgWa');if(w&&DESK&&DESK.openExternal){e.preventDefault();openWa();return}var t=e.target.closest('[data-rg]');if(t){e.preventDefault();regAct(t.getAttribute('data-rg'))}});
   $('#regBody').addEventListener('change',function(e){var t=e.target;if(t.hasAttribute&&t.hasAttribute('data-rgsel'))REG.sel[t.getAttribute('data-rgsel')]=t.checked});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('#reg').hidden&&$('#dlg').hidden){regClose();e.stopImmediatePropagation();e.preventDefault()}},true);
   if(!IS_TELAO&&S.online.eventId)setTimeout(function(){regFetch(true)},1500);
@@ -2549,6 +2546,7 @@ body.remote [data-adj]{display:none!important}
   function resetChamp(){
     var saved=false;
     if(hasResults()){S.history.unshift(snapshot());if(S.history.length>200)S.history.length=200;saved=true}
+    S.online.eventId='';S.online.admin='';S.online.link='';S.online.open=true;REG.rows=[];REG.newCount=0;clearInterval(REG.iv);paintRegBadge();
     S.fighters=[];S.brackets=null;S.people={};S.sig='';S.evento={nome:'',data:todayISO()};
     endArmed=false;clearTimeout(endTimer);
     save();initEv();renderList();renderHint();renderResults();renderHistBtn();

@@ -1,4 +1,4 @@
-> **Já configurado:** o projeto Supabase `bjj-arena` está criado, o SQL já foi executado e a página pública fica em https://bjjapp-app.vercel.app/inscricao.html. No app, basta clicar em *Criar link de inscrição*. Os passos abaixo servem para refazer em outro projeto.
+> **Já configurado:** o projeto Supabase `bjj-arena` está criado, o SQL já foi executado e a página pública fica em https://bjjapp-app.vercel.app/inscricao.html. No app, basta clicar em *Link de inscrição*: o link é criado e o WhatsApp abre para você divulgar. Os passos abaixo servem para refazer em outro projeto.
 
 # Link de inscrição online (passo a passo, ~10 minutos)
 
