@@ -871,14 +871,44 @@ body.remote [data-adj]{display:none!important}
 @media (max-width:900px){.acct-btn,.top .acct-btn{position:static;margin-bottom:12px}.au-grid,.au-hours{grid-template-columns:1fr}}
 body.au-on .wrap,body.au-on .toasts{visibility:visible}
 body.au-on .wrap{display:none}
+/* ===== v1.8.1: tela "Novo campeonato" com luta ao fundo, formulário e botões do topo ===== */
+.top-act{position:absolute;z-index:3;top:clamp(14px,2.2vw,24px);right:clamp(14px,2.6vw,30px);display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.top .top-act .btn{position:static;display:inline-flex;align-items:center;gap:9px;height:42px;padding:0 18px;border-radius:999px;font-weight:600;font-size:.92rem;letter-spacing:.01em;max-width:260px;background:rgba(255,255,255,.08);color:#EEF3F5;border:1px solid rgba(255,255,255,.2);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transition:background .2s,transform .2s,border-color .2s}
+.top .top-act .btn:hover{background:rgba(255,255,255,.18);border-color:rgba(242,191,60,.7);transform:translateY(-1px)}
+.top .top-act .btn::before{content:"";flex:none;width:18px;height:18px;background:#F2BF3C;-webkit-mask:var(--ic) center/contain no-repeat;mask:var(--ic) center/contain no-repeat}
+.top .top-act .hist-btn{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7'/%3E%3Cpath d='M3 4v5h5'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E")}
+.top .top-act .acct-btn{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4 21c1-4.5 4.2-6.5 8-6.5s7 2 8 6.5'/%3E%3C/svg%3E");overflow:hidden;text-overflow:ellipsis;white-space:nowrap;top:auto;right:auto}
+.top .top-act .cnt{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#F2BF3C;color:#1a1203;font-size:.78rem;font-weight:800}
+@media (max-width:900px){.top-act{position:static;justify-content:flex-start;margin-bottom:14px}}
+
+.gate{max-width:1100px;min-height:clamp(440px,64vh,600px);background:radial-gradient(120% 90% at 85% 40%,#12303a 0%,#081014 62%)}
+.gate>*{position:relative}
+.gate .g-fight{position:absolute;z-index:-1;right:-1%;top:14%;width:min(54%,600px);height:auto;opacity:.7;pointer-events:none;filter:drop-shadow(0 0 1.5px rgba(0,0,0,.8)) drop-shadow(0 30px 40px rgba(0,0,0,.5));-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 22%);mask-image:linear-gradient(90deg,transparent 0%,#000 22%);animation:gfight 7s ease-in-out infinite alternate}
+@keyframes gfight{from{transform:translateY(0) scale(1)}to{transform:translateY(-8px) scale(1.025)}}
+.gate .g-fight+form,.gate form{max-width:560px;padding:clamp(16px,2.4vw,24px);border-radius:20px;background:rgba(8,16,20,.62);border:1px solid rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 24px 50px -28px #000}
+.gate .gfields{display:grid;grid-template-columns:minmax(150px,.75fr) minmax(0,1.5fr);gap:14px}
+.gate .gfields .grow{grid-column:1/-1;flex:none}
+.gate .gfields .field:not(.grow){flex:none;grid-column:auto;min-width:0}
+.gate .gfields select{height:58px;font-size:1.02rem;border-radius:14px;padding:0 14px;background-color:rgba(255,255,255,.05);border:1.5px solid var(--line-strong);color:#fff;width:100%;text-overflow:ellipsis}
+.gate .gfields select option{color:#111}
+.gate .gfields .gtipo small{display:block;margin-top:6px}
+.gate .gfields:has(.gtipo[hidden]) .field:not(.grow){grid-column:1/-1}
+.gate .es-act{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+.gate .es-act .btn.primary{flex:1 1 220px;height:58px;font-size:1.1rem;letter-spacing:.02em}
+.gate .es-act .btn:not(.primary){flex:0 1 auto}
+@media (max-width:760px){.gate .g-fight{display:block;width:96%;right:-12%;opacity:.28;bottom:0}.gate .gfields{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){.gate .g-fight{animation:none}}
+
 .toasts{z-index:9600!important}#dlg{z-index:9400!important}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
-    <button class="btn hist-btn" id="histBtn" type="button">Histórico</button>
-    <button class="btn acct-btn" id="acctBtn" type="button" hidden>Minha conta</button>
+    <div class="top-act">
+      <button class="btn acct-btn" id="acctBtn" type="button" hidden>Minha conta</button>
+      <button class="btn hist-btn" id="histBtn" type="button">Histórico</button>
+    </div>
     <div class="brand">
       <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2BF3C"/><stop offset="1" stop-color="#E8734A"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="16" fill="url(#lg1)"/><path d="M14 40l9-18 9 12 9-12 9 18" fill="none" stroke="#1a1203" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="14" y="46" width="36" height="5" rx="2.5" fill="#1a1203"/></svg>
       <div><h1>BJJ Arena</h1>
@@ -897,7 +927,7 @@ body.au-on .wrap{display:none}
     <button class="gx" id="gClose" type="button" aria-label="Sair do programa" title="Sair do programa" hidden>&times;</button>
     <h2 id="gTitle">Novo campeonato</h2>
     <p class="lead">Dê um nome ao campeonato. Ele aparece no histórico, junto com a data, os campeões e todas as lutas.</p>
-    <div class="g-art" aria-hidden="true"><i style="--c:var(--belt-branca)"></i><i style="--c:var(--belt-azul)"></i><i style="--c:var(--belt-roxa)"></i><i style="--c:var(--belt-marrom)"></i><i style="--c:var(--belt-preta)"></i></div>
+    <svg class="g-fight" aria-hidden="true" focusable="false" viewBox="0 0 640 430"><defs><linearGradient id="gfw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f6f8"/><stop offset="1" stop-color="#c9d1d8"/></linearGradient><linearGradient id="gfb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d74e0"/><stop offset="1" stop-color="#1f46a0"/></linearGradient></defs><ellipse cx="340" cy="392" rx="280" ry="22" fill="#000" opacity=".35"/><g stroke-linecap="round" stroke-linejoin="round" fill="none"><g stroke="url(#gfb)"><path d="M205 345 L330 342" stroke-width="64"/><path d="M215 335 L262 282" stroke-width="28"/><path d="M205 352 L170 372" stroke-width="26"/></g><path d="M312 342 L318 342" stroke="#14181c" stroke-width="66" opacity=".9"/><circle cx="152" cy="338" r="30" fill="#c99a76"/><path d="M126 326 q26 -22 52 -4" stroke="#1b1410" stroke-width="10"/><g stroke="url(#gfw)"><path d="M440 312 L318 218" stroke-width="66"/><path d="M440 312 L486 372 L566 376" stroke-width="42"/><path d="M330 228 L238 306" stroke-width="28"/><path d="M342 236 L352 318" stroke-width="26"/></g><path d="M432 306 L444 316" stroke="#14181c" stroke-width="30" opacity=".85"/><circle cx="286" cy="182" r="31" fill="#d1a583"/><path d="M258 170 q28 -26 56 -4" stroke="#22170f" stroke-width="12"/><g stroke="url(#gfb)"><path d="M326 345 L412 270 L350 214" stroke-width="40"/><path d="M326 350 L430 318 L372 262" stroke-width="38"/></g></g></svg>
     <form id="gForm" novalidate>
       <div class="gfields">
         <div class="field grow"><label for="gNome">Nome do campeonato</label><input id="gNome" type="text" maxlength="80" autocomplete="off" placeholder="Ex.: Copa Arena de Jiu-Jitsu 2026"></div>
