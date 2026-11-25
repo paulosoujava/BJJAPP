@@ -871,6 +871,58 @@ body.remote [data-adj]{display:none!important}
 @media (max-width:900px){.acct-btn,.top .acct-btn{position:static;margin-bottom:12px}.au-grid,.au-hours{grid-template-columns:1fr}}
 body.au-on .wrap,body.au-on .toasts{visibility:visible}
 body.au-on .wrap{display:none}
+/* ===== Painel "Público ao vivo" ===== */
+#net .reg-in{max-width:1120px}
+.npx{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(24px,4vw,56px);align-items:center;padding:clamp(24px,4vw,48px);border-radius:28px;background:radial-gradient(120% 120% at 0% 0%,#123a33 0%,#0B1418 45%,#0A0E11 100%);border:1px solid rgba(255,255,255,.08);color:#EEF3F5;box-shadow:0 40px 90px -50px #000}
+.npx::before{content:"";position:absolute;z-index:-1;right:-15%;top:-40%;width:70%;aspect-ratio:1;border-radius:50%;background:radial-gradient(closest-side,rgba(242,191,60,.28),transparent);animation:hfloat 14s ease-in-out infinite alternate}
+.npx::after{content:"";position:absolute;z-index:-1;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(90deg,#000,transparent 75%);-webkit-mask-image:linear-gradient(90deg,#000,transparent 75%)}
+.npx-off{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr)}
+.npx-eb{font:600 .78rem/1 var(--body,inherit);letter-spacing:.24em;text-transform:uppercase;color:#5FD3B0}
+.npx h3{margin:10px 0 0;font:800 clamp(2.4rem,5vw,4rem)/.92 var(--display);text-transform:uppercase;letter-spacing:.01em}
+.npx h3 em{font-style:normal;background:linear-gradient(100deg,#F2BF3C,#E8734A);-webkit-background-clip:text;background-clip:text;color:transparent}
+.npx-copy>p{color:#A9B9C0;font-size:1.05rem;max-width:46ch;margin:14px 0 0}
+.npx-steps{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:10px}
+.npx-steps li{display:flex;align-items:center;gap:14px;padding:10px 14px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)}
+.npx-steps b{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#F2BF3C,#E8734A);color:#1a1203;font:800 1.05rem var(--display)}
+.npx-steps span{color:#D5DEE3}.npx-steps em{font-style:normal;color:#fff;font-weight:700}
+.npx-act{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.npx .btn{background:rgba(255,255,255,.07);color:#EEF3F5;border-color:rgba(255,255,255,.2)}
+.npx .btn.primary.npx-go{height:56px;padding:0 30px;font-size:1.08rem;background:linear-gradient(135deg,#F2BF3C,#E8734A);color:#1a1203;border-color:transparent;box-shadow:0 18px 36px -14px rgba(232,115,74,.75)}
+.npx-fine{color:#7E8C96;font-size:.85rem;margin:14px 0 0}
+.npx-qrw{position:relative;display:grid;justify-items:center;gap:16px}
+.npx-ring{position:absolute;top:-18px;left:50%;width:min(100%,420px);aspect-ratio:1;transform:translateX(-50%);border-radius:40px;background:conic-gradient(from 0deg,#F2BF3C,#E8734A,#5FD3B0,#2D63C8,#F2BF3C);filter:blur(26px);opacity:.45;animation:npxspin 10s linear infinite}
+@keyframes npxspin{to{transform:translateX(-50%) rotate(360deg)}}
+.npx-qr{position:relative;width:min(100%,380px);aspect-ratio:1;padding:22px;border-radius:32px;background:#fff;display:grid;place-items:center;box-shadow:0 30px 70px -20px rgba(0,0,0,.8)}
+.npx-qr svg{width:100%;height:100%;display:block}
+.npx-scan{position:relative;font:800 1.5rem/1 var(--display);letter-spacing:.2em;color:#fff}
+.npx-st{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.npx-live{display:inline-flex;align-items:center;gap:10px;height:34px;padding:0 16px;border-radius:999px;background:rgba(95,211,176,.14);color:#7FF0C8;font-weight:700;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase}
+.npx-live i{width:9px;height:9px;border-radius:50%;background:#3DD6A3;animation:npxping 1.6s infinite}
+@keyframes npxping{0%{box-shadow:0 0 0 0 rgba(61,214,163,.6)}70%{box-shadow:0 0 0 10px rgba(61,214,163,0)}100%{box-shadow:0 0 0 0 rgba(61,214,163,0)}}
+.npx .npx-off-btn{height:38px;font-size:.85rem}
+.npx-link{display:flex;gap:10px;margin-top:20px}
+.npx-link input{flex:1;min-width:0;height:48px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.35);color:#EEF3F5;padding:0 14px;font:500 .98rem ui-monospace,Menlo,monospace}
+.npx-link .btn{height:48px}
+.npx-ip{display:flex;align-items:center;gap:10px;margin-top:12px;color:#A9B9C0;font-size:.9rem}.npx-ip select{height:40px;border-radius:10px;background:#16212A;color:#EEF3F5;border:1px solid #33454F;padding:0 10px}
+/* celular ilustrativo */
+.npx-phone{justify-self:center;width:250px;aspect-ratio:9/18.5;border-radius:42px;padding:12px;background:#0d1216;border:2px solid #2c3a44;box-shadow:0 40px 80px -30px #000,inset 0 0 0 2px #050708;transform:rotate(4deg)}
+.npx-scr{height:100%;border-radius:32px;background:linear-gradient(170deg,#141c22,#0a0e11);padding:22px 14px;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.npx-pill{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;background:rgba(255,77,77,.16);color:#FF8A80;font:700 .6rem/1 var(--body);letter-spacing:.1em}.npx-pill i{width:6px;height:6px;border-radius:50%;background:#FF4D4D;animation:npxping 1.6s infinite}
+.npx-h{font:800 .8rem var(--display);letter-spacing:.2em;color:#F2BF3C;margin-top:4px}
+.npx-c{display:grid;grid-template-columns:4px 1fr auto;gap:8px;align-items:center;padding:10px;border-radius:12px;background:#1a232b}
+.npx-c span{align-self:stretch;border-radius:3px;background:var(--c)}.npx-c b{font:800 .95rem var(--display);letter-spacing:.02em}.npx-c strong{font:800 1.6rem/1 var(--display)}
+.npx-c:first-of-type strong{color:#F2BF3C}
+.npx-vs{align-self:center;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;margin:-12px 0;z-index:1;background:linear-gradient(135deg,#F2BF3C,#E8734A);color:#1a1203;font:800 .6rem var(--display)}
+.npx-l{height:40px;border-radius:10px;background:#161e24;margin-top:6px}.npx-l.s{width:80%}
+.npx-nav{margin-top:auto;display:flex;justify-content:space-around;padding-top:8px;border-top:1px solid #222c34}.npx-nav i{width:34px;height:16px;border-radius:8px;background:#1f2930}.npx-nav i.on{background:rgba(242,191,60,.35)}
+.qr-tl{position:fixed;inset:0;z-index:9500;display:grid;place-items:center;background:radial-gradient(circle at 50% 40%,#1b2a24,#05080a 70%)}
+.qr-tl .qr-box{display:grid;justify-items:center;gap:18px;text-align:center;color:#fff}
+.qr-tl .qr-box svg{width:min(62vh,62vw);height:auto;background:#fff;padding:26px;border-radius:36px;box-shadow:0 0 0 10px rgba(242,191,60,.25),0 40px 90px -20px #000}
+.qr-tl h2{margin:0;font:800 clamp(2.4rem,6vw,5rem)/.9 var(--display);text-transform:uppercase}
+.qr-tl p{margin:0;color:#A9B9C0;font-size:clamp(1rem,2vw,1.5rem)}
+@media (max-width:860px){.npx,.npx-off{grid-template-columns:minmax(0,1fr)}.npx-phone{display:none}}
+@media (prefers-reduced-motion:reduce){.npx-ring,.npx::before,.npx-live i,.npx-pill i{animation:none}}
+
 /* ===== v1.8.1: tela "Novo campeonato" com luta ao fundo, formulário e botões do topo ===== */
 .top-act{position:absolute;z-index:3;top:clamp(14px,2.2vw,24px);right:clamp(14px,2.6vw,30px);display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .top .top-act .btn{position:static;display:inline-flex;align-items:center;gap:9px;height:42px;padding:0 18px;border-radius:999px;font-weight:600;font-size:.92rem;letter-spacing:.01em;max-width:260px;background:rgba(255,255,255,.08);color:#EEF3F5;border:1px solid rgba(255,255,255,.2);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transition:background .2s,transform .2s,border-color .2s}
@@ -1101,9 +1153,9 @@ body:has(#gate:not([hidden])) .gate-bg{opacity:1}
       </section>
 
       <section class="panel" id="netPanel" aria-labelledby="h-net">
-        <h2 id="h-net"><span class="step">4</span>Mesas e público</h2>
-        <p class="hint">Use um notebook ou tablet por tatame e mostre os resultados ao vivo para o público, tudo pelo Wi-Fi do ginásio. Sem internet.</p>
-        <button class="btn primary go" id="netOpen" type="button">Abrir painel de rede</button>
+        <h2 id="h-net"><span class="step">4</span>Público ao vivo</h2>
+        <p class="hint">Gere um QR Code e o público acompanha as lutas, as categorias e as medalhas no celular, pelo Wi-Fi do ginásio. Sem internet.</p>
+        <button class="btn primary go" id="netOpen" type="button">Abrir QR Code do público</button>
         <span class="mut" id="netState"></span>
       </section>
 
@@ -1253,7 +1305,7 @@ body:has(#gate:not([hidden])) .gate-bg{opacity:1}
 </div>
 <div class="hist reg" id="net" hidden role="dialog" aria-modal="true" aria-labelledby="netT">
   <div class="hist-in reg-in">
-    <header class="reg-h"><div><span class="eyebrow">Rede local</span><h2 id="netT">Mesas e público</h2></div><button class="btn" type="button" id="netClose">Fechar</button></header>
+    <header class="reg-h"><div><span class="eyebrow">Wi-Fi do evento</span><h2 id="netT">Público ao vivo</h2></div><button class="btn" type="button" id="netClose">Fechar</button></header>
     <div id="netBody"></div>
   </div>
 </div>
@@ -2506,7 +2558,9 @@ body:has(#gate:not([hidden])) .gate-bg{opacity:1}
   /* ---------- Dados ao vivo (página do público) ---------- */
   function liveData(){
     if(!S.brackets||!S.brackets.length)return {vazio:true,nome:S.evento.nome||''};
-    function side(id){var p=S.people[id]||{};return {name:p.name||'',team:p.team||'',belt:p.belt||''}}
+    var BHEX={branca:'#ECE8DD',azul:'#2D63C8',roxa:'#7B3FB5',marrom:'#7A4A22',preta:'#15191C'};
+    function bhex(id){var b=beltOf(id)||{},v=beltColor(id,b.nome),m=/var\(--belt-([a-z]+)/.exec(v);return m?(BHEX[m[1]]||NAMED_BELTS[m[1]]||'#8A8F98'):v}
+    function side(id){var p=S.people[id]||{};return {name:p.name||'',team:p.team||'',belt:p.belt||'',bn:(beltOf(p.belt)||{}).nome||'',c:p.belt?bhex(p.belt):'#8A8F98'}}
     function item(it){
       var sc=it.mt.sc||{a:{p:0,v:0,u:0},b:{p:0,v:0,u:0}};
       return {cat:it.br.short||it.br.title,stage:stageName(it.br,it.r),num:it.num,a:side(it.mt.a),b:side(it.mt.b),sc:{a:{p:sc.a.p,v:sc.a.v,u:sc.a.u},b:{p:sc.b.p,v:sc.b.v,u:sc.b.u}}};
@@ -2592,31 +2646,31 @@ body:has(#gate:not([hidden])) .gate-bg{opacity:1}
   /* ---------- Painel de rede: mesas extras e página ao vivo ---------- */
   var NET={info:null,ip:'',busy:false};
   function netBase(){return 'http://'+(NET.ip||(NET.info&&NET.info.ips[0])||'localhost')+':'+NET.info.port}
+  var NPX_STEPS='<ol class="npx-steps"><li><b>1</b><span>Celular no <em>mesmo Wi-Fi</em> do ginásio</span></li><li><b>2</b><span>Aponte a <em>câmera</em> para o QR</span></li><li><b>3</b><span>Lutas, chaves e medalhas <em>ao vivo</em></span></li></ol>';
+  var NPX_PHONE='<div class="npx-phone" aria-hidden="true"><div class="npx-scr"><div class="npx-pill"><i></i>AO VIVO</div><div class="npx-h">'+'TATAME 1'+'</div><div class="npx-c"><span style="--c:#2D63C8"></span><b>ATLETA A</b><strong>6</strong></div><div class="npx-vs">VS</div><div class="npx-c"><span style="--c:#ECE8DD"></span><b>ATLETA B</b><strong>2</strong></div><div class="npx-l"></div><div class="npx-l s"></div><div class="npx-nav"><i class="on"></i><i></i><i></i></div></div></div>';
   function netRender(){
     var b=$('#netBody');
-    if(!DESK||!DESK.netStart){b.innerHTML='<section class="reg-card"><h3>Disponível no aplicativo</h3><p class="mut">Mesas extras e resultados ao vivo funcionam no BJJ Arena instalado no computador, pela rede local.</p></section>';return}
+    if(!DESK||!DESK.netStart){b.innerHTML='<section class="npx"><div class="npx-copy"><span class="npx-eb">Público ao vivo</span><h3>Disponível no aplicativo</h3><p>O QR Code do público funciona no BJJ Arena instalado no computador, pela rede Wi-Fi do evento.</p></div></section>';return}
     var i=NET.info;
     if(!i||!i.running){
-      b.innerHTML='<section class="reg-card"><h3>Rede local desligada</h3><p class="mut">Ao ligar, este computador passa a atender tablets e celulares que estiverem no <b>mesmo Wi-Fi</b>: cada tatame ganha uma mesa de controle e o público vê o andamento ao vivo.</p>'+
-        '<p class="mut">Se o Windows ou o Mac perguntar sobre a rede, permita o acesso em <b>redes privadas</b>.</p><div class="reg-act"><button class="btn primary" type="button" data-nt="start"'+(NET.busy?' disabled':'')+'>Ligar rede local</button></div></section>';
+      b.innerHTML='<section class="npx npx-off"><div class="npx-copy"><span class="npx-eb">Público ao vivo</span><h3>A plateia no placar.<br><em>No celular.</em></h3>'+
+        '<p>Ligue a transmissão e mostre o QR Code. Quem estiver no ginásio acompanha as lutas de cada tatame, as categorias e o quadro de medalhas, sem instalar nada.</p>'+NPX_STEPS+
+        '<div class="npx-act"><button class="btn primary npx-go" type="button" data-nt="start"'+(NET.busy?' disabled':'')+'>'+(NET.busy?'Ligando…':'Ligar transmissão')+'</button></div>'+
+        '<p class="npx-fine">Se o Mac ou o Windows perguntar sobre a rede, permita o acesso em redes privadas.</p></div>'+NPX_PHONE+'</section>';
       return;
     }
     if(!NET.ip)NET.ip=i.ips[0]||'';
-    var base=netBase(),h='<section class="reg-card"><div class="reg-top"><h3>Rede ligada</h3><button class="btn" type="button" data-nt="stop">Desligar</button></div>'+
-      '<p class="mut">PIN das mesas: <b class="pin" id="netPin">'+esc(i.pin)+'</b> <button class="btn link" type="button" data-nt="pin">Gerar novo PIN</button></p>';
-    if(i.ips.length>1)h+='<label class="mut">Endereço deste computador <select id="netIp">'+i.ips.map(function(a){return '<option'+(a===NET.ip?' selected':'')+'>'+esc(a)+'</option>'}).join('')+'</select></label>';
+    var u=netBase()+'/live';
+    var h='<section class="npx npx-on"><div class="npx-qrw"><div class="npx-ring"></div><div class="npx-qr" id="npxQr"><small class="mut">Gerando QR…</small></div><div class="npx-scan">ESCANEIE E ASSISTA</div></div>'+
+      '<div class="npx-copy"><div class="npx-st"><span class="npx-live"><i></i>Transmissão ligada</span><button class="btn npx-off-btn" type="button" data-nt="stop">Desligar</button></div>'+
+      '<h3>Resultados <em>ao vivo</em></h3><p>Quem escanear vê as lutas de cada tatame, as categorias e o quadro de medalhas, atualizando sozinho no celular.</p>'+NPX_STEPS+
+      '<div class="npx-link"><input type="text" readonly value="'+esc(u)+'" aria-label="Link da página ao vivo"><button class="btn" type="button" data-nt="copy" data-u="'+esc(u)+'">Copiar</button></div>';
+    if(i.ips.length>1)h+='<label class="npx-ip">Rede deste computador <select id="netIp">'+i.ips.map(function(a){return '<option'+(a===NET.ip?' selected':'')+'>'+esc(a)+'</option>'}).join('')+'</select></label>';
     if(!i.ips.length)h+='<p class="err">Este computador não está conectado a nenhuma rede. Conecte-o ao Wi-Fi do ginásio.</p>';
-    h+='</section>';
-    var rows=[];
-    for(var k=1;k<=Math.max(S.tatames,1);k++)rows.push({t:'Mesa do tatame '+k,d:'Abra no tablet ou notebook do tatame '+k+'. Ele controla só as lutas deste tatame.',u:base+'/?mesa='+k+'&pin='+i.pin});
-    rows.push({t:'Resultados ao vivo (público)',d:'Mostre o QR no telão ou imprima. Quem escanear vê lutas, chaves e pódio.',u:base+'/live'});
-    h+='<div class="net-grid">'+rows.map(function(r,n){return '<section class="reg-card net-card"><div class="qr" data-qr="'+n+'"></div><div><h3>'+esc(r.t)+'</h3><p class="mut">'+esc(r.d)+'</p><input type="text" readonly value="'+esc(r.u)+'"><div class="reg-act"><button class="btn" type="button" data-nt="copy" data-u="'+esc(r.u)+'">Copiar link</button>'+(n===rows.length-1?'<button class="btn primary" type="button" data-nt="qrtl">QR no telão</button>':'')+'</div></div></section>'}).join('')+'</div>';
+    h+='<div class="npx-act"><button class="btn primary npx-go" type="button" data-nt="qrtl">Mostrar QR no telão</button></div></div></section>';
     b.innerHTML=h;
-    [].forEach.call(b.querySelectorAll('[data-qr]'),function(el){
-      var r=rows[+el.getAttribute('data-qr')];
-      DESK.qr(r.u).then(function(svg){el.innerHTML=svg||'<small class="mut">QR indisponível</small>'}).catch(function(){});
-    });
-    NET.rows=rows;
+    NET.rows=[{t:'Resultados ao vivo',u:u}];
+    DESK.qr(u).then(function(svg){var el=$('#npxQr');if(el)el.innerHTML=svg||'<small class="mut">QR indisponível</small>'}).catch(function(){});
   }
   function netRefresh(){
     if(!DESK||!DESK.netInfo)return Promise.resolve();
@@ -2641,7 +2695,7 @@ body:has(#gate:not([hidden])) .gate-bg{opacity:1}
   function netQrTelao(){
     var r=NET.rows&&NET.rows[NET.rows.length-1];if(!r)return;
     DESK.qr(r.u).then(function(svg){
-      var el=document.createElement('div');el.className='qr-tl';el.innerHTML='<div class="qr-box">'+svg+'<h2>Resultados ao vivo</h2><p>Aponte a câmera do celular · mesmo Wi-Fi</p><small>'+esc(r.u)+'</small><button class="btn primary" type="button">Fechar</button></div>';
+      var el=document.createElement('div');el.className='qr-tl';el.innerHTML='<div class="qr-box">'+svg+'<h2>Resultados <span style="color:#F2BF3C">ao vivo</span></h2><p>Conecte no Wi-Fi do ginásio e aponte a câmera</p><small>'+esc(r.u)+'</small><button class="btn primary" type="button">Fechar</button></div>';
       el.addEventListener('click',function(ev){if(ev.target===el||ev.target.tagName==='BUTTON')el.remove()});
       document.body.appendChild(el);
     });
@@ -2695,7 +2749,7 @@ body:has(#gate:not([hidden])) .gate-bg{opacity:1}
     ['1 de 6 · Cadastro','Cadastre cada atleta com <b>nome, equipe, sexo, ano de nascimento, peso e faixa</b>. Em vez de digitar, você pode gerar um <b>link de inscrição</b> e mandar pelo WhatsApp: cada atleta se cadastra sozinho.'],
     ['2 de 6 · Configuração','Escolha o tempo de luta, quantos tatames, e se separa por <b>faixa, peso, idade e sexo</b>. A opção de equipes evita que colegas de academia se enfrentem logo no começo.'],
     ['3 de 6 · Pesagem e chaves','Confira o peso na <b>Pesagem</b>, marque quem faltou e clique em <b>Gerar chaves</b>. A chave é sorteada na hora e abre em tela cheia.'],
-    ['4 de 6 · Lutas e tatames','Abra uma luta para marcar pontos, vantagens e punições. Com vários tatames, use <b>Mesas e público</b> para dar a cada tablet o controle do seu tatame.'],
+    ['4 de 6 · Lutas e tatames','Abra uma luta para marcar pontos, vantagens e punições. Use <b>Público ao vivo</b> para a plateia acompanhar tudo no celular.'],
     ['5 de 6 · Telão e público','Abra o <b>telão</b> no segundo monitor e mostre o <b>QR de resultados ao vivo</b>: o público acompanha lutas, chaves e pódio pelo celular.'],
     ['6 de 6 · Encerrar','Ao terminar, veja o <b>quadro de medalhas por equipe</b>, imprima os <b>certificados</b> e encerre: tudo vai para o <b>Histórico</b>.']
   ];
